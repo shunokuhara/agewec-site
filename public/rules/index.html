@@ -15,64 +15,81 @@
     .doc h2 { font-size:18px; color:var(--ink); margin:30px 0 8px; border-left:4px solid #377dff; padding-left:10px; }
     .doc p, .doc li { color:#33405a; font-size:15px; line-height:1.9; }
     .doc ul { padding-left:22px; }
-    .doc .todo { background:#fff7e6; border:1px solid #ffe0a3; border-radius:8px; padding:2px 8px; font-size:13px; font-weight:800; color:#9a6b00; }
     .back { color:#327dba; font-weight:800; }
   </style>
 </head>
 <body>
   <header class="panel-hero">
-    <nav class="nav"><a href="/" class="brand"><div class="brand-main">AGEWEC 2026</div><div class="brand-sub">応募規約</div></a></nav>
+    <nav class="nav">
+      <a href="/" class="brand"><div class="brand-main">AGEWEC 2026</div><div class="brand-sub" data-ja="応募規約" data-en="Entry Rules">応募規約</div></a>
+      <button class="lang" onclick="toggleLang()" aria-label="Toggle language">JA / EN</button>
+    </nav>
   </header>
   <main class="doc"><div class="wrap">
-    <h1>AGEWEC 2026 応募規約</h1>
-    <p class="lead">Draft v0.1 ／ 主催: <span class="todo">要記入</span></p>
+    <h1 data-ja="AGEWEC 2026 応募規約" data-en="AGEWEC 2026 Entry Rules">AGEWEC 2026 応募規約</h1>
+    <p class="lead" data-ja="Draft v0.1 ／ 主催: AGEWEC 実行委員会（FIT2026 特別イベントとして開催）" data-en="Draft v0.1 / Organizer: AGEWEC Organizing Committee (held as a FIT2026 special event)">Draft v0.1 ／ 主催: AGEWEC 実行委員会（FIT2026 特別イベントとして開催）</p>
 
-    <h2>第1条（目的）</h2>
-    <p>AGEWEC 2026（Agentic Work Execution Challenge 2026）は、生成AIおよびAIエージェント技術を活用した創造的ワークフローの実践・共有・発信を目的として開催されるイベントです。応募者は、本規約に同意の上、作品を応募するものとします。</p>
+    <h2 data-ja="第1条（目的）" data-en="Article 1 (Purpose)">第1条（目的）</h2>
+    <p data-ja="AGEWEC 2026（Agentic Work Execution Challenge 2026）は、生成AIおよびAIエージェント技術を活用した創造的ワークフローの実践・共有・発信を目的として開催されるイベントです。応募者は、本規約に同意の上、作品を応募するものとします。" data-en="AGEWEC 2026 (Agentic Work Execution Challenge 2026) is an event held to practice, share, and broadcast creative workflows that make use of generative AI and AI agent technology. Applicants submit their work upon agreeing to these rules.">AGEWEC 2026（Agentic Work Execution Challenge 2026）は、生成AIおよびAIエージェント技術を活用した創造的ワークフローの実践・共有・発信を目的として開催されるイベントです。応募者は、本規約に同意の上、作品を応募するものとします。</p>
 
-    <h2>第2条（応募資格）</h2>
-    <p>応募資格に特段の制限はありません。応募は個人単位とし、チームによる応募は受け付けません。未成年者（18歳未満）の応募については、保護者の同意を必要とします。運営委員・審査員およびその関係者は応募できません。</p>
+    <h2 data-ja="第2条（応募資格）" data-en="Article 2 (Eligibility)">第2条（応募資格）</h2>
+    <p data-ja="応募資格に特段の制限はありません。応募は個人単位とし、チームによる応募は受け付けません。未成年者（18歳未満）の応募については、保護者の同意を必要とします。運営委員・審査員およびその関係者は応募できません。" data-en="There are no particular restrictions on eligibility. Entries are accepted on an individual basis; team entries are not accepted. Minors (under 18) require the consent of a guardian to enter. Organizing committee members, judges, and their associates may not enter.">応募資格に特段の制限はありません。応募は個人単位とし、チームによる応募は受け付けません。未成年者（18歳未満）の応募については、保護者の同意を必要とします。運営委員・審査員およびその関係者は応募できません。</p>
 
-    <h2>第3条（応募作品）</h2>
-    <p>応募作品は、応募者自身が制作した動画作品である必要があります。応募作品には、生成AI、AIエージェント、AI支援ツール等を利用できます。動画本編の言語は自由とします。ただし、作品説明およびワークフロー説明は、日本語または英語で記入するものとします。</p>
+    <h2 data-ja="第3条（応募作品）" data-en="Article 3 (Submitted Work)">第3条（応募作品）</h2>
+    <p data-ja="応募作品は、応募者自身が制作した動画作品である必要があります。応募作品には、生成AI、AIエージェント、AI支援ツール等を利用できます。動画本編の言語は自由とします。ただし、作品説明およびワークフロー説明は、日本語または英語で記入するものとします。" data-en="The submitted work must be a video created by the applicant. Generative AI, AI agents, AI-assisted tools, and the like may be used in the work. The language of the video itself is free. However, the work description and the workflow description must be written in Japanese or English.">応募作品は、応募者自身が制作した動画作品である必要があります。応募作品には、生成AI、AIエージェント、AI支援ツール等を利用できます。動画本編の言語は自由とします。ただし、作品説明およびワークフロー説明は、日本語または英語で記入するものとします。</p>
 
-    <h2>第4条（提出形式）</h2>
-    <p>応募者は、AGEWEC 2026 が指定する投稿フォームを通じて、動画共有URL、作品タイトル、制作者情報、使用AIツール・モデル、ワークフロー説明、その他運営が指定する情報を提出するものとします。運営は、原則として動画ファイル本体のアップロードを受け付けません。</p>
+    <h2 data-ja="第4条（提出形式）" data-en="Article 4 (Submission Format)">第4条（提出形式）</h2>
+    <p data-ja="応募者は、AGEWEC 2026 が指定する投稿フォームを通じて、動画共有URL、作品タイトル、制作者情報、使用AIツール・モデル、ワークフロー説明、その他運営が指定する情報を提出するものとします。運営は、原則として動画ファイル本体のアップロードを受け付けません。" data-en="Through the submission form designated by AGEWEC 2026, the applicant submits a video-sharing URL, the work title, creator information, the AI tools and models used, a workflow description, and any other information designated by the organizer. As a rule, the organizer does not accept uploads of the video file itself.">応募者は、AGEWEC 2026 が指定する投稿フォームを通じて、動画共有URL、作品タイトル、制作者情報、使用AIツール・モデル、ワークフロー説明、その他運営が指定する情報を提出するものとします。運営は、原則として動画ファイル本体のアップロードを受け付けません。</p>
 
-    <h2>第5条（動画URL）</h2>
-    <p>応募者は、審査員が閲覧可能な設定で動画URLを提出し、審査および受賞期間中はアクセス可能な状態を維持するものとします。提出されたURLが閲覧不能である場合、審査対象外となる場合があります。</p>
+    <h2 data-ja="第5条（動画URL）" data-en="Article 5 (Video URL)">第5条（動画URL）</h2>
+    <p data-ja="応募者は、審査員が閲覧可能な設定で動画URLを提出し、審査および受賞期間中はアクセス可能な状態を維持するものとします。提出されたURLが閲覧不能である場合、審査対象外となる場合があります。" data-en="The applicant submits a video URL with settings that allow judges to view it, and keeps it accessible throughout the judging and award period. If a submitted URL cannot be viewed, the entry may be excluded from judging.">応募者は、審査員が閲覧可能な設定で動画URLを提出し、審査および受賞期間中はアクセス可能な状態を維持するものとします。提出されたURLが閲覧不能である場合、審査対象外となる場合があります。</p>
 
-    <h2>第6条（使用AIツール・ライセンス）</h2>
-    <p>応募者は、使用したAIツール、モデル、音声ライブラリ、画像生成モデル、音楽素材等の利用規約およびライセンス条件を遵守するものとします。特に、商用利用、広報利用、クレジット表記等に制限が存在する場合、応募者自身の責任において必要条件を満たすものとします。運営は、第三者ライセンス違反について責任を負いません。</p>
+    <h2 data-ja="第6条（使用AIツール・ライセンス）" data-en="Article 6 (AI Tools and Licenses)">第6条（使用AIツール・ライセンス）</h2>
+    <p data-ja="応募者は、使用したAIツール、モデル、音声ライブラリ、画像生成モデル、音楽素材等の利用規約およびライセンス条件を遵守するものとします。特に、商用利用、広報利用、クレジット表記等に制限が存在する場合、応募者自身の責任において必要条件を満たすものとします。運営は、第三者ライセンス違反について責任を負いません。" data-en="The applicant complies with the terms of use and license conditions of the AI tools, models, audio libraries, image-generation models, music materials, and the like that they use. In particular, where restrictions exist on commercial use, promotional use, or credit notation, the applicant is responsible for meeting the necessary conditions. The organizer bears no responsibility for any third-party license violations.">応募者は、使用したAIツール、モデル、音声ライブラリ、画像生成モデル、音楽素材等の利用規約およびライセンス条件を遵守するものとします。特に、商用利用、広報利用、クレジット表記等に制限が存在する場合、応募者自身の責任において必要条件を満たすものとします。運営は、第三者ライセンス違反について責任を負いません。</p>
 
-    <h2>第7条（権利帰属および運営利用）</h2>
-    <p>応募作品の著作権は、原則として応募者に帰属します。応募者は、AGEWEC 2026 の運営、審査、記録、広報およびアーカイブを目的として、運営に対し、応募作品を無償かつ非独占的に利用することを許諾するものとします。運営は、以下の目的で応募作品を利用できます。</p>
-    <ul><li>イベント会場での上映</li><li>審査</li><li>AGEWEC公式Webサイトへの掲載</li><li>AGEWEC公式SNSでの紹介</li><li>イベント記録・アーカイブ</li><li>活動報告・広報資料への掲載</li></ul>
-    <p>上記利用に必要な範囲において、運営はサムネイル生成、字幕追加、画面サイズ調整、一部切り抜き、ダイジェスト編集、エンコード変換、上映形式への変換を行うことがあります。応募者は、前項に定める利用の範囲において、著作者人格権を行使しないものとします。運営は、可能な範囲で応募者名を表示するよう努めます。</p>
+    <h2 data-ja="第7条（権利帰属および運営利用）" data-en="Article 7 (Rights and Use by the Organizer)">第7条（権利帰属および運営利用）</h2>
+    <p data-ja="応募作品の著作権は、原則として応募者に帰属します。応募者は、AGEWEC 2026 の運営、審査、記録、広報およびアーカイブを目的として、運営に対し、応募作品を無償かつ非独占的に利用することを許諾するものとします。運営は、以下の目的で応募作品を利用できます。" data-en="Copyright in the submitted work, as a rule, belongs to the applicant. The applicant grants the organizer a free, non-exclusive license to use the submitted work for the purposes of operating, judging, recording, promoting, and archiving AGEWEC 2026. The organizer may use the submitted work for the following purposes.">応募作品の著作権は、原則として応募者に帰属します。応募者は、AGEWEC 2026 の運営、審査、記録、広報およびアーカイブを目的として、運営に対し、応募作品を無償かつ非独占的に利用することを許諾するものとします。運営は、以下の目的で応募作品を利用できます。</p>
+    <ul>
+      <li data-ja="イベント会場での上映" data-en="Screening at the event venue">イベント会場での上映</li>
+      <li data-ja="審査" data-en="Judging">審査</li>
+      <li data-ja="AGEWEC公式Webサイトへの掲載" data-en="Posting on the official AGEWEC website">AGEWEC公式Webサイトへの掲載</li>
+      <li data-ja="AGEWEC公式SNSでの紹介" data-en="Featuring on official AGEWEC social media">AGEWEC公式SNSでの紹介</li>
+      <li data-ja="イベント記録・アーカイブ" data-en="Event records and archiving">イベント記録・アーカイブ</li>
+      <li data-ja="活動報告・広報資料への掲載" data-en="Inclusion in activity reports and promotional materials">活動報告・広報資料への掲載</li>
+    </ul>
+    <p data-ja="上記利用に必要な範囲において、運営はサムネイル生成、字幕追加、画面サイズ調整、一部切り抜き、ダイジェスト編集、エンコード変換、上映形式への変換を行うことがあります。応募者は、前項に定める利用の範囲において、著作者人格権を行使しないものとします。運営は、可能な範囲で応募者名を表示するよう努めます。" data-en="Within the scope necessary for the above use, the organizer may generate thumbnails, add subtitles, adjust screen size, crop portions, create digest edits, convert encoding, and convert to screening formats. The applicant agrees not to exercise moral rights of authorship within the scope of use set out in the preceding paragraph. The organizer will make efforts to display the applicant's name where possible.">上記利用に必要な範囲において、運営はサムネイル生成、字幕追加、画面サイズ調整、一部切り抜き、ダイジェスト編集、エンコード変換、上映形式への変換を行うことがあります。応募者は、前項に定める利用の範囲において、著作者人格権を行使しないものとします。運営は、可能な範囲で応募者名を表示するよう努めます。</p>
 
-    <h2>第8条（観光PR・外部団体利用）</h2>
-    <p>応募者が別途同意した場合に限り、運営は、観光PR、地域広報、地域連携活動、スポンサー紹介、行政・観光団体による情報発信等の目的で、応募作品を第三者団体へ提供または利用許諾できるものとします。本条に基づく利用は、前条のAGEWEC自身による運営・記録利用とは別の任意同意に基づきます。運営は、必要に応じて、受賞者または対象応募者に追加確認または高画質版データ提出を依頼する場合があります。第三者団体による利用条件は、必要に応じて別途定めます。</p>
+    <h2 data-ja="第8条（観光PR・外部団体利用）" data-en="Article 8 (Tourism PR and Use by External Organizations)">第8条（観光PR・外部団体利用）</h2>
+    <p data-ja="応募者が別途同意した場合に限り、運営は、観光PR、地域広報、地域連携活動、スポンサー紹介、行政・観光団体による情報発信等の目的で、応募作品を第三者団体へ提供または利用許諾できるものとします。本条に基づく利用は、前条のAGEWEC自身による運営・記録利用とは別の任意同意に基づきます。運営は、必要に応じて、受賞者または対象応募者に追加確認または高画質版データ提出を依頼する場合があります。第三者団体による利用条件は、必要に応じて別途定めます。" data-en="Only where the applicant has separately consented, the organizer may provide or license the submitted work to third-party organizations for purposes such as tourism PR, regional promotion, regional cooperation activities, sponsor introductions, and information dissemination by government or tourism bodies. Use under this article is based on separate, optional consent, distinct from the operational and recording use by AGEWEC itself set out in the preceding article. As needed, the organizer may ask award winners or relevant applicants for additional confirmation or for submission of a high-resolution version. Conditions of use by third-party organizations will be set out separately as needed.">応募者が別途同意した場合に限り、運営は、観光PR、地域広報、地域連携活動、スポンサー紹介、行政・観光団体による情報発信等の目的で、応募作品を第三者団体へ提供または利用許諾できるものとします。本条に基づく利用は、前条のAGEWEC自身による運営・記録利用とは別の任意同意に基づきます。運営は、必要に応じて、受賞者または対象応募者に追加確認または高画質版データ提出を依頼する場合があります。第三者団体による利用条件は、必要に応じて別途定めます。</p>
 
-    <h2>第9条（禁止事項）</h2>
-    <ul><li>第三者の権利を侵害する作品</li><li>法令または公序良俗に反する作品</li><li>不適切または差別的表現を含む作品</li><li>マルウェア等の危険なデータへの誘導を含むもの</li><li>虚偽情報を含むもの</li><li>その他運営が不適切と判断するもの</li></ul>
+    <h2 data-ja="第9条（禁止事項）" data-en="Article 9 (Prohibited Items)">第9条（禁止事項）</h2>
+    <ul>
+      <li data-ja="第三者の権利を侵害する作品" data-en="Works that infringe the rights of third parties">第三者の権利を侵害する作品</li>
+      <li data-ja="法令または公序良俗に反する作品" data-en="Works that violate laws or public order and morals">法令または公序良俗に反する作品</li>
+      <li data-ja="不適切または差別的表現を含む作品" data-en="Works containing inappropriate or discriminatory expressions">不適切または差別的表現を含む作品</li>
+      <li data-ja="マルウェア等の危険なデータへの誘導を含むもの" data-en="Works that lead to dangerous data such as malware">マルウェア等の危険なデータへの誘導を含むもの</li>
+      <li data-ja="虚偽情報を含むもの" data-en="Works containing false information">虚偽情報を含むもの</li>
+      <li data-ja="その他運営が不適切と判断するもの" data-en="Anything else the organizer judges inappropriate">その他運営が不適切と判断するもの</li>
+    </ul>
 
-    <h2>第10条（審査）</h2>
-    <p>審査基準および審査方法は、運営が別途定めます。審査結果に関する個別問い合わせには原則として回答しません。</p>
+    <h2 data-ja="第10条（審査）" data-en="Article 10 (Judging)">第10条（審査）</h2>
+    <p data-ja="審査基準および審査方法は、運営が別途定めます。審査結果に関する個別問い合わせには原則として回答しません。" data-en="The judging criteria and methods are set out separately by the organizer. As a rule, individual inquiries regarding judging results will not be answered.">審査基準および審査方法は、運営が別途定めます。審査結果に関する個別問い合わせには原則として回答しません。</p>
 
-    <h2>第11条（失格・受賞取消）</h2>
-    <p>規約違反、虚偽申告、URL無効化、権利侵害、その他運営が不適切と判断した場合、運営は応募を無効または失格とすることがあります。受賞後にこれらの事実が判明した場合、運営は受賞の取消および賞品の返還を求めることがあります。</p>
+    <h2 data-ja="第11条（失格・受賞取消）" data-en="Article 11 (Disqualification and Revocation of Awards)">第11条（失格・受賞取消）</h2>
+    <p data-ja="規約違反、虚偽申告、URL無効化、権利侵害、その他運営が不適切と判断した場合、運営は応募を無効または失格とすることがあります。受賞後にこれらの事実が判明した場合、運営は受賞の取消および賞品の返還を求めることがあります。" data-en="In cases of rule violations, false statements, invalidation of a URL, rights infringement, or anything else the organizer judges inappropriate, the organizer may treat an entry as invalid or disqualified. If such facts come to light after an award, the organizer may revoke the award and request the return of the prize.">規約違反、虚偽申告、URL無効化、権利侵害、その他運営が不適切と判断した場合、運営は応募を無効または失格とすることがあります。受賞後にこれらの事実が判明した場合、運営は受賞の取消および賞品の返還を求めることがあります。</p>
 
-    <h2>第12条（規約変更）</h2>
-    <p>運営は、必要に応じて本規約を変更できるものとします。変更後の内容は、本イベントWebサイト上での掲載をもって通知とします。</p>
+    <h2 data-ja="第12条（規約変更）" data-en="Article 12 (Changes to the Rules)">第12条（規約変更）</h2>
+    <p data-ja="運営は、必要に応じて本規約を変更できるものとします。変更後の内容は、本イベントWebサイト上での掲載をもって通知とします。" data-en="The organizer may change these rules as needed. Changed content is notified by being posted on this event's website.">運営は、必要に応じて本規約を変更できるものとします。変更後の内容は、本イベントWebサイト上での掲載をもって通知とします。</p>
 
-    <h2>第13条（免責事項）</h2>
-    <p>運営は、応募者間または第三者との間で生じた紛争について責任を負いません。また、通信障害、外部サービス障害、動画URL消失等により発生した不利益について責任を負いません。</p>
+    <h2 data-ja="第13条（免責事項）" data-en="Article 13 (Disclaimer)">第13条（免責事項）</h2>
+    <p data-ja="運営は、応募者間または第三者との間で生じた紛争について責任を負いません。また、通信障害、外部サービス障害、動画URL消失等により発生した不利益について責任を負いません。" data-en="The organizer bears no responsibility for disputes arising between applicants or with third parties. The organizer also bears no responsibility for any disadvantage arising from communication failures, external service failures, loss of a video URL, or the like.">運営は、応募者間または第三者との間で生じた紛争について責任を負いません。また、通信障害、外部サービス障害、動画URL消失等により発生した不利益について責任を負いません。</p>
 
-    <h2>第14条（準拠法・管轄）</h2>
-    <p>本規約は日本法に準拠します。本規約に関して紛争が生じた場合、津地方裁判所を第一審の専属的合意管轄裁判所とします。</p>
+    <h2 data-ja="第14条（準拠法・管轄）" data-en="Article 14 (Governing Law and Jurisdiction)">第14条（準拠法・管轄）</h2>
+    <p data-ja="本規約は日本法に準拠します。本規約に関して紛争が生じた場合、津地方裁判所を第一審の専属的合意管轄裁判所とします。" data-en="These rules are governed by the laws of Japan. In the event of a dispute concerning these rules, the Tsu District Court shall be the court of exclusive agreed jurisdiction for the first instance.">本規約は日本法に準拠します。本規約に関して紛争が生じた場合、津地方裁判所を第一審の専属的合意管轄裁判所とします。</p>
 
-    <p style="margin-top:36px"><a class="back" href="/submit/">← 応募フォームに戻る</a></p>
+    <p style="margin-top:36px"><a class="back" href="/submit/" data-ja="← 応募フォームに戻る" data-en="← Back to the entry form">← 応募フォームに戻る</a></p>
   </div></main>
   <footer><strong>AGEWEC 2026</strong><br/>Agentic Work Execution Challenge</footer>
+  <script src="/script.js"></script>
 </body>
 </html>

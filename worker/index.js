@@ -265,9 +265,10 @@ export default {
         if (!db) return json({ error: "no_db_for_year" }, 500);
         return handleApi(rest, request, env, db, year);
       }
-      // Bare year root -> that year's edition homepage; otherwise strip year and
-      // serve the shared page/asset.
-      const target = rest === "/" ? "/editions/" + year + ".html" : rest;
+      // Bare year root -> that year's edition homepage (fetch the CLEAN asset URL,
+      // without ".html", so Cloudflare does not 307-redirect to /editions/{year}
+      // and the browser stays on /{year}/). Otherwise strip the year prefix.
+      const target = rest === "/" ? "/editions/" + year : rest;
       const assetUrl = new URL(url.origin + target);
       assetUrl.search = url.search;
       return env.ASSETS.fetch(new Request(assetUrl.toString(), request));

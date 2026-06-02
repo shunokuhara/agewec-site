@@ -44,7 +44,7 @@ console.log('\n== routing ==');
 let r = await call('GET','/');
 check('/ serves portal (no redirect)', r.status===200 && r.data==='ASSET:/', r.status+' '+r.data);
 r = await call('GET','/2026/');
-check('/2026/ serves edition homepage', r.status===200 && r.data==='ASSET:/editions/2026.html', JSON.stringify(r.data));
+check('/2026/ serves edition homepage', r.status===200 && r.data==='ASSET:/editions/2026', JSON.stringify(r.data));
 r = await call('GET','/2026/submit/');
 check('/2026/submit/ served from shared asset (year stripped)', r.status===200 && r.data==='ASSET:/submit/', JSON.stringify(r.data));
 r = await call('GET','/styles.css');

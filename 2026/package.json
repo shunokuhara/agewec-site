@@ -1,0 +1,17 @@
+{
+  "name": "agewec-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AGEWEC 2026 site — Cloudflare Worker + D1 + static assets",
+  "scripts": {
+    "test": "node test_local.mjs",
+    "check": "node --check worker/index.js",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "migrate": "wrangler d1 migrations apply agewec --remote"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

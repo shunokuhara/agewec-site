@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>審査 | AGEWEC 2026</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .panel-hero { background:#1f3047; color:#fff; }
+    .panel-hero .nav { background:rgba(31,48,71,.92); }
+    .wrap { width:min(1180px, calc(100% - 64px)); margin:0 auto; }
+    main.judge { color:var(--ink); background:linear-gradient(180deg,#fff,#f8faff); min-height:70vh; padding:32px 0 90px; }
+    .judge-head { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:22px 0; }
+    .judge-head h1 { font-size:24px; margin:0; color:var(--ink); }
+    .judge-who { font-weight:800; color:var(--ink-muted); font-size:14px; }
+    .layout { display:grid; grid-template-columns:320px 1fr; gap:24px; }
+    .list { border:1px solid var(--paper-line); border-radius:18px; background:#fff; overflow:hidden; max-height:74vh; overflow-y:auto; }
+    .list-item { padding:14px 16px; border-bottom:1px solid var(--paper-line); cursor:pointer; }
+    .list-item:hover { background:var(--paper-soft); }
+    .list-item.active { background:#eaf3fd; }
+    .list-item .t { font-weight:800; color:var(--ink); font-size:14.5px; }
+    .list-item .s { font-size:12px; font-weight:800; margin-top:4px; }
+    .s.done { color:#1f8a55; } .s.todo { color:#c2772a; }
+    .detail { border:1px solid var(--paper-line); border-radius:18px; background:#fff; padding:26px 28px; }
+    .meta-grid { display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:20px; }
+    .meta-grid .row { font-size:14px; line-height:1.6; color:var(--ink); }
+    .meta-grid .row b { color:var(--ink-muted); font-weight:800; display:inline-block; min-width:120px; }
+    .meta-grid a { color:#327dba; font-weight:800; text-decoration:underline; word-break:break-all; }
+    .crit { border-top:1px solid var(--paper-line); padding:16px 0; }
+    .crit h3 { margin:0 0 4px; font-size:15px; color:var(--ink); }
+    .levels { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:8px; }
+    .lvl { border:1px solid var(--paper-line); border-radius:10px; padding:10px; cursor:pointer; font-size:12px; line-height:1.5; color:var(--ink-muted); background:var(--paper-soft); }
+    .lvl:hover { border-color:#9cc6f0; }
+    .lvl input { margin-right:6px; }
+    .lvl.sel { border-color:#377dff; background:#eaf3fd; color:var(--ink); box-shadow:0 0 0 2px rgba(55,125,255,.15); }
+    .lvl .n { font-weight:900; color:var(--ink); }
+    textarea.comment { width:100%; min-height:90px; border:1px solid var(--paper-line); border-radius:11px; padding:12px; font:inherit; font-size:14.5px; margin-top:8px; background:var(--paper-soft); }
+    .savebar { display:flex; align-items:center; gap:16px; margin-top:18px; }
+    .savebar .btn { cursor:pointer; min-width:160px; }
+    .total { font-weight:900; color:var(--ink); }
+    .msg { font-weight:800; font-size:14px; }
+    .msg.ok { color:#1f8a55; } .msg.err { color:#c2306a; }
+    .empty { color:var(--ink-muted); padding:40px; text-align:center; }
+    @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .wrap{ width:calc(100% - 36px);} .levels{ grid-template-columns:1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="panel-hero">
+    <nav class="nav">
+      <a href="/" class="brand"><div class="brand-main">AGEWEC 2026</div><div class="brand-sub">Judging</div></a>
+      <div class="navlinks">
+        <button class="lang" onclick="toggleLang(); syncDynamic();">JA / EN</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="judge">
+    <div class="wrap">
+      <div class="judge-head">
+        <h1 data-ja="作品審査" data-en="Judging">作品審査</h1>
+        <div class="judge-who" id="who"></div>
+      </div>
+      <div class="layout">
+        <div class="list" id="list"></div>
+        <div class="detail" id="detail"><div class="empty" data-ja="左の一覧から作品を選んでください。" data-en="Select an entry from the list.">左の一覧から作品を選んでください。</div></div>
+      </div>
+    </div>
+  </main>
+
+  <footer><strong>AGEWEC 2026</strong><br/>Agentic Work Execution Challenge</footer>
+
+  <script src="/script.js"></script>
+  <script>
+    const RUBRIC = [
+      {key:'c1', ja:'観光訴求力', en:'Tourism Appeal', L:[
+        {ja:'行きたいと思わせる要素が乏しい', en:'Little that makes viewers want to visit'},
+        {ja:'魅力が一定程度伝わる（標準）', en:'Conveys some appeal (standard)'},
+        {ja:'明確な訪問動機を喚起する', en:'Evokes a clear motivation to visit'},
+        {ja:'強く記憶に残り訪問意欲を喚起', en:'Strong, memorable pull to visit'}]},
+      {key:'c2', ja:'感情的インパクト', en:'Emotional Impact', L:[
+        {ja:'感情的反応をほぼ起こさない', en:'Almost no emotional response'},
+        {ja:'印象は残るが弱い（標準）', en:'Some impression, but weak (standard)'},
+        {ja:'明確な感情を喚起し記憶に残る', en:'Clearly evokes emotion, memorable'},
+        {ja:'強い没入と余韻、共有を促す', en:'Strong immersion that prompts sharing'}]},
+      {key:'c3', ja:'物語の一貫性', en:'Narrative Coherence', L:[
+        {ja:'断片的で意図が不明瞭', en:'Fragmented; intent unclear'},
+        {ja:'大筋は通るが粗がある（標準）', en:'Thread holds but rough (standard)'},
+        {ja:'明確な構成と一貫したメッセージ', en:'Clear structure, consistent message'},
+        {ja:'緻密に設計され一つの物語に', en:'Tightly designed single story'}]},
+      {key:'c4', ja:'AI自律性', en:'AI Autonomy', L:[
+        {ja:'AIはほぼ未使用／部分補助のみ', en:'AI barely used / partial only'},
+        {ja:'AI使用も各工程は人が接続（標準）', en:'AI used, human connects steps (standard)'},
+        {ja:'複数AIが連携し大部分を自律実行', en:'Multiple AIs autonomously run most'},
+        {ja:'計画〜編集まで一貫自律、介入最小', en:'End-to-end autonomous, minimal human'}]},
+      {key:'c5', ja:'ワークフロー設計・再現性', en:'Workflow Design & Reproducibility', L:[
+        {ja:'説明が乏しく追えない／再現不可', en:'Thin; not traceable/reproducible'},
+        {ja:'ツールと手順が一通り示される（標準）', en:'Tools and steps shown (standard)'},
+        {ja:'工程・連携・プロンプトが明確で再現可', en:'Clear and largely reproducible'},
+        {ja:'体系的設計・誤り処理・反復まで', en:'Systematic with error handling/iteration'}]},
+      {key:'c6', ja:'技術的独創性', en:'Technical Creativity & Originality', L:[
+        {ja:'既存手法の単純踏襲で新しさなし', en:'Plain reuse; nothing new'},
+        {ja:'標準的なツール活用にとどまる（標準）', en:'Standard tool usage (standard)'},
+        {ja:'組み合わせ・表現に明確な工夫', en:'Clear ingenuity in use/expression'},
+        {ja:'独自で予想を超え技術・創造で際立つ', en:'Original, standout technically/creatively'}]},
+    ];
+
+    let entries = [];
+    let current = null;
+
+    function lang(){ return (document.documentElement.lang||'ja')==='en' ? 'en':'ja'; }
+    function t(o){ return o[lang()]; }
+    // re-apply language to dynamically inserted [data-ja][data-en] nodes
+    function syncDynamic(){
+      const l = lang();
+      document.querySelectorAll('[data-ja][data-en]').forEach(el=>{ el.textContent = el.dataset[l]; });
+    }
+
+    async function load(){
+      try{
+        const me = await (await fetch('/api/judge/me')).json();
+        document.getElementById('who').textContent = me.name || me.email || '';
+      }catch{}
+      try{
+        const r = await fetch('/api/judge/assignments');
+        if(!r.ok){ document.getElementById('list').innerHTML='<div class="empty">'+(r.status===401?'認証が必要です':'読み込みに失敗しました')+'</div>'; return; }
+        const data = await r.json();
+        entries = data.entries||[];
+        renderList();
+      }catch(e){ document.getElementById('list').innerHTML='<div class="empty">APIに接続できません</div>'; }
+    }
+
+    function renderList(){
+      const el = document.getElementById('list');
+      if(!entries.length){ el.innerHTML='<div class="empty" data-ja="割り当てられた作品はありません。" data-en="No entries assigned.">割り当てられた作品はありません。</div>'; return; }
+      el.innerHTML='';
+      entries.forEach((e,i)=>{
+        const d=document.createElement('div');
+        d.className='list-item'+(current===i?' active':'');
+        d.innerHTML='<div class="t"></div><div class="s '+(e.scored?'done':'todo')+'"></div>';
+        d.querySelector('.t').textContent=e.title;
+        const st=d.querySelector('.s'); st.dataset.ja=e.scored?'採点済み':'未採点'; st.dataset.en=e.scored?'Scored':'Not scored'; st.textContent=t({ja:st.dataset.ja,en:st.dataset.en});
+        d.onclick=()=>{ current=i; renderList(); renderDetail(); };
+        el.appendChild(d);
+      });
+    }
+
+    function levelBox(crit, idx, ci, val){
+      const sel = val===idx;
+      const box=document.createElement('label');
+      box.className='lvl'+(sel?' sel':'');
+      const desc=crit.L[idx];
+      box.innerHTML='<span class="n">'+idx+'</span> <input type="radio" name="'+crit.key+'" value="'+idx+'"'+(sel?' checked':'')+'><span data-ja="'+desc.ja.replace(/"/g,'&quot;')+'" data-en="'+desc.en.replace(/"/g,'&quot;')+'">'+desc[lang()]+'</span>';
+      box.querySelector('input').onchange=()=>{ setScore(ci, idx); };
+      return box;
+    }
+
+    let draft = {};
+    function setScore(ci, val){ draft['c'+(ci+1)] = val; renderDetail(true); }
+
+    function renderDetail(keepDraftOnly){
+      const e = entries[current];
+      const box = document.getElementById('detail');
+      if(!e){ return; }
+      if(!keepDraftOnly){
+        draft = {};
+        const ms = e.myScore;
+        RUBRIC.forEach((c,ci)=>{ draft[c.key] = ms ? ms['c'+(ci+1)] : null; });
+        draft.comment = e.myScore ? (e.myScore.comment||'') : '';
+      }
+      box.innerHTML='';
+
+      const meta=document.createElement('div'); meta.className='meta-grid';
+      const rowEl=(jaLabel,enLabel,valHtml)=>{
+        const r=document.createElement('div'); r.className='row';
+        r.innerHTML='<b data-ja="'+jaLabel+'" data-en="'+enLabel+'">'+(lang()==='en'?enLabel:jaLabel)+'</b> '+valHtml; return r;
+      };
+      const esc=(s)=>String(s==null?'':s).replace(/</g,'&lt;');
+      meta.appendChild(rowEl('タイトル','Title', esc(e.title)));
+      meta.appendChild(rowEl('投稿者','Author', esc(e.author)+(e.affiliation?(' / '+esc(e.affiliation)):'')));
+      meta.appendChild(rowEl('動画','Video', '<a href="'+esc(e.video_url)+'" target="_blank" rel="noopener">'+esc(e.video_url)+'</a>'));
+      meta.appendChild(rowEl('作品説明','Description', esc(e.description)));
+      meta.appendChild(rowEl('使用AI','AI tools', esc(e.ai_tools)));
+      meta.appendChild(rowEl('ワークフロー','Workflow', esc(e.workflow)));
+      if(e.screenshot_url) meta.appendChild(rowEl('スクショ','Screenshot', '<a href="'+esc(e.screenshot_url)+'" target="_blank" rel="noopener">'+esc(e.screenshot_url)+'</a>'));
+      meta.appendChild(rowEl('ライセンス区分','License', esc(e.license_category)));
+      box.appendChild(meta);
+
+      RUBRIC.forEach((c,ci)=>{
+        const wrap=document.createElement('div'); wrap.className='crit';
+        const h=document.createElement('h3');
+        h.dataset.ja=(ci+1)+'. '+c.ja; h.dataset.en=(ci+1)+'. '+c.en; h.textContent=lang()==='en'?h.dataset.en:h.dataset.ja;
+        wrap.appendChild(h);
+        const lv=document.createElement('div'); lv.className='levels';
+        for(let k=0;k<4;k++) lv.appendChild(levelBox(c,k,ci, draft[c.key]));
+        wrap.appendChild(lv);
+        box.appendChild(wrap);
+      });
+
+      const ta=document.createElement('textarea'); ta.className='comment';
+      ta.dataset.ja='コメント（任意）'; ta.dataset.en='Comment (optional)';
+      ta.placeholder=lang()==='en'?'Comment (optional)':'コメント（任意）';
+      ta.value=draft.comment||'';
+      ta.oninput=()=>{ draft.comment=ta.value; };
+      box.appendChild(ta);
+
+      const filled = RUBRIC.every(c=> Number.isInteger(draft[c.key]));
+      const total = filled ? RUBRIC.reduce((a,c)=>a+draft[c.key],0) : '-';
+      const bar=document.createElement('div'); bar.className='savebar';
+      bar.innerHTML='<button class="btn primary" id="saveBtn"><span data-ja="採点を保存" data-en="Save score">採点を保存</span></button>'+
+                    '<span class="total" data-ja="合計: '+total+' / 18" data-en="Total: '+total+' / 18">合計: '+total+' / 18</span>'+
+                    '<span class="msg" id="smsg"></span>';
+      box.appendChild(bar);
+      document.getElementById('saveBtn').onclick=save;
+    }
+
+    async function save(){
+      const m=document.getElementById('smsg');
+      if(!RUBRIC.every(c=>Number.isInteger(draft[c.key]))){ m.className='msg err'; m.textContent=lang()==='en'?'Score all 6 criteria.':'6観点すべてを採点してください。'; return; }
+      const e=entries[current];
+      const payload={submission_id:e.id, comment:draft.comment||''};
+      RUBRIC.forEach(c=> payload[c.key]=draft[c.key]);
+      m.className='msg'; m.textContent=lang()==='en'?'Saving…':'保存中…';
+      try{
+        const r=await fetch('/api/judge/score',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+        if(r.ok){ e.scored=true; e.myScore={...payload}; m.className='msg ok'; m.textContent=lang()==='en'?'Saved.':'保存しました。'; renderList(); }
+        else { m.className='msg err'; m.textContent=lang()==='en'?'Save failed.':'保存に失敗しました。'; }
+      }catch{ m.className='msg err'; m.textContent=lang()==='en'?'Cannot reach API.':'APIに接続できません。'; }
+    }
+
+    load();
+  </script>
+</body>
+</html>

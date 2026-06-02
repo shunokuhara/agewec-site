@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "agewec-site",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-05-31",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // Static site lives in ./public. The Worker handles /api/* and
+  // falls through to these assets for every other path.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+
+  // D1 database. Create it with:  wrangler d1 create agewec
+  // then paste the returned database_id below.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "agewec",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+    }
+  ]
+
+  // Optional secrets (set with `wrangler secret put NAME`):
+  //   TURNSTILE_SECRET   - Cloudflare Turnstile secret key (bot protection on /api/submit)
+  // Access (judge/admin auth) is configured in the Cloudflare dashboard,
+  // not here. See README_DEPLOY.md.
+}

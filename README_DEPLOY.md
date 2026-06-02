@@ -23,12 +23,12 @@ Cloudflare はリポジトリのルートにある `wrangler.jsonc` を見てビ
 ## URL モデル（パス方式・マルチイヤー）
 
 - `agewec.com/` → AGEWEC 全体の**概要ポータル**（`public/index.html`）。各年への入口＋シリーズの説明。
-- `agewec.com/2026/` → 2026年版のトップ（`public/editions/2026.html`）
+- `agewec.com/2026/` → 2026年版のトップ（`public/2026/index.html`）
 - `agewec.com/2026/submit/`、`/judge/`、`/admin/`、`/entries/` … → 全年共通の機能ページ
 - `agewec.com/2026/api/...` → その年の D1 を使う API
 - `agewec.com/styles.css` 等の共有アセットはルート直下（全年共通）
 
-「年」はURLのパスで表現し、リポジトリのフォルダでは表現しない。ポータルは年に依存せず、各年版トップ（editions/{年}.html）だけが年ごとの中身を持つ。
+「年」はURLのパスで表現し、リポジトリのフォルダでは表現しない。ポータルは年に依存せず、各年版トップ（public/{年}/index.html）だけが年ごとの中身を持つ。
 
 ## 1. 準備
 
@@ -83,7 +83,7 @@ GitHub→Cloudflare 自動ビルドの場合は、上記「リポジトリ直下
 3. `wrangler d1 migrations apply agewec_2027 --remote`
 4. `worker/index.js` の `SUPPORTED_YEARS` に `"2027"` を追加（必要なら `CURRENT_YEAR` も更新）
 5. その年の judges 登録
-6. `public/editions/2027.html` を追加（`editions/2026.html` を複製して年・開催日・会場・締切などを更新）。機能ページ（submit/judge など）は共通なので触らない。ポータル `public/index.html` の「開催年」に 2027 のカードを追加。
+6. `public/2027/index.html` を追加（`public/2026/index.html` を複製して年・開催日・会場・締切などを更新）。機能ページ（submit/judge など）は共通なので触らない。ポータル `public/index.html` の「開催年」に 2027 のカードを追加。
 7. デプロイ
 
 ページもコードも複製しない。バグ修正は1か所で全年に反映。

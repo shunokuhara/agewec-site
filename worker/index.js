@@ -265,11 +265,13 @@ export default {
         if (!db) return json({ error: "no_db_for_year" }, 500);
         return handleApi(rest, request, env, db, year);
       }
-      // Bare year root -> that year's edition homepage (fetch the CLEAN asset URL,
-      // without ".html", so Cloudflare does not 307-redirect to /editions/{year}
-      // and the browser stays on /{year}/). Otherwise strip the year prefix.
-      const target = rest === "/" ? "/editions/" + year : rest;
-      const assetUrl = new URL(url.origin + target);
+      // Bare year root -> that year's homepage at public/{year}/index.html
+      // (served at the clean URL /{year}/ with no "editions" indirection).
+      if (rest === "/") {
+        return env.ASSETS.fetch(new Request(url.origin + "/" + year + "/", request));
+      }
+      // Other paths under the year are shared pages: strip the year prefix.
+      const assetUrl = new URL(url.origin + rest);
       assetUrl.search = url.search;
       return env.ASSETS.fetch(new Request(assetUrl.toString(), request));
     }

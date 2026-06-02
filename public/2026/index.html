@@ -24,8 +24,8 @@
         <a href="#competition" data-ja="競技内容" data-en="Competition">競技内容</a>
         <a href="#criteria" data-ja="評価基準" data-en="Criteria">評価基準</a>
         <a href="#sponsors" data-ja="スポンサー" data-en="Sponsors">スポンサー</a>
+        <a href="#gallery" data-ja="作品例" data-en="Gallery">作品例</a>
         <a href="#venue" data-ja="会場" data-en="Venue">会場</a>
-        <a href="/entries/" data-ja="作品一覧" data-en="Entries">作品一覧</a>
         <button class="lang" onclick="toggleLang()" aria-label="Toggle language">JA / EN</button>
         <a class="nav-cta" href="/submit/" data-ja="参加登録" data-en="Register">参加登録</a>
       </div>
@@ -101,6 +101,62 @@
         <li>Workflow Design &amp; Reproducibility</li>
         <li>Technical Creativity</li>
       </ul>
+    </section>
+
+    <style>
+      #gallery .gallery-grid { margin-top: 38px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+      #gallery .vcard { border: 1px solid var(--paper-line); border-radius: 22px; background: #fff; overflow: hidden; box-shadow: 0 22px 70px rgba(17,24,39,.08); display: flex; flex-direction: column; }
+      #gallery .frame { position: relative; aspect-ratio: 16 / 9; background: #0c1320; display: flex; align-items: center; justify-content: center; }
+      #gallery .frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+      #gallery .ph { color: #cfe6ff; text-align: center; font-weight: 800; font-size: 13px; line-height: 1.7; padding: 14px; }
+      #gallery .ph .play { display: block; font-size: 30px; margin-bottom: 6px; opacity: .85; }
+      #gallery .vbody { padding: 18px 18px 20px; }
+      #gallery .vbody h3 { margin: 0 0 6px; font-size: 17px; color: var(--ink); }
+      #gallery .vbody p { margin: 0; font-size: 13.5px; color: var(--ink-muted); line-height: 1.7; }
+      @media (max-width: 1080px) { #gallery .gallery-grid { grid-template-columns: 1fr 1fr; } }
+      @media (max-width: 640px) { #gallery .gallery-grid { grid-template-columns: 1fr; } }
+    </style>
+    <section id="gallery" class="section">
+      <p class="section-kicker">Gallery</p>
+      <h2 data-ja="作品例・デモ動画" data-en="Examples & Demos">作品例・デモ動画</h2>
+      <p data-ja="AIエージェントが制作した動画の例です。コンテストの雰囲気は、ここで少しずつ紹介していきます。" data-en="Examples of videos produced by AI agents. We will introduce the feel of the challenge here over time.">AIエージェントが制作した動画の例です。コンテストの雰囲気は、ここで少しずつ紹介していきます。</p>
+
+      <!--
+        動画の差し替え方:
+        下の <div class="ph">...</div> をまるごと、次の1行に置き換えてください（YouTube の場合）。
+        <iframe src="https://www.youtube.com/embed/動画ID" loading="lazy" allowfullscreen></iframe>
+        Vimeo の場合は src を "https://player.vimeo.com/video/動画ID" にします。
+        h3 のタイトルと p の説明文も、その作品に合わせて書き換えてください。
+      -->
+      <div class="gallery-grid">
+        <article class="vcard">
+          <div class="frame">
+            <div class="ph"><span class="play">▶</span><span data-ja="準備中" data-en="Coming soon">準備中</span></div>
+          </div>
+          <div class="vbody">
+            <h3 data-ja="作品例 1" data-en="Example 1">作品例 1</h3>
+            <p data-ja="ここに作品の説明を書きます（使用AI・ワークフローなど）。" data-en="Add a short description here (AI tools, workflow, etc.).">ここに作品の説明を書きます（使用AI・ワークフローなど）。</p>
+          </div>
+        </article>
+        <article class="vcard">
+          <div class="frame">
+            <div class="ph"><span class="play">▶</span><span data-ja="準備中" data-en="Coming soon">準備中</span></div>
+          </div>
+          <div class="vbody">
+            <h3 data-ja="作品例 2" data-en="Example 2">作品例 2</h3>
+            <p data-ja="ここに作品の説明を書きます（使用AI・ワークフローなど）。" data-en="Add a short description here (AI tools, workflow, etc.).">ここに作品の説明を書きます（使用AI・ワークフローなど）。</p>
+          </div>
+        </article>
+        <article class="vcard">
+          <div class="frame">
+            <div class="ph"><span class="play">▶</span><span data-ja="準備中" data-en="Coming soon">準備中</span></div>
+          </div>
+          <div class="vbody">
+            <h3 data-ja="作品例 3" data-en="Example 3">作品例 3</h3>
+            <p data-ja="ここに作品の説明を書きます（使用AI・ワークフローなど）。" data-en="Add a short description here (AI tools, workflow, etc.).">ここに作品の説明を書きます（使用AI・ワークフローなど）。</p>
+          </div>
+        </article>
+      </div>
     </section>
 
     <section id="about" class="section">

@@ -11,7 +11,7 @@ function ay(path) {
 
 // Rewrite static internal links so navigation stays within the current year.
 function scopeLinks() {
-  const apps = ['/submit/', '/judge/', '/admin/', '/entries/', '/rules/', '/privacy/', '/ai-guidelines/'];
+  const apps = ['/submit/', '/judge/', '/admin/', '/rules/', '/privacy/', '/ai-guidelines/'];
   document.querySelectorAll('a[href^="/"]').forEach((a) => {
     const h = a.getAttribute('href');
     if (/^\/(styles\.css|script\.js|assets\/|favicon)/.test(h)) return;

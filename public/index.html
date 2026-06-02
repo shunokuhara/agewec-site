@@ -6,8 +6,15 @@
   <title>AGEWEC | Agentic Work Execution Challenge</title>
   <link rel="stylesheet" href="/styles.css" />
   <style>
-    .portal-hero { background:#10192b; color:#fff; min-height:60vh; display:flex; flex-direction:column; }
-    .portal-hero .nav { background:rgba(16,25,43,.92); }
+    .portal-hero {
+      color:#fff; min-height:64vh; display:flex; flex-direction:column;
+      background-image:
+        radial-gradient(120% 110% at 42% 45%, rgba(8,13,26,.30) 0%, rgba(8,13,26,.55) 100%),
+        linear-gradient(180deg, rgba(8,13,26,.58) 0%, rgba(8,13,26,.26) 46%, rgba(8,13,26,.92) 100%),
+        url("/assets/agewec-portal-stage.jpg");
+      background-size:cover; background-position:center 35%;
+    }
+    .portal-hero .nav { background:rgba(8,13,26,.55); backdrop-filter:blur(8px); }
     .hero-inner { width:min(1080px, calc(100% - 64px)); margin:auto; padding:64px 0; }
     .hero-inner .kicker { color:#7fd5ff; font-weight:900; letter-spacing:.12em; text-transform:uppercase; font-size:13px; }
     .hero-inner h1 { font-size:clamp(40px,7vw,84px); line-height:1.02; margin:10px 0 14px; background:linear-gradient(120deg,#9d89ff,#dcecff 55%,#fff 85%); -webkit-background-clip:text; background-clip:text; color:transparent; }
@@ -45,7 +52,7 @@
     <div class="hero-inner">
       <p class="kicker">Agentic Work Execution Challenge</p>
       <h1>AGEWEC</h1>
-      <p class="sub" data-ja="生成AIとAIエージェントを活用した、創造的ワークフローの実践と発信の場。" data-en="A venue for practicing and sharing creative workflows powered by generative AI and AI agents.">生成AIとAIエージェントを活用した、創造的ワークフローの実践と発信の場。</p>
+      <p class="sub" data-ja="AIエージェントによる創造的ワークフローの実践と未来を発信する場" data-en="A place where AI agents practice creative workflows and broadcast the future">AIエージェントによる創造的ワークフローの実践と未来を発信する場</p>
     </div>
   </header>
 
@@ -53,8 +60,8 @@
     <section class="sec" id="about">
       <div class="wrap">
         <h2 data-ja="AGEWEC とは" data-en="About AGEWEC">AGEWEC とは</h2>
-        <p class="lead" data-ja="（ここに AGEWEC の概要を記載します。目的・対象・毎年開催する趣旨など。）" data-en="(Write the AGEWEC overview here.)">
-          <span class="todo">要記入</span> ここに AGEWEC の概要を記載します。目的・対象・毎年開催する趣旨など。
+        <p class="lead" data-ja="Agentic Work Execution Challenge（AGEWEC）は、生成AI・AIエージェントを活用したWeb・動画制作等を題材とするコンテスト／企画です。AIによる自律的な業務実行や人間との協調可能性を探ることを目的として、毎年継続的に開催します。" data-en="The Agentic Work Execution Challenge (AGEWEC) is a competition and program themed on web and video production using generative AI and AI agents. Held annually, it explores autonomous task execution by AI and the potential for human–AI collaboration.">
+          Agentic Work Execution Challenge（AGEWEC）は、生成AI・AIエージェントを活用したWeb・動画制作等を題材とするコンテスト／企画です。AIによる自律的な業務実行や人間との協調可能性を探ることを目的として、毎年継続的に開催します。
         </p>
       </div>
     </section>
@@ -84,11 +91,11 @@
         <div class="info-grid">
           <div class="box">
             <h3 data-ja="主催" data-en="Organizer">主催</h3>
-            <p><span class="todo">要記入</span> 主催者名 / 運営体制</p>
+            <p data-ja="AGEWEC 実行委員会（FIT2026 特別イベントとして開催）" data-en="AGEWEC Organizing Committee (held as a FIT2026 special event)">AGEWEC 実行委員会（FIT2026 特別イベントとして開催）</p>
           </div>
           <div class="box">
             <h3 data-ja="問い合わせ" data-en="Contact">問い合わせ</h3>
-            <p><span class="todo">要記入</span> 問い合わせ窓口 / 連絡先</p>
+            <p><span data-ja="お問い合わせ：" data-en="Contact: ">お問い合わせ：</span><a href="mailto:info@agewec.com" style="color:#377dff;font-weight:800;text-decoration:none;">info@agewec.com</a></p>
           </div>
         </div>
       </div>

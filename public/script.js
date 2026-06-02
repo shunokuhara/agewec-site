@@ -22,14 +22,35 @@ function scopeLinks() {
   });
 }
 
-let currentLang = 'ja';
-function toggleLang() {
-  currentLang = currentLang === 'ja' ? 'en' : 'ja';
+// --- Language: persists across pages, auto-defaults to English for non-Japanese visitors ---
+const LANG_KEY = 'agewec_lang';
+
+function detectInitialLang() {
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === 'ja' || saved === 'en') return saved; // explicit user choice wins
+  } catch (e) {}
+  // No saved choice: Japanese browsers see Japanese, everyone else sees English.
+  const nav = (navigator.language || navigator.userLanguage || 'ja').toLowerCase();
+  return nav.indexOf('ja') === 0 ? 'ja' : 'en';
+}
+
+let currentLang = detectInitialLang();
+
+function applyLang(lang) {
+  currentLang = (lang === 'en') ? 'en' : 'ja';
   document.documentElement.lang = currentLang;
   document.querySelectorAll('[data-ja][data-en]').forEach((el) => {
     el.textContent = el.dataset[currentLang];
   });
-  document.body.classList.remove('menu-open');
 }
 
+function toggleLang() {
+  applyLang(currentLang === 'ja' ? 'en' : 'ja');
+  try { localStorage.setItem(LANG_KEY, currentLang); } catch (e) {}
+  if (document.body) document.body.classList.remove('menu-open');
+}
+
+// Apply the remembered / detected language on every page load.
+applyLang(currentLang);
 scopeLinks();

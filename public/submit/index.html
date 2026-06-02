@@ -326,6 +326,8 @@
         ['c_rules','c_rights','c_url','c_license','c_thirdparty','c_privacy','c_pr','c_guardian'].forEach(function (k) {
           data[k] = form.elements[k] && form.elements[k].checked;
         });
+        // language the applicant registered in (drives the confirmation email language)
+        data.lang = (document.documentElement.lang === 'en') ? 'en' : 'ja';
 
         msg(ja ? '送信中…' : 'Submitting…', true);
         try {

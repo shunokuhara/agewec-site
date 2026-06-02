@@ -61,9 +61,103 @@ async function verifyTurnstile(env, token, ip) {
   return !!out.success;
 }
 
-async function sendConfirmationEmail(env, to, title) {
-  // TODO: integrate an email provider (Resend/SendGrid/Postmark) via secret.
-  return;
+async function sendConfirmationEmail(env, s, id, lang) {
+  // Sends a confirmation via Resend in the language the applicant registered in
+  // ("ja" or "en"), echoing back the submitted content.
+  // Silently skips if no API key (so submissions still work before setup),
+  // and never throws (a failed email must not break a saved submission).
+  const to = s && s.email;
+  if (!env.RESEND_API_KEY || !to) return;
+  const L = (lang === "en") ? "en" : "ja";
+  const esc = (v) => String(v == null ? "" : v)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+  const from = env.FROM_EMAIL || "AGEWEC <no-reply@agewec.com>";
+  const eid = String(id || "");
+
+  // [key, ja label, en label]; empty values are skipped. Order is display order.
+  const fields = [
+    ["title",          "作品タイトル",         "Title"],
+    ["author",         "応募者名",             "Name"],
+    ["email",          "メールアドレス",       "Email"],
+    ["affiliation",    "所属",                 "Affiliation"],
+    ["country",        "国・地域",             "Country"],
+    ["video_url",      "動画URL",              "Video URL"],
+    ["ai_tools",       "使用AIツール",         "AI tools used"],
+    ["assets",         "使用素材",             "Assets"],
+    ["workflow",       "ワークフロー説明",     "Workflow"],
+    ["screenshot_url", "スクリーンショットURL", "Screenshot URL"],
+    ["repo_url",       "リポジトリURL",        "Repository URL"],
+    ["sns",            "SNS",                  "SNS"],
+    ["license_category","ライセンス区分",      "License"],
+    ["description",    "作品説明",             "Description"],
+    ["local_env",      "ローカル実行環境",     "Local environment"],
+  ];
+  const rows = fields
+    .map(([k, ja, en]) => ({ label: (L === "en" ? en : ja), v: String((s && s[k]) == null ? "" : s[k]).trim() }))
+    .filter((r) => r.v !== "");
+
+  const COPY = {
+    ja: {
+      subject: "【AGEWEC 2026】応募を受け付けました",
+      intro: "AGEWEC 2026 への応募ありがとうございます。下記の内容で応募を受け付けました。",
+      idLabel: "受付ID", sep: "：", notePrefix: "※",
+      notes: [
+        "このメールは送信専用アドレスから自動送信されています。このメールに返信されても運営には届かず、確認できません。",
+        "登録内容に誤りがある場合は、応募フォームに記載の連絡先までご連絡ください。",
+        "審査・受賞期間中は、提出した動画の共有リンク／URLが閲覧可能な状態を維持してください。",
+      ],
+    },
+    en: {
+      subject: "[AGEWEC 2026] Your entry was received",
+      intro: "Thank you for your entry to AGEWEC 2026. We have received your submission with the following details.",
+      idLabel: "Entry ID", sep: ": ", notePrefix: "",
+      notes: [
+        "This is an automated message from a send-only address. Replies to this email are not delivered to us and cannot be received.",
+        "If any detail above is incorrect, please contact us via the address listed on the entry form.",
+        "Please keep your video share link / URL accessible throughout judging and the award period.",
+      ],
+    },
+  }[L];
+
+  const subject = COPY.subject;
+
+  const textRows = rows.map((r) => "  " + r.label + COPY.sep + r.v).join("\n");
+  const textNotes = COPY.notes.map((n) => COPY.notePrefix + n).join("\n");
+  const text =
+    COPY.intro + "\n\n" +
+    "  " + COPY.idLabel + COPY.sep + eid + "\n" +
+    textRows + "\n\n" +
+    textNotes + "\n";
+
+  const htmlRows = rows.map((r) =>
+    '<tr>' +
+    '<td style="padding:5px 14px 5px 0;color:#6b7280;white-space:nowrap;vertical-align:top">' + esc(r.label) + '</td>' +
+    '<td style="padding:5px 0;color:#1f2937;word-break:break-word"><b>' + esc(r.v) + '</b></td>' +
+    '</tr>'
+  ).join("");
+  const htmlNotes = COPY.notes.map((n) => esc(COPY.notePrefix + n)).join("<br>");
+  const html =
+    '<div style="font-family:sans-serif;line-height:1.7;color:#1f2937">' +
+    '<h2 style="margin:0 0 12px">AGEWEC 2026</h2>' +
+    '<p>' + esc(COPY.intro) + '</p>' +
+    '<p style="margin:8px 0"><span style="color:#6b7280">' + esc(COPY.idLabel + COPY.sep) + '</span><b>' + esc(eid) + '</b></p>' +
+    '<table style="border-collapse:collapse;font-size:14px;margin:8px 0">' + htmlRows + '</table>' +
+    '<hr style="border:none;border-top:1px solid #e5e7eb;margin:18px 0">' +
+    '<p style="color:#6b7280;font-size:13px">' + htmlNotes + '</p>' +
+    '</div>';
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + env.RESEND_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ from, to, subject, text, html }),
+    });
+  } catch (e) {
+    // swallow: the submission is already saved; email is best-effort
+  }
 }
 
 // ---------- API handlers (operate on a per-year `db`) ----------
@@ -113,7 +207,8 @@ async function handleSubmit(db, env, request) {
     FORM_VERSION, RULES_VERSION, PRIVACY_VERSION
   ).run();
 
-  await sendConfirmationEmail(env, s.email, s.title);
+  const lang = (data.lang === "en") ? "en" : "ja";
+  try { await sendConfirmationEmail(env, s, id, lang); } catch (e) { /* best-effort */ }
   return json({ ok: true, id });
 }
 

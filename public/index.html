@@ -6,15 +6,15 @@
   <title>AGEWEC | Agentic Work Execution Challenge</title>
   <link rel="stylesheet" href="/styles.css" />
   <style>
-    .portal-hero { background:#10192b; color:#fff; min-height:62vh; display:flex; flex-direction:column; }
+    .portal-hero { background:#10192b; color:#fff; min-height:60vh; display:flex; flex-direction:column; }
     .portal-hero .nav { background:rgba(16,25,43,.92); }
-    .hero-inner { width:min(1080px, calc(100% - 64px)); margin:auto; padding:70px 0; }
+    .hero-inner { width:min(1080px, calc(100% - 64px)); margin:auto; padding:64px 0; }
     .hero-inner .kicker { color:#7fd5ff; font-weight:900; letter-spacing:.12em; text-transform:uppercase; font-size:13px; }
     .hero-inner h1 { font-size:clamp(40px,7vw,84px); line-height:1.02; margin:10px 0 14px; background:linear-gradient(120deg,#9d89ff,#dcecff 55%,#fff 85%); -webkit-background-clip:text; background-clip:text; color:transparent; }
     .hero-inner .sub { font-size:clamp(16px,2.2vw,22px); color:rgba(255,255,255,.82); max-width:680px; }
     main.portal { color:var(--ink); background:linear-gradient(180deg,#fff,#f8faff); }
     .wrap { width:min(1080px, calc(100% - 64px)); margin:0 auto; }
-    .sec { padding:60px 0; }
+    .sec { padding:56px 0; }
     .sec h2 { font-size:26px; color:var(--ink); margin:0 0 8px; }
     .sec p.lead { color:var(--ink-muted); max-width:680px; margin:0 0 26px; }
     .todo { background:#fff7e6; border:1px solid #ffe0a3; border-radius:8px; padding:2px 8px; font-size:13px; font-weight:800; color:#9a6b00; }
@@ -24,7 +24,6 @@
     .ed-card .yr { font-size:34px; font-weight:900; color:var(--ink); }
     .ed-card .meta { color:var(--ink-muted); font-weight:800; margin-top:4px; font-size:14px; }
     .ed-card .go { display:inline-block; margin-top:14px; color:#377dff; font-weight:900; }
-    .ed-card.upcoming { opacity:.55; pointer-events:none; }
     .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
     .info-grid .box { border:1px solid var(--paper-line); border-radius:16px; background:#fff; padding:22px 24px; }
     .info-grid .box h3 { margin:0 0 6px; font-size:16px; color:var(--ink); }
@@ -54,7 +53,7 @@
     <section class="sec" id="about">
       <div class="wrap">
         <h2 data-ja="AGEWEC とは" data-en="About AGEWEC">AGEWEC とは</h2>
-        <p class="lead" data-ja="（ここに AGEWEC の概要を記載します。目的・対象・毎年開催する趣旨など。）" data-en="(Write the AGEWEC overview here: purpose, audience, and the intent to hold it annually.)">
+        <p class="lead" data-ja="（ここに AGEWEC の概要を記載します。目的・対象・毎年開催する趣旨など。）" data-en="(Write the AGEWEC overview here.)">
           <span class="todo">要記入</span> ここに AGEWEC の概要を記載します。目的・対象・毎年開催する趣旨など。
         </p>
       </div>
@@ -70,10 +69,11 @@
             <div class="meta" data-ja="FIT2026 併設 ／ 北九州 ／ 2026年9月" data-en="with FIT2026 / Kitakyushu / Sept 2026">FIT2026 併設 ／ 北九州 ／ 2026年9月</div>
             <span class="go" data-ja="2026年版を見る →" data-en="View 2026 →">2026年版を見る →</span>
           </a>
-          <div class="ed-card upcoming">
+          <a class="ed-card" href="/2027/">
             <div class="yr">2027</div>
-            <div class="meta" data-ja="準備中" data-en="Coming soon">準備中</div>
-          </div>
+            <div class="meta" data-ja="準備中（詳細は調整中）" data-en="In preparation">準備中（詳細は調整中）</div>
+            <span class="go" data-ja="2027年版を見る →" data-en="View 2027 →">2027年版を見る →</span>
+          </a>
         </div>
       </div>
     </section>

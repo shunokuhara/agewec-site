@@ -92,9 +92,18 @@ async function sendConfirmationEmail(env, s, id, lang) {
     ["license_category","ライセンス区分",      "License"],
     ["description",    "作品説明",             "Description"],
     ["local_env",      "ローカル実行環境",     "Local environment"],
+    ["attend",         "参加形態",             "Attendance"],
   ];
+  const attendText = (v) =>
+    v === "onsite" ? (L === "en" ? "Attend in person" : "現地参加を希望")
+    : v === "online" ? (L === "en" ? "Attend online" : "オンライン参加を希望")
+    : "";
   const rows = fields
-    .map(([k, ja, en]) => ({ label: (L === "en" ? en : ja), v: String((s && s[k]) == null ? "" : s[k]).trim() }))
+    .map(([k, ja, en]) => {
+      let v = String((s && s[k]) == null ? "" : s[k]).trim();
+      if (k === "attend") v = attendText(v);
+      return { label: (L === "en" ? en : ja), v };
+    })
     .filter((r) => r.v !== "");
 
   const COPY = {
@@ -180,6 +189,7 @@ async function handleSubmit(db, env, request) {
     license_category: pick("license", "license_category"),
     description: pick("description"), repo_url: pick("repo", "repo_url"),
     sns: pick("sns"), local_env: pick("localenv", "local_env"),
+    attend: pick("attend"),
   };
   for (const f of REQUIRED_TEXT) if (!s[f] || String(s[f]).trim() === "") return json({ error: "missing:" + f }, 400);
   for (const c of REQUIRED_CONSENT) if (!data[c]) return json({ error: "consent:" + c }, 400);
@@ -194,17 +204,17 @@ async function handleSubmit(db, env, request) {
        video_url, ai_tools, assets, workflow, screenshot_url, license_category,
        description, repo_url, sns, local_env,
        c_rules, c_rights, c_url, c_license, c_thirdparty, c_privacy, c_pr, c_guardian,
-       form_version, rules_version, privacy_version, status)
+       form_version, rules_version, privacy_version, attend, status)
      VALUES
       (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,
-       ?18,?19,?20,?21,?22,?23,?24,?25,?26,?27,?28,'received')`
+       ?18,?19,?20,?21,?22,?23,?24,?25,?26,?27,?28,?29,'received')`
   ).bind(
     id, now, s.title, s.author, s.email, s.affiliation, s.country,
     s.video_url, s.ai_tools, s.assets, s.workflow, s.screenshot_url, s.license_category,
     s.description, s.repo_url, s.sns, s.local_env,
     b(data.c_rules), b(data.c_rights), b(data.c_url), b(data.c_license), b(data.c_thirdparty),
     b(data.c_privacy), b(data.c_pr), b(data.c_guardian),
-    FORM_VERSION, RULES_VERSION, PRIVACY_VERSION
+    FORM_VERSION, RULES_VERSION, PRIVACY_VERSION, s.attend
   ).run();
 
   const lang = (data.lang === "en") ? "en" : "ja";
@@ -303,7 +313,7 @@ async function handleAdminExport(db) {
   const grouped = {};
   for (const s of scores) (grouped[s.submission_id] = grouped[s.submission_id] || []).push(s);
   const cols = ["id","created_at","title","author","email","affiliation","country","video_url","ai_tools",
-    "license_category","workflow","screenshot_url","c_rules","c_rights","c_url","c_license","c_thirdparty",
+    "license_category","workflow","screenshot_url","attend","c_rules","c_rights","c_url","c_license","c_thirdparty",
     "c_privacy","c_pr","c_guardian","status","is_public","finalist","award","incomplete","disqualified","judge_count","avg_total"];
   const lines = [cols.join(",")];
   for (const s of subs) {

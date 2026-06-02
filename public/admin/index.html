@@ -98,7 +98,7 @@
         tr.innerHTML =
           '<td><div class="small">'+esc(s.id)+'</div>'+esc((s.created_at||'').slice(0,16).replace('T',' '))+'</td>'+
           '<td><b>'+esc(s.title)+'</b><div class="small">'+esc(s.author)+(s.affiliation?(' / '+esc(s.affiliation)):'')+' · '+esc(s.country)+'</div></td>'+
-          '<td class="small">'+esc(s.email)+'</td>'+
+          '<td class="small">'+esc(s.email)+(s.attend?('<div class="small">'+(s.attend==='onsite'?'現地希望':s.attend==='online'?'オンライン希望':esc(s.attend))+'</div>'):'')+'</td>'+
           '<td><a href="'+esc(s.video_url)+'" target="_blank" rel="noopener">動画</a><div class="small">'+esc(s.license_category||'')+'</div><div class="small">'+esc((s.ai_tools||'').slice(0,40))+'</div></td>'+
           '<td>'+consentBadges(s)+'</td>'+
           '<td>'+sc+'</td>'+

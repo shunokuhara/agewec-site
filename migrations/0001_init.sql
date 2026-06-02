@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS submissions (
   repo_url        TEXT,
   sns             TEXT,
   local_env       TEXT,
+  attend          TEXT,                          -- onsite | online | '' (optional)
 
   -- consent flags (0/1)
   c_rules         INTEGER DEFAULT 0,

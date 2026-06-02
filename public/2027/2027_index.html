@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AGEWEC 2027 in 伊勢志摩 | AIと創る伊勢の魅力</title>
+  <meta name="description" content="AGEWEC 2027 (Ise-Shima): a public project to express the charm of Ise-Shima in short tourism videos created with AI agents. In cooperation with KICSS 2027." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/theme-2027.css" />
+</head>
+<body>
+  <header class="hero" id="home">
+    <nav class="nav">
+      <a href="#home" class="brand" aria-label="AGEWEC 2027 Home">
+        <div class="brand-main">AGEWEC 2027</div>
+        <div class="brand-sub" data-ja="in 伊勢志摩" data-en="in Ise-Shima">in 伊勢志摩</div>
+      </a>
+
+      <button class="menu-button" aria-label="Menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+
+      <div class="navlinks">
+        <a href="#theme" data-ja="テーマ" data-en="Theme">テーマ</a>
+        <a href="#competition" data-ja="募集内容" data-en="What to make">募集内容</a>
+        <a href="#why" data-ja="なぜ伊勢志摩" data-en="Why Ise-Shima">なぜ伊勢志摩</a>
+        <a href="#judging" data-ja="審査・表彰" data-en="Judging & Awards">審査・表彰</a>
+        <a href="#partners" data-ja="共催・連携" data-en="Partners">共催・連携</a>
+        <button class="lang" onclick="toggleLang()" aria-label="Toggle language">JA / EN</button>
+        <a class="nav-cta" href="mailto:info@agewec.com" data-ja="問い合わせ" data-en="Contact">問い合わせ</a>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <h1>AGEWEC 2027</h1>
+      <p class="subtitle"><span data-ja="in 伊勢志摩" data-en="in Ise-Shima">in 伊勢志摩</span></p>
+      <p class="eyebrow" data-ja="KICSS 2027 連携企画" data-en="In cooperation with KICSS 2027">KICSS 2027 連携企画</p>
+
+      <div class="headline">
+        <span data-ja="AIエージェントと創る" data-en="Created with AI agents">AIエージェントと創る</span><br />
+        <span data-ja="新しい伊勢の魅力" data-en="the new charm of Ise">新しい伊勢の魅力</span>
+      </div>
+      <p class="description" data-ja="AIエージェント・生成AIを活用して、伊勢志摩の魅力を15秒ほどの観光PR動画にする公募企画です。学生を中心に、どなたでも参加できます。" data-en="A public project that uses AI agents and generative AI to turn the appeal of Ise-Shima into tourism PR videos of about 15 seconds. Open to everyone, with students at the center.">
+        AIエージェント・生成AIを活用して、伊勢志摩の魅力を15秒ほどの観光PR動画にする公募企画です。学生を中心に、どなたでも参加できます。
+      </p>
+
+      <div class="buttons">
+        <a class="btn primary" href="mailto:info@agewec.com"><span data-ja="問い合わせ" data-en="Contact Us">問い合わせ</span> <span>→</span></a>
+        <a class="btn secondary" href="#theme"><span data-ja="企画を見る" data-en="See the concept">企画を見る</span> <span>→</span></a>
+      </div>
+    </div>
+
+    <div class="meta">
+      <div class="meta-inner">
+        <div class="meta-item"><span class="icon">⌖</span><span data-ja="開催地：伊勢志摩" data-en="Ise-Shima, Japan">開催地：伊勢志摩</span></div>
+        <div class="meta-item"><span class="icon">✦</span><span data-ja="KICSS 2027 連携" data-en="with KICSS 2027">KICSS 2027 連携</span></div>
+        <div class="meta-item"><span class="icon">◎</span><span data-ja="日本語・英語対応" data-en="Japanese / English">日本語・英語対応</span></div>
+        <div class="meta-item"><span class="icon">▣</span><span data-ja="日程・詳細は調整中" data-en="Dates & details TBD">日程・詳細は調整中</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="theme" class="section">
+      <p class="section-kicker">Theme 2027</p>
+      <h2 data-ja="AIエージェントと創る、新しい伊勢の魅力" data-en="The new charm of Ise, created with AI agents">AIエージェントと創る、新しい伊勢の魅力</h2>
+      <p data-ja="AGEWEC 2027 は、伊勢志摩の文化・景観・食・祈りを、AIで新しい見せ方に変える公募企画です。映像の完成度だけでなく、AIをどう使い、伊勢の魅力をどう物語にしたかを大切にします。" data-en="AGEWEC 2027 is a public project that uses AI to give the culture, landscapes, food, and faith of Ise-Shima fresh forms of expression. It values not only polish, but how you use AI and how you turn the appeal of Ise into a story.">
+        AGEWEC 2027 は、伊勢志摩の文化・景観・食・祈りを、AIで新しい見せ方に変える公募企画です。映像の完成度だけでなく、AIをどう使い、伊勢の魅力をどう物語にしたかを大切にします。
+      </p>
+    </section>
+
+    <section id="competition" class="section compact">
+      <p class="section-kicker">What to make</p>
+      <h2 data-ja="15秒の観光PR動画を、AIで。" data-en="A 15-second tourism PR video, made with AI.">15秒の観光PR動画を、AIで。</h2>
+      <div class="cards">
+        <article class="card">
+          <h3 data-ja="つくるもの" data-en="The work">つくるもの</h3>
+          <p data-ja="伊勢志摩の魅力を伝える15秒程度の観光PR動画。AIエージェント・生成AI・AI支援ツールは自由に活用できます。" data-en="A tourism PR video of about 15 seconds that conveys the appeal of Ise-Shima. You may freely use AI agents, generative AI, and AI-assisted tools.">伊勢志摩の魅力を伝える15秒程度の観光PR動画。AIエージェント・生成AI・AI支援ツールは自由に活用できます。</p>
+        </article>
+        <article class="card">
+          <h3 data-ja="対象" data-en="Who can join">対象</h3>
+          <p data-ja="学生を中心に、どなたでも応募できます。テーマや写真等の素材は、運営側から提供する予定です。" data-en="Open to everyone, with students at the center. Themes and materials such as photos are planned to be provided by the organizers.">学生を中心に、どなたでも応募できます。テーマや写真等の素材は、運営側から提供する予定です。</p>
+        </article>
+        <article class="card">
+          <h3 data-ja="提出するもの" data-en="What to submit">提出するもの</h3>
+          <p data-ja="完成動画に加えて、使用したAIツールとワークフロー説明を提出します。応募作品の活用条件（著作権の扱い等）は、別途定める応募要項でご案内します。" data-en="The finished video, plus the AI tools used and a workflow description. Conditions for using submitted works (including how copyright is handled) will be provided in separate entry guidelines.">完成動画に加えて、使用したAIツールとワークフロー説明を提出します。応募作品の活用条件（著作権の扱い等）は、別途定める応募要項でご案内します。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="why" class="section split">
+      <div>
+        <p class="section-kicker">Why Ise-Shima?</p>
+        <h2 data-ja="祈りと海と、新しい表現が出会う場所。" data-en="Where prayer, the sea, and new expression meet.">祈りと海と、新しい表現が出会う場所。</h2>
+        <p data-ja="古くから受け継がれてきた伊勢志摩には、AIで物語化したくなる題材が幾重にも重なっています。" data-en="Ise-Shima, carried down through the ages, holds layer upon layer of subjects you will want to turn into stories with AI.">古くから受け継がれてきた伊勢志摩には、AIで物語化したくなる題材が幾重にも重なっています。</p>
+      </div>
+      <ul class="criteria-list">
+        <li data-ja="伊勢神宮と神宮の森" data-en="Ise Jingu and its sacred forest">伊勢神宮と神宮の森</li>
+        <li data-ja="おかげ横丁" data-en="Okage Yokocho">おかげ横丁</li>
+        <li data-ja="二見浦の夫婦岩" data-en="The Wedded Rocks of Futamiura">二見浦の夫婦岩</li>
+        <li data-ja="英虞湾と真珠" data-en="Ago Bay and pearls">英虞湾と真珠</li>
+        <li data-ja="海女文化と海の幸" data-en="Ama divers and the bounty of the sea">海女文化と海の幸</li>
+        <li data-ja="伊勢志摩国立公園" data-en="Ise-Shima National Park">伊勢志摩国立公園</li>
+      </ul>
+    </section>
+
+    <section id="judging" class="section">
+      <p class="section-kicker">Judging & Awards</p>
+      <h2 data-ja="観光訴求と、AIの使い方を評価。" data-en="Evaluating tourism appeal and how AI is used.">観光訴求と、AIの使い方を評価。</h2>
+      <p data-ja="選定委員会（伊勢志摩観光コンベンション機構、各市町観光協会 等）による選定を行い、会長賞 等の表彰（1〜3位）を予定しています。賞の詳細は調整中です。15秒で伝わるか、人が伊勢志摩へ行きたくなるか、そしてAIをどう活用したかを重視します。" data-en="A selection committee (the Ise-Shima Tourism and Convention Organization, local city and town tourism associations, and others) will make the selection, with awards such as a Chair's Award (1st–3rd) planned. Award details are being finalized. We focus on whether it lands in 15 seconds, whether it makes people want to visit Ise-Shima, and how AI was used.">
+        選定委員会（伊勢志摩観光コンベンション機構、各市町観光協会 等）による選定を行い、会長賞 等の表彰（1〜3位）を予定しています。賞の詳細は調整中です。15秒で伝わるか、人が伊勢志摩へ行きたくなるか、そしてAIをどう活用したかを重視します。
+      </p>
+    </section>
+
+    <section id="partners" class="section sponsor-panel">
+      <p class="section-kicker">Partners</p>
+      <h2 data-ja="伊勢志摩と連携して準備しています。" data-en="Prepared in cooperation with Ise-Shima.">伊勢志摩と連携して準備しています。</h2>
+      <p data-ja="本企画は、KICSS 2027（伊勢志摩開催）と連携し、公益社団法人 伊勢志摩観光コンベンション機構との協働で準備を進めています。テーマ設定や写真等の素材提供にご協力いただく予定です。連携内容・実施形態は調整中です。" data-en="This project is being prepared in cooperation with KICSS 2027 (held in Ise-Shima) and in collaboration with the Ise-Shima Tourism and Convention Organization, which plans to help with theme setting and providing materials such as photos. The scope and format of the cooperation are being finalized.">
+        本企画は、KICSS 2027（伊勢志摩開催）と連携し、公益社団法人 伊勢志摩観光コンベンション機構との協働で準備を進めています。テーマ設定や写真等の素材提供にご協力いただく予定です。連携内容・実施形態は調整中です。
+      </p>
+      <a class="btn primary" href="mailto:info@agewec.com"><span data-ja="問い合わせる" data-en="Contact Us">問い合わせる</span> <span>→</span></a>
+    </section>
+  </main>
+
+  <footer>
+    <strong>AGEWEC 2027 in 伊勢志摩</strong><br />
+    <span data-ja="AIエージェントと創る、新しい伊勢の魅力" data-en="The new charm of Ise, created with AI agents">AIエージェントと創る、新しい伊勢の魅力</span>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>

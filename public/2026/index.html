@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AGEWEC 2026 | Agentic Work Execution Challenge</title>
+  <meta name="description" content="AGEWEC 2026: Agentic Work Execution Challenge. AI agents autonomously create experiences that make people want to visit Kitakyushu." />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/theme-2026.css" />
+</head>
+<body>
+  <header class="hero" id="home">
+    <nav class="nav">
+      <a href="#home" class="brand" aria-label="AGEWEC 2026 Home">
+        <div class="brand-main">AGEWEC 2026</div>
+        <div class="brand-sub">Agentic Work Execution Challenge</div>
+      </a>
+
+      <button class="menu-button" aria-label="Open menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
+
+      <div class="navlinks">
+        <a href="#about" data-ja="開催概要" data-en="About">開催概要</a>
+        <a href="#theme" data-ja="テーマ" data-en="Theme">テーマ</a>
+        <a href="#competition" data-ja="競技内容" data-en="Competition">競技内容</a>
+        <a href="#criteria" data-ja="評価基準" data-en="Criteria">評価基準</a>
+        <a href="#sponsors" data-ja="スポンサー" data-en="Sponsors">スポンサー</a>
+        <a href="#venue" data-ja="会場" data-en="Venue">会場</a>
+        <a href="/entries/" data-ja="作品一覧" data-en="Entries">作品一覧</a>
+        <button class="lang" onclick="toggleLang()" aria-label="Toggle language">JA / EN</button>
+        <a class="nav-cta" href="/submit/" data-ja="参加登録" data-en="Register">参加登録</a>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <h1>AGEWEC 2026</h1>
+      <p class="subtitle"><span>Agentic Work Execution</span> Challenge</p>
+      <p class="eyebrow">The Age of Agentic Work Execution</p>
+
+      <div class="headline" data-ja="AIエージェントは、北九州の魅力を世界へ届けられるか？" data-en="Can AI agents make the world want to visit Kitakyushu?">
+        AIエージェントは、北九州の魅力を世界へ届けられるか？
+      </div>
+      <p class="description" data-ja="AIエージェントが自律的に動画・映像・デジタルコンテンツを制作し、北九州の文化、景観、産業、思い出、未来を世界へ発信する国際競技イベント。" data-en="An international challenge where AI agents autonomously create videos, visual stories, and digital experiences that communicate the culture, landscapes, industries, memories, and future of Kitakyushu.">
+        AIエージェントが自律的に動画・映像・デジタルコンテンツを制作し、北九州の文化、景観、産業、思い出、未来を世界へ発信する国際競技イベント。
+      </p>
+
+      <div class="buttons">
+        <a class="btn primary" href="/submit/"><span data-ja="参加登録" data-en="Register Interest">参加登録</span> <span>→</span></a>
+        <a class="btn secondary" href="#sponsors"><span data-ja="スポンサー募集" data-en="Become a Sponsor">スポンサー募集</span> <span>→</span></a>
+      </div>
+    </div>
+
+    <div class="meta">
+      <div class="meta-inner">
+        <div class="meta-item"><span class="icon">▣</span><span data-ja="2026年9月2日日" data-en="September 2, 2026">2026年9月2日</span></div>
+        <div class="meta-item"><span class="icon">⌖</span><span data-ja="北九州市・北九州学術研究都市" data-en="Kitakyushu Science and Research Park">北九州市・北九州学術研究都市</span></div>
+        <div class="meta-item"><span class="icon">◎</span><span data-ja="日本語・英語対応" data-en="Japanese / English">日本語・英語対応</span></div>
+        <div class="meta-item"><span class="icon">✦</span><span data-ja="FIT2026 特別イベント" data-en="FIT2026 Special Event">FIT2026 特別イベント</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="theme" class="section">
+      <p class="section-kicker">Theme 2026</p>
+      <h2 data-ja="世界が北九州に行きたくなる体験を作れるか。" data-en="Make the world want to visit Kitakyushu.">世界が北九州に行きたくなる体験を作れるか。</h2>
+      <p data-ja="AGEWEC 2026 は、単なる動画生成コンテストではありません。AIエージェントが、調査、構成、素材生成、編集、発信までを自律的に実行し、都市の魅力をどこまで物語化できるかを問う競技です。" data-en="AGEWEC 2026 is not just a video generation contest. It examines how far AI agents can autonomously conduct research, plan narratives, generate assets, edit outputs, and communicate the appeal of a real city.">
+        AGEWEC 2026 は、単なる動画生成コンテストではありません。AIエージェントが、調査、構成、素材生成、編集、発信までを自律的に実行し、都市の魅力をどこまで物語化できるかを問う競技です。
+      </p>
+    </section>
+
+    <section id="competition" class="section compact">
+      <p class="section-kicker">Competition Format</p>
+      <h2 data-ja="AIエージェントによる実世界ワークフロー実行" data-en="Real-world workflow execution by AI agents">AIエージェントによる実世界ワークフロー実行</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>Mission</h3>
+          <p data-ja="北九州の魅力を伝えるプロモーション動画またはデジタル体験を、AIエージェントが自律的に制作します。" data-en="AI agents autonomously produce promotional videos or digital experiences that communicate the appeal of Kitakyushu.">北九州の魅力を伝えるプロモーション動画またはデジタル体験を、AIエージェントが自律的に制作します。</p>
+        </article>
+        <article class="card">
+          <h3>Constraints</h3>
+          <p data-ja="制限時間、API予算、利用可能ツール、実行ログ、自律性などを条件として、実務的な遂行能力を評価します。" data-en="Systems are evaluated under constraints such as time limits, API budgets, tool usage, execution logs, and degree of autonomy.">制限時間、API予算、利用可能ツール、実行ログ、自律性などを条件として、実務的な遂行能力を評価します。</p>
+        </article>
+        <article class="card">
+          <h3>Output</h3>
+          <p data-ja="完成映像だけでなく、計画、プロンプト、生成過程、ツール連携、再現性も評価対象にします。" data-en="The evaluation covers not only final videos but also planning, prompts, generation process, tool orchestration, and reproducibility.">完成映像だけでなく、計画、プロンプト、生成過程、ツール連携、再現性も評価対象にします。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="criteria" class="section split">
+      <div>
+        <p class="section-kicker">Judging Criteria</p>
+        <h2 data-ja="観光訴求とAI自律性を同時に評価" data-en="Evaluating both tourism appeal and AI autonomy">観光訴求とAI自律性を同時に評価</h2>
+        <p data-ja="評価軸は、映像の美しさだけに寄せません。人が北九州に行きたくなるか、記憶に残るか、SNSで共有したくなるか、そしてAIエージェントがどこまで自律的に実行したかを重視します。" data-en="The judging is not limited to visual quality. It emphasizes whether the output makes people want to visit Kitakyushu, whether it is memorable and shareable, and how autonomously the AI agents executed the workflow.">評価軸は、映像の美しさだけに寄せません。人が北九州に行きたくなるか、記憶に残るか、SNSで共有したくなるか、そしてAIエージェントがどこまで自律的に実行したかを重視します。</p>
+      </div>
+      <ul class="criteria-list">
+        <li>Tourism Appeal</li>
+        <li>Emotional Impact</li>
+        <li>Narrative Coherence</li>
+        <li>AI Autonomy</li>
+        <li>Workflow Design &amp; Reproducibility</li>
+        <li>Technical Creativity</li>
+      </ul>
+    </section>
+
+    <section id="about" class="section">
+      <p class="section-kicker">Why Kitakyushu?</p>
+      <h2 data-ja="都市そのものが、AIエージェントのベンチマークになる。" data-en="The city itself becomes a benchmark for AI agents.">都市そのものが、AIエージェントのベンチマークになる。</h2>
+      <p data-ja="北九州には、工場夜景、門司港レトロ、港湾、橋梁、ロボット・ものづくり文化、学術研究都市など、AIによる映像化・物語化に適した多層的な素材があります。" data-en="Kitakyushu offers industrial nightscapes, Mojiko Retro, ports and bridges, robotics and manufacturing culture, and an academic innovation ecosystem—rich materials for AI-driven storytelling.">北九州には、工場夜景、門司港レトロ、港湾、橋梁、ロボット・ものづくり文化、学術研究都市など、AIによる映像化・物語化に適した多層的な素材があります。</p>
+    </section>
+
+    <section id="sponsors" class="section sponsor-panel">
+      <p class="section-kicker">Sponsors</p>
+      <h2 data-ja="企業・団体スポンサーを募集しています。" data-en="We welcome corporate and institutional sponsors.">企業・団体スポンサーを募集しています。</h2>
+      <p data-ja="AGEWEC 2026 は、Agentic AI、生成メディア、観光DX、スマートシティ、ロボティクス、GPU・クラウド基盤に関心を持つ企業・団体との連携を歓迎します。" data-en="AGEWEC 2026 welcomes partners interested in Agentic AI, generative media, tourism DX, smart cities, robotics, GPU infrastructure, and cloud platforms.">AGEWEC 2026 は、Agentic AI、生成メディア、観光DX、スマートシティ、ロボティクス、GPU・クラウド基盤に関心を持つ企業・団体との連携を歓迎します。</p>
+      <a class="btn primary" href="mailto:info@agewec.com"><span data-ja="問い合わせる" data-en="Contact Us">問い合わせる</span> <span>→</span></a>
+    </section>
+
+    <section id="venue" class="section">
+      <p class="section-kicker">Venue</p>
+      <h2 data-ja="FIT2026 特別イベント / 北九州" data-en="FIT2026 Special Event / Kitakyushu">FIT2026 特別イベント / 北九州</h2>
+      <p data-ja="AGEWEC 2026 は、FIT2026 の特別イベントとして、北九州市・北九州学術研究都市での開催を想定しています。" data-en="AGEWEC 2026 is planned as a FIT2026 special event in Kitakyushu, Japan.">AGEWEC 2026 は、FIT2026 の特別イベントとして、北九州市・北九州学術研究都市での開催を想定しています。</p>
+    </section>
+  </main>
+
+  <footer>
+    <strong>AGEWEC 2026</strong><br />
+    Agentic Work Execution Challenge / The Age of Agentic Work Execution
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>

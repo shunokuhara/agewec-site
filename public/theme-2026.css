@@ -1,0 +1,9 @@
+/* AGEWEC 2026 — Kitakyushu theme (navy + night-view hero) */
+.hero {
+  background-image:
+    linear-gradient(90deg, rgba(31,48,71,.88) 0%, rgba(31,48,71,.68) 34%, rgba(31,48,71,.28) 68%, rgba(31,48,71,.10) 100%),
+    linear-gradient(180deg, rgba(31,48,71,.22) 0%, rgba(31,48,71,.18) 54%, rgba(31,48,71,.92) 100%),
+    url("/assets/kitakyushu-sarakura-night.jpg");
+  background-size: cover;
+  background-position: center 43%;
+}

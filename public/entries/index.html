@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>作品一覧 | AGEWEC 2026</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .panel-hero { background:#1f3047; color:#fff; padding-bottom:30px; }
+    .panel-hero .nav { background:rgba(31,48,71,.92); }
+    .ehead { width:min(1180px, calc(100% - 80px)); margin:0 auto; padding-top:48px; }
+    .ehead h1 { font-size:clamp(34px,5vw,56px); margin:6px 0 10px; background:linear-gradient(120deg,#9d89ff,#dcecff 55%,#fff 85%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .ehead p { color:rgba(255,255,255,.85); max-width:640px; }
+    main.entries { color:var(--ink); background:linear-gradient(180deg,#fff,#f8faff); min-height:60vh; padding:50px 0 90px; }
+    .grid { width:min(1180px, calc(100% - 80px)); margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+    .ecard { border:1px solid var(--paper-line); border-radius:20px; background:#fff; overflow:hidden; box-shadow:0 18px 60px rgba(17,24,39,.07); display:flex; flex-direction:column; }
+    .ecard .frame { aspect-ratio:16/9; background:#0c1320; }
+    .ecard .frame iframe, .ecard .frame a { width:100%; height:100%; display:block; }
+    .ecard .frame a { display:flex; align-items:center; justify-content:center; color:#cfe6ff; font-weight:800; }
+    .ecard .body { padding:18px 18px 20px; }
+    .ecard .award { display:inline-block; background:linear-gradient(135deg,#377dff,#d765c8); color:#fff; font-weight:900; font-size:11px; padding:4px 10px; border-radius:999px; margin-bottom:8px; }
+    .ecard h3 { margin:0 0 4px; font-size:17px; color:var(--ink); }
+    .ecard .by { font-size:12.5px; color:var(--ink-muted); font-weight:800; margin-bottom:10px; }
+    .ecard .desc { font-size:13.5px; color:var(--ink-muted); line-height:1.7; }
+    .ecard .ai { margin-top:10px; font-size:11.5px; color:#327dba; font-weight:800; word-break:break-word; }
+    .empty { width:min(1180px,calc(100% - 80px)); margin:0 auto; color:var(--ink-muted); padding:30px 0; }
+    @media (max-width:1000px){ .grid{ grid-template-columns:1fr 1fr; } }
+    @media (max-width:640px){ .grid,.ehead{ width:calc(100% - 36px);} .grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header class="panel-hero">
+    <nav class="nav">
+      <a href="/" class="brand"><div class="brand-main">AGEWEC 2026</div><div class="brand-sub">Entries</div></a>
+      <div class="navlinks">
+        <a href="/#about" data-ja="開催概要" data-en="About">開催概要</a>
+        <a href="/submit/" data-ja="参加登録" data-en="Register">参加登録</a>
+        <button class="lang" onclick="toggleLang(); syncDynamic();">JA / EN</button>
+      </div>
+    </nav>
+    <div class="ehead">
+      <p class="section-kicker" style="color:var(--cyan)">Entries</p>
+      <h1 data-ja="公開作品一覧" data-en="Public entries">公開作品一覧</h1>
+      <p data-ja="公開が許可された作品を掲載しています。" data-en="Showing entries whose authors permitted publication.">公開が許可された作品を掲載しています。</p>
+    </div>
+  </header>
+
+  <main class="entries">
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" style="display:none"></div>
+  </main>
+
+  <footer><strong>AGEWEC 2026</strong><br/>Agentic Work Execution Challenge</footer>
+
+  <script src="/script.js"></script>
+  <script>
+    function lang(){ return (document.documentElement.lang||'ja')==='en'?'en':'ja'; }
+    function syncDynamic(){ const l=lang(); document.querySelectorAll('[data-ja][data-en]').forEach(el=>el.textContent=el.dataset[l]); }
+    const esc=(s)=>String(s==null?'':s).replace(/</g,'&lt;').replace(/"/g,'&quot;');
+
+    function embed(url){
+      const u=esc(url);
+      let id=null;
+      const ym=url && url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
+      if(ym) id=ym[1];
+      if(id) return '<iframe src="https://www.youtube.com/embed/'+esc(id)+'" loading="lazy" allowfullscreen frameborder="0"></iframe>';
+      const vm=url && url.match(/vimeo\.com\/(\d+)/);
+      if(vm) return '<iframe src="https://player.vimeo.com/video/'+esc(vm[1])+'" loading="lazy" allowfullscreen frameborder="0"></iframe>';
+      return '<a href="'+u+'" target="_blank" rel="noopener">▶ 動画を見る / Watch</a>';
+    }
+
+    async function load(){
+      try{
+        const r=await fetch(ay('/api/entries')); const data=await r.json();
+        const list=data.entries||[];
+        const grid=document.getElementById('grid');
+        if(!list.length){ grid.style.display='none'; const em=document.getElementById('empty'); em.style.display='block'; em.dataset.ja='まだ公開作品はありません。'; em.dataset.en='No public entries yet.'; em.textContent=em.dataset[lang()]; return; }
+        grid.innerHTML=list.map(e=>(
+          '<div class="ecard"><div class="frame">'+embed(e.video_url)+'</div><div class="body">'+
+          (e.award? '<span class="award">'+esc(e.award)+'</span>':'')+
+          '<h3>'+esc(e.title)+'</h3>'+
+          '<div class="by">'+esc(e.author)+(e.affiliation?(' / '+esc(e.affiliation)):'')+'</div>'+
+          '<div class="desc">'+esc(e.description)+'</div>'+
+          (e.ai_tools? '<div class="ai">AI: '+esc(e.ai_tools)+'</div>':'')+
+          '</div></div>'
+        )).join('');
+      }catch(e){ const em=document.getElementById('empty'); em.style.display='block'; em.textContent='APIに接続できません'; }
+    }
+    load();
+  </script>
+</body>
+</html>

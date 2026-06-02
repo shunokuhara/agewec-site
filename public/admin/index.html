@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>管理 | AGEWEC 2026</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .panel-hero { background:#1f3047; color:#fff; }
+    .panel-hero .nav { background:rgba(31,48,71,.92); }
+    .wrap { width:min(1320px, calc(100% - 48px)); margin:0 auto; }
+    main.admin { color:var(--ink); background:#f8faff; min-height:70vh; padding:26px 0 90px; }
+    .bar { display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:space-between; padding:18px 0; }
+    .bar h1 { margin:0; font-size:22px; color:var(--ink); }
+    .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    .pill { padding:7px 14px; border-radius:999px; font-weight:900; font-size:13px; }
+    .pill.open { background:#e2f6ea; color:#1f8a55; } .pill.closed { background:#fde8ef; color:#c2306a; }
+    .btn-sm { cursor:pointer; padding:9px 16px; border-radius:10px; border:1px solid var(--paper-line); background:#fff; font-weight:800; font-size:13px; }
+    .btn-sm.primary { background:linear-gradient(135deg,#377dff,#d765c8); color:#fff; border:0; }
+    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--paper-line); border-radius:14px; overflow:hidden; font-size:13px; }
+    th,td { padding:10px 10px; border-bottom:1px solid var(--paper-line); text-align:left; vertical-align:top; }
+    th { background:var(--paper-soft); font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-muted); }
+    td a { color:#327dba; font-weight:800; }
+    .small { font-size:11px; color:var(--ink-muted); }
+    select, input[type=text] { font:inherit; font-size:12px; padding:5px 7px; border:1px solid var(--paper-line); border-radius:8px; }
+    input.award { width:120px; }
+    .chk { display:flex; gap:8px; flex-wrap:wrap; }
+    .chk label { font-size:11px; font-weight:800; color:var(--ink-muted); display:flex; align-items:center; gap:3px; }
+    .rowmsg { font-size:11px; font-weight:800; }
+    .rowmsg.ok{color:#1f8a55;} .rowmsg.err{color:#c2306a;}
+    .scorecell b { color:var(--ink); }
+    @media (max-width:1100px){ table{ display:block; overflow-x:auto; white-space:nowrap; } }
+  </style>
+</head>
+<body>
+  <header class="panel-hero">
+    <nav class="nav">
+      <a href="/" class="brand"><div class="brand-main">AGEWEC 2026</div><div class="brand-sub">Admin</div></a>
+    </nav>
+  </header>
+
+  <main class="admin">
+    <div class="wrap">
+      <div class="bar">
+        <h1>管理ダッシュボード</h1>
+        <div class="controls">
+          <span id="openPill" class="pill closed">―</span>
+          <button class="btn-sm" id="lockBtn">受付ロック切替</button>
+          <a class="btn-sm primary" id="csvLink" href="#">CSV出力</a>
+          <button class="btn-sm" onclick="load()">再読込</button>
+        </div>
+      </div>
+      <div id="status" class="small"></div>
+      <div style="margin-top:12px;">
+        <table id="tbl"><thead><tr>
+          <th>ID / 投稿日時</th><th>作品 / 投稿者</th><th>連絡先</th><th>動画 / AI</th>
+          <th>同意</th><th>採点(平均)</th><th>状態</th><th>区分</th><th>保存</th>
+        </tr></thead><tbody id="tb"></tbody></table>
+      </div>
+    </div>
+  </main>
+
+  <footer><strong>AGEWEC 2026</strong><br/>Agentic Work Execution Challenge</footer>
+
+  <script src="/script.js"></script>
+  <script>
+    document.getElementById('csvLink').href = ay('/api/admin/export.csv');
+    let subs = [];
+    const esc=(s)=>String(s==null?'':s).replace(/</g,'&lt;').replace(/"/g,'&quot;');
+
+    async function load(){
+      const st=document.getElementById('status');
+      try{
+        const r=await fetch(ay('/api/admin/submissions'));
+        if(!r.ok){ st.textContent = r.status===403?'管理者権限がありません。':(r.status===401?'認証が必要です。':'読み込み失敗'); return; }
+        const data=await r.json();
+        subs=data.submissions||[];
+        const pill=document.getElementById('openPill');
+        pill.className='pill '+(data.submissions_open?'open':'closed');
+        pill.textContent=data.submissions_open?'受付中':'受付終了';
+        pill.dataset.open=data.submissions_open?'1':'0';
+        st.textContent='応募 '+subs.length+' 件';
+        render();
+      }catch(e){ st.textContent='APIに接続できません'; }
+    }
+
+    function consentBadges(s){
+      const req=['c_rules','c_rights','c_url','c_license','c_thirdparty','c_privacy'];
+      const allReq=req.every(k=>s[k]);
+      return '<span class="small">必須:'+(allReq?'✓':'✗')+' PR:'+(s.c_pr?'✓':'-')+' 保護者:'+(s.c_guardian?'✓':'-')+'</span>';
+    }
+
+    function render(){
+      const tb=document.getElementById('tb'); tb.innerHTML='';
+      subs.forEach((s,i)=>{
+        const tr=document.createElement('tr');
+        const sc = s.judge_count? ('<span class="scorecell"><b>'+(s.avg_total!=null?s.avg_total.toFixed(1):'-')+'</b>/18 <span class="small">('+s.judge_count+'名)</span></span>') : '<span class="small">未</span>';
+        tr.innerHTML =
+          '<td><div class="small">'+esc(s.id)+'</div>'+esc((s.created_at||'').slice(0,16).replace('T',' '))+'</td>'+
+          '<td><b>'+esc(s.title)+'</b><div class="small">'+esc(s.author)+(s.affiliation?(' / '+esc(s.affiliation)):'')+' · '+esc(s.country)+'</div></td>'+
+          '<td class="small">'+esc(s.email)+'</td>'+
+          '<td><a href="'+esc(s.video_url)+'" target="_blank" rel="noopener">動画</a><div class="small">'+esc(s.license_category||'')+'</div><div class="small">'+esc((s.ai_tools||'').slice(0,40))+'</div></td>'+
+          '<td>'+consentBadges(s)+'</td>'+
+          '<td>'+sc+'</td>'+
+          '<td><select data-k="status">'+['received','screening','judging','finalist','done'].map(v=>'<option value="'+v+'"'+(s.status===v?' selected':'')+'>'+v+'</option>').join('')+'</select></td>'+
+          '<td><div class="chk">'+
+            '<label><input type="checkbox" data-k="is_public" '+(s.is_public?'checked':'')+'>公開</label>'+
+            '<label><input type="checkbox" data-k="finalist" '+(s.finalist?'checked':'')+'>finalist</label>'+
+            '<label><input type="checkbox" data-k="incomplete" '+(s.incomplete?'checked':'')+'>不備</label>'+
+            '<label><input type="checkbox" data-k="disqualified" '+(s.disqualified?'checked':'')+'>失格</label>'+
+            '<label>賞<input class="award" type="text" data-k="award" value="'+esc(s.award||'')+'"></label>'+
+          '</div></td>'+
+          '<td><button class="btn-sm primary" data-save="'+i+'">保存</button><div class="rowmsg" data-msg="'+i+'"></div></td>';
+        tb.appendChild(tr);
+        tr.querySelector('[data-save]').onclick=()=>saveRow(i,tr);
+      });
+    }
+
+    async function saveRow(i,tr){
+      const s=subs[i];
+      const payload={id:s.id};
+      tr.querySelectorAll('[data-k]').forEach(el=>{
+        const k=el.dataset.k;
+        if(el.type==='checkbox') payload[k]=el.checked?1:0;
+        else payload[k]=el.value;
+      });
+      const m=tr.querySelector('[data-msg="'+i+'"]');
+      m.className='rowmsg'; m.textContent='保存中…';
+      try{
+        const r=await fetch(ay('/api/admin/update'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+        if(r.ok){ Object.assign(s,payload); m.className='rowmsg ok'; m.textContent='保存✓'; }
+        else { m.className='rowmsg err'; m.textContent='失敗'; }
+      }catch{ m.className='rowmsg err'; m.textContent='接続不可'; }
+    }
+
+    document.getElementById('lockBtn').onclick=async()=>{
+      const pill=document.getElementById('openPill');
+      const open = pill.dataset.open!=='1'; // toggle
+      try{
+        const r=await fetch(ay('/api/admin/lock'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({open})});
+        if(r.ok) load();
+      }catch{}
+    };
+
+    load();
+  </script>
+</body>
+</html>

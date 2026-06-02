@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "agewec-site",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-05-31",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // Static site in ./public. Worker handles /{year}/api/* and serves pages
+  // by stripping the /{year} prefix; everything else falls through to assets.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+
+  // One D1 per year. Binding name MUST be DB_<year> (worker selects env["DB_"+year]).
+  // Add a new year: create the DB, add a binding here, and add the year to
+  // SUPPORTED_YEARS in worker/index.js.
+  //   wrangler d1 create agewec_2026
+  "d1_databases": [
+    {
+      "binding": "DB_2026",
+      "database_name": "agewec_2026",
+      "database_id": "REPLACE_WITH_2026_D1_ID"
+    }
+    // ,{ "binding": "DB_2027", "database_name": "agewec_2027", "database_id": "..." }
+  ]
+
+  // Optional: wrangler secret put TURNSTILE_SECRET
+}

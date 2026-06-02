@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AGEWEC | Agentic Work Execution Challenge</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .portal-hero { background:#10192b; color:#fff; min-height:62vh; display:flex; flex-direction:column; }
+    .portal-hero .nav { background:rgba(16,25,43,.92); }
+    .hero-inner { width:min(1080px, calc(100% - 64px)); margin:auto; padding:70px 0; }
+    .hero-inner .kicker { color:#7fd5ff; font-weight:900; letter-spacing:.12em; text-transform:uppercase; font-size:13px; }
+    .hero-inner h1 { font-size:clamp(40px,7vw,84px); line-height:1.02; margin:10px 0 14px; background:linear-gradient(120deg,#9d89ff,#dcecff 55%,#fff 85%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .hero-inner .sub { font-size:clamp(16px,2.2vw,22px); color:rgba(255,255,255,.82); max-width:680px; }
+    main.portal { color:var(--ink); background:linear-gradient(180deg,#fff,#f8faff); }
+    .wrap { width:min(1080px, calc(100% - 64px)); margin:0 auto; }
+    .sec { padding:60px 0; }
+    .sec h2 { font-size:26px; color:var(--ink); margin:0 0 8px; }
+    .sec p.lead { color:var(--ink-muted); max-width:680px; margin:0 0 26px; }
+    .todo { background:#fff7e6; border:1px solid #ffe0a3; border-radius:8px; padding:2px 8px; font-size:13px; font-weight:800; color:#9a6b00; }
+    .editions { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
+    .ed-card { display:block; text-decoration:none; border:1px solid var(--paper-line); border-radius:20px; background:#fff; padding:26px; box-shadow:0 18px 60px rgba(17,24,39,.07); transition:transform .15s, box-shadow .15s; }
+    .ed-card:hover { transform:translateY(-3px); box-shadow:0 24px 70px rgba(17,24,39,.12); }
+    .ed-card .yr { font-size:34px; font-weight:900; color:var(--ink); }
+    .ed-card .meta { color:var(--ink-muted); font-weight:800; margin-top:4px; font-size:14px; }
+    .ed-card .go { display:inline-block; margin-top:14px; color:#377dff; font-weight:900; }
+    .ed-card.upcoming { opacity:.55; pointer-events:none; }
+    .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    .info-grid .box { border:1px solid var(--paper-line); border-radius:16px; background:#fff; padding:22px 24px; }
+    .info-grid .box h3 { margin:0 0 6px; font-size:16px; color:var(--ink); }
+    .info-grid .box p { color:var(--ink-muted); font-size:14.5px; line-height:1.8; margin:0; }
+    @media (max-width:720px){ .hero-inner,.wrap{ width:calc(100% - 36px);} .info-grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header class="portal-hero">
+    <nav class="nav">
+      <a href="/" class="brand"><div class="brand-main">AGEWEC</div><div class="brand-sub">Agentic Work Execution Challenge</div></a>
+      <div class="navlinks">
+        <a href="#about" data-ja="概要" data-en="About">概要</a>
+        <a href="#editions" data-ja="開催年" data-en="Editions">開催年</a>
+        <a href="#contact" data-ja="主催・問い合わせ" data-en="Contact">主催・問い合わせ</a>
+        <button class="lang" onclick="toggleLang()">JA / EN</button>
+      </div>
+    </nav>
+    <div class="hero-inner">
+      <p class="kicker">Agentic Work Execution Challenge</p>
+      <h1>AGEWEC</h1>
+      <p class="sub" data-ja="生成AIとAIエージェントを活用した、創造的ワークフローの実践と発信の場。" data-en="A venue for practicing and sharing creative workflows powered by generative AI and AI agents.">生成AIとAIエージェントを活用した、創造的ワークフローの実践と発信の場。</p>
+    </div>
+  </header>
+
+  <main class="portal">
+    <section class="sec" id="about">
+      <div class="wrap">
+        <h2 data-ja="AGEWEC とは" data-en="About AGEWEC">AGEWEC とは</h2>
+        <p class="lead" data-ja="（ここに AGEWEC の概要を記載します。目的・対象・毎年開催する趣旨など。）" data-en="(Write the AGEWEC overview here: purpose, audience, and the intent to hold it annually.)">
+          <span class="todo">要記入</span> ここに AGEWEC の概要を記載します。目的・対象・毎年開催する趣旨など。
+        </p>
+      </div>
+    </section>
+
+    <section class="sec" id="editions" style="background:#fff;">
+      <div class="wrap">
+        <h2 data-ja="開催年" data-en="Editions">開催年</h2>
+        <p class="lead" data-ja="各年版のページへ進めます。" data-en="Jump to each edition.">各年版のページへ進めます。</p>
+        <div class="editions">
+          <a class="ed-card" href="/2026/">
+            <div class="yr">2026</div>
+            <div class="meta" data-ja="FIT2026 併設 ／ 北九州 ／ 2026年9月" data-en="with FIT2026 / Kitakyushu / Sept 2026">FIT2026 併設 ／ 北九州 ／ 2026年9月</div>
+            <span class="go" data-ja="2026年版を見る →" data-en="View 2026 →">2026年版を見る →</span>
+          </a>
+          <div class="ed-card upcoming">
+            <div class="yr">2027</div>
+            <div class="meta" data-ja="準備中" data-en="Coming soon">準備中</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="contact">
+      <div class="wrap">
+        <h2 data-ja="主催・問い合わせ" data-en="Organizer & Contact">主催・問い合わせ</h2>
+        <div class="info-grid">
+          <div class="box">
+            <h3 data-ja="主催" data-en="Organizer">主催</h3>
+            <p><span class="todo">要記入</span> 主催者名 / 運営体制</p>
+          </div>
+          <div class="box">
+            <h3 data-ja="問い合わせ" data-en="Contact">問い合わせ</h3>
+            <p><span class="todo">要記入</span> 問い合わせ窓口 / 連絡先</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><strong>AGEWEC</strong><br/>Agentic Work Execution Challenge</footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>

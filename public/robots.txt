@@ -1,0 +1,6 @@
+txt id="l7j9se"
+User-agent: *
+Allow: /
+
+Sitemap: https://agewec.com/sitemap.xml
+

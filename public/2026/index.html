@@ -163,6 +163,7 @@
       #gallery .vcard { border: 1px solid var(--paper-line); border-radius: 22px; background: #fff; overflow: hidden; box-shadow: 0 22px 70px rgba(17,24,39,.08); display: flex; flex-direction: column; }
       #gallery .frame { position: relative; aspect-ratio: 16 / 9; background: #0c1320; display: flex; align-items: center; justify-content: center; }
       #gallery .frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+      #gallery .frame video { width: 100%; height: 100%; border: 0; display: block; object-fit: cover; background: #000; }
       #gallery .ph { color: #cfe6ff; text-align: center; font-weight: 800; font-size: 13px; line-height: 1.7; padding: 14px; }
       #gallery .ph .play { display: block; font-size: 30px; margin-bottom: 6px; opacity: .85; }
       #gallery .vbody { padding: 18px 18px 20px; }
@@ -178,19 +179,32 @@
 
       <!--
         動画の差し替え方:
-        下の <div class="ph">...</div> をまるごと、次の1行に置き換えてください（YouTube の場合）。
+        【YouTube】下の <div class="ph">...</div> をまるごと、次の1行に置き換えます。
         <iframe src="https://www.youtube.com/embed/動画ID" loading="lazy" allowfullscreen></iframe>
-        Vimeo の場合は src を "https://player.vimeo.com/video/動画ID" にします。
+        【Vimeo】src を "https://player.vimeo.com/video/動画ID" にします。
+        【ローカルmp4】次のように <video> を使います（ファイルは public/assets/ に置く）。
+        <video controls preload="none" playsinline poster="/assets/ポスター.jpg" src="/assets/動画.mp4"></video>
+        ※Cloudflare の静的アセットは1ファイル25 MiB上限。大きい動画は720p等に圧縮してください。
         h3 のタイトルと p の説明文も、その作品に合わせて書き換えてください。
       -->
+      <!-- 1枠目: AI生成の北九州プロモーション動画（YouTube埋め込み・サンプル）。残り2枠は準備中のまま。 -->
       <div class="gallery-grid">
         <article class="vcard">
+          <!--
+            言語別に動画を分けたい場合（将来）:
+            JA/EN で別動画にしたいときは、言語切替時に下の iframe の src(動画ID)を
+            差し替える小さなスクリプトを足せば実現できます。今は1本のみのため、
+            JA/EN どちらでも同じ動画を表示します。動画IDは src の /embed/ の後ろの部分。
+          -->
           <div class="frame">
-            <div class="ph"><span class="play">▶</span><span data-ja="準備中" data-en="Coming soon">準備中</span></div>
+            <iframe src="https://www.youtube-nocookie.com/embed/JOF7QfulTys"
+                    title="AGEWEC sample video" loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           </div>
           <div class="vbody">
-            <h3 data-ja="作品例 1" data-en="Example 1">作品例 1</h3>
-            <p data-ja="ここに作品の説明を書きます（使用AI・ワークフローなど）。" data-en="Add a short description here (AI tools, workflow, etc.).">ここに作品の説明を書きます（使用AI・ワークフローなど）。</p>
+            <h3 data-ja="作品例：北九州プロモーション（AI生成デモ）" data-en="Example: Kitakyushu Promo (AI-generated demo)">作品例：北九州プロモーション（AI生成デモ）</h3>
+            <p data-ja="生成AIで制作した北九州プロモーション動画のデモ（約35秒）。市場の活気から工場夜景まで。※サンプル表示用。" data-en="A demo promotional video of Kitakyushu made with generative AI (~35s), from the bustle of the market to the factory night view. Shown here as a sample.">生成AIで制作した北九州プロモーション動画のデモ（約35秒）。市場の活気から工場夜景まで。※サンプル表示用。</p>
           </div>
         </article>
         <article class="vcard">

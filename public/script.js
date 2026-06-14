@@ -54,3 +54,29 @@ function toggleLang() {
 // Apply the remembered / detected language on every page load.
 applyLang(currentLang);
 scopeLinks();
+
+// --- Official social links, injected into the footer on every page ---
+// 1か所だけ編集すれば全ページに反映されます。ハンドル変更もここだけ。
+const AGEWEC_SOCIAL = [
+  { label: 'X', href: 'https://x.com/AGEWECX' },
+  // 追加例（コメントを外してURLを入れる）:
+  // { label: 'Instagram', href: 'https://www.instagram.com/＜ハンドル＞/' },
+  // { label: 'YouTube',   href: '＜チャンネルURL＞' },
+];
+
+function renderFooterSocial() {
+  const footer = document.querySelector('footer');
+  if (!footer || !AGEWEC_SOCIAL.length || footer.querySelector('.social')) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'social';
+  AGEWEC_SOCIAL.forEach((s) => {
+    const a = document.createElement('a');
+    a.href = s.href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = s.label;
+    wrap.appendChild(a);
+  });
+  footer.appendChild(wrap);
+}
+renderFooterSocial();

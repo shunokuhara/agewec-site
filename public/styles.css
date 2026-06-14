@@ -128,6 +128,9 @@ main {
 
 footer { background: var(--dark); border-top: 1px solid rgba(255,255,255,.12); padding: 42px 40px; color: rgba(255,255,255,.72); text-align: center; line-height: 1.8; }
 footer strong { color: #fff; }
+footer .social { margin-top: 16px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+footer .social a { color: #fff; text-decoration: none; font-weight: 700; font-size: 14px; border: 1px solid rgba(255,255,255,.28); border-radius: 999px; padding: 6px 16px; transition: background .15s ease; }
+footer .social a:hover { background: rgba(255,255,255,.12); }
 
 @media (max-width: 1080px) {
   .nav { padding: 0 22px; }

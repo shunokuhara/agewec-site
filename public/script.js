@@ -58,10 +58,11 @@ scopeLinks();
 // --- Official social links, injected into the footer on every page ---
 // 1か所だけ編集すれば全ページに反映されます。ハンドル変更もここだけ。
 const AGEWEC_SOCIAL = [
-  { label: 'X', href: 'https://x.com/AGEWECX' },
-  // 追加例（コメントを外してURLを入れる）:
-  // { label: 'Instagram', href: 'https://www.instagram.com/＜ハンドル＞/' },
-  // { label: 'YouTube',   href: '＜チャンネルURL＞' },
+  { label: 'X', href: 'https://x.com/AGEWECX', img: '/assets/x-logo-white.png' },
+  // 追加例（コメントを外して設定）:
+  // { label: 'Instagram', href: 'https://www.instagram.com/＜ハンドル＞/', img: '/assets/instagram-white.png' },
+  // { label: 'YouTube',   href: '＜チャンネルURL＞', img: '/assets/youtube-white.png' },
+  // 画像が無ければ img を省略すると、ラベル文字（例: 'X'）で表示されます。
 ];
 
 function renderFooterSocial() {
@@ -74,7 +75,17 @@ function renderFooterSocial() {
     a.href = s.href;
     a.target = '_blank';
     a.rel = 'noopener';
-    a.textContent = s.label;
+    a.setAttribute('aria-label', s.label);
+    if (s.img) {
+      const img = document.createElement('img');
+      img.src = s.img;
+      img.alt = s.label;
+      img.className = 'ico';
+      img.loading = 'lazy';
+      a.appendChild(img);
+    } else {
+      a.textContent = s.label;
+    }
     wrap.appendChild(a);
   });
   footer.appendChild(wrap);

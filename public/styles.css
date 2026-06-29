@@ -151,3 +151,10 @@ footer .social a .ico { height: 22px; width: auto; display: block; }
   .section { width: calc(100% - 44px); padding: 70px 0; }
   .sponsor-panel { padding: 32px 22px; }
 }
+
+/* Assets / official Kitakyushu material links */
+.asset-links { margin-top: 18px; line-height: 2; }
+.asset-links .lbl { white-space: nowrap; }
+.asset-links .item { white-space: nowrap; }
+.asset-links a { color: var(--dark); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.asset-links a:hover { text-decoration-thickness: 2px; }

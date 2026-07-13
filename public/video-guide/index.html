@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>動画作成ガイド | AGEWEC 2026</title>
+  <meta name="description" content="AGEWEC 2026 の動画作成ガイド。無料〜数百円で、AIを使った応募作品を作る方法を、初めての方向けにステップで解説します。" />
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .panel-hero { background:#1f3047; color:#fff; }
+    .panel-hero .nav { background:rgba(31,48,71,.92); }
+    main.doc { color:var(--ink); background:#fff; padding:48px 0 90px; }
+    .doc .wrap { width:min(860px, calc(100% - 64px)); margin:0 auto; }
+    .doc h1 { font-size:clamp(28px,4vw,40px); color:var(--ink); margin:0 0 6px; }
+    .doc .lead { color:var(--ink-muted); margin:0 0 26px; font-size:16px; line-height:1.8; }
+    .doc h2 { font-size:19px; color:var(--ink); margin:38px 0 10px; border-left:4px solid #377dff; padding-left:10px; }
+    .doc p, .doc li { color:#33405a; font-size:15px; line-height:1.9; }
+    .doc ul { padding-left:22px; }
+    .doc .note { background:#f0f6ff; border:1px solid #cfe2fb; border-radius:12px; padding:14px 18px; margin:16px 0; }
+    .doc .note.warm { background:#fff7e6; border-color:#ffe0a3; }
+    .back { color:#327dba; font-weight:800; }
+
+    /* budget tiers */
+    .tiers { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:18px 0 4px; }
+    .tier { border:1px solid var(--paper-line); border-radius:16px; background:#fff; padding:18px 18px 20px; box-shadow:0 14px 44px rgba(17,24,39,.06); display:flex; flex-direction:column; }
+    .tier.rec { border-color:#377dff; box-shadow:0 16px 48px rgba(55,125,255,.16); }
+    .tier .badge { align-self:flex-start; font-size:11px; font-weight:900; letter-spacing:.04em; text-transform:uppercase; color:#377dff; background:#eaf2ff; border-radius:999px; padding:3px 9px; margin-bottom:8px; }
+    .tier h3 { margin:0 0 2px; font-size:16px; color:var(--ink); }
+    .tier .cost { font-size:16px; font-weight:900; color:var(--ink); margin:2px 0 10px; line-height:1.4; }
+    .tier .chain { margin:0; font-size:13px; color:var(--ink-muted); line-height:1.7; }
+    .tier .chain b { color:#33405a; }
+
+    /* tool table */
+    .tbl { width:100%; border-collapse:collapse; margin:14px 0 4px; font-size:14.5px; }
+    .tbl th, .tbl td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--paper-line); vertical-align:top; }
+    .tbl th { color:var(--ink); font-weight:900; background:#f6f9ff; }
+    .tbl td { color:#33405a; }
+    .tbl .free { color:#1a8a4a; font-weight:800; }
+    .tbl .opt  { color:#9a6b00; font-weight:800; }
+
+    /* steps */
+    .steps { list-style:none; padding:0; margin:14px 0 4px; counter-reset:st; }
+    .steps > li { position:relative; padding:14px 16px 14px 56px; border:1px solid var(--paper-line); border-radius:14px; background:#fff; margin-bottom:12px; }
+    .steps > li::before { counter-increment:st; content:counter(st); position:absolute; left:14px; top:14px; width:28px; height:28px; border-radius:50%; background:#377dff; color:#fff; font-weight:900; display:flex; align-items:center; justify-content:center; font-size:14px; }
+    .steps > li b { color:var(--ink); }
+
+    /* flow */
+    .flow { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:14px 0 4px; }
+    .flow span.node { background:#eef3ff; border:1px solid #cfe2fb; border-radius:999px; padding:8px 14px; font-weight:800; font-size:14px; color:#274b8a; }
+    .flow span.arw { color:#9db4d8; font-weight:900; }
+
+    /* prompt code */
+    .code { background:#0f1626; color:#dfe7f5; border-radius:12px; padding:14px 16px; margin:10px 0; font-size:13px; line-height:1.7; white-space:pre-wrap; overflow-x:auto; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+    .code .cm { color:#7f93b8; }
+
+    /* good/bad tips */
+    .tips { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0 4px; }
+    .tip { border-radius:14px; padding:14px 16px; font-size:14px; line-height:1.8; }
+    .tip.bad  { background:#fff2f2; border:1px solid #ffd4d4; }
+    .tip.good { background:#eefaf1; border:1px solid #c6ecd1; }
+    .tip .lbl { font-weight:900; display:block; margin-bottom:4px; }
+    .tip.bad .lbl  { color:#c0392b; }
+    .tip.good .lbl { color:#1a8a4a; }
+
+    /* checklist */
+    .check { list-style:none; padding:0; margin:14px 0 4px; }
+    .check li { padding:9px 0 9px 30px; position:relative; border-bottom:1px solid var(--paper-line); color:#33405a; font-size:14.5px; }
+    .check li::before { content:"✓"; position:absolute; left:4px; top:9px; color:#377dff; font-weight:900; }
+
+    @media (max-width:720px){
+      .tiers { grid-template-columns:1fr; }
+      .tips  { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="panel-hero">
+    <nav class="nav">
+      <a href="/" class="brand"><div class="brand-main">AGEWEC 2026</div><div class="brand-sub" data-ja="動画作成ガイド" data-en="Video Creation Guide">動画作成ガイド</div></a>
+      <button class="lang" onclick="toggleLang()" aria-label="Toggle language">JA / EN</button>
+    </nav>
+  </header>
+
+  <main class="doc"><div class="wrap">
+    <h1 data-ja="動画作成ガイド" data-en="Video Creation Guide">動画作成ガイド</h1>
+    <p class="lead" data-ja="はじめてでも大丈夫。無料〜数百円で、AIを使った応募作品を作れます。生成AIを触ったことがない方向けに、手順をひとつずつ説明します。" data-en="No experience needed. You can create an AI-made entry for free to a few hundred yen. This guide walks you through each step for people who have never used generative AI.">はじめてでも大丈夫。無料〜数百円で、AIを使った応募作品を作れます。生成AIを触ったことがない方向けに、手順をひとつずつ説明します。</p>
+
+    <div class="note">
+      <p data-ja="高価なツールは必要ありません。評価者が見るのは、アイデア・ストーリー・AIエージェントの自律性・再現性です。「どの有料ツールを使ったか」はほとんど評価対象になりません。むしろ、企画・プロンプト・ワークフローを整理して提出した作品が高く評価されやすいです。" data-en="Expensive tools are not required. Evaluators look at your idea, story, the autonomy of your AI agent, and reproducibility — not which paid tool you used. Entries that clearly organize their concept, prompts, and workflow tend to score well.">高価なツールは必要ありません。評価者が見るのは、アイデア・ストーリー・AIエージェントの自律性・再現性です。「どの有料ツールを使ったか」はほとんど評価対象になりません。むしろ、企画・プロンプト・ワークフローを整理して提出した作品が高く評価されやすいです。</p>
+      <p style="margin:8px 0 0;font-size:13.5px;color:#7a6320" data-ja="※ 本ガイドで「無料」と記載したツールや無料枠は、提供元の仕様変更により、実施時期によって有料化・提供終了・条件変更となる場合があります。利用前に各サービスの最新の料金・利用条件をご確認ください。" data-en="* Tools and free tiers described here as &quot;free&quot; may become paid, be discontinued, or change conditions depending on when you use them, at the provider's discretion. Please check each service's latest pricing and terms before use.">※ 本ガイドで「無料」と記載したツールや無料枠は、提供元の仕様変更により、実施時期によって有料化・提供終了・条件変更となる場合があります。利用前に各サービスの最新の料金・利用条件をご確認ください。</p>
+    </div>
+
+    <h2 data-ja="1. 何を作る？" data-en="1. What to Create">1. 何を作る？</h2>
+    <p data-ja="北九州の魅力（景観・文化・産業・工場夜景・思い出・未来など）を伝える、30秒程度のプロモーション動画を作ります。長さは1分以内が目安です。長くするほど生成回数が増え、コストと手間も増えるので、まずは短く作ってみましょう。" data-en="Create a promotional video of around 30 seconds that conveys the appeal of Kitakyushu — its scenery, culture, industry, factory nightscapes, memories, and future. Aim for one minute or less. The longer the video, the more generations it needs and the more it costs, so start short.">北九州の魅力（景観・文化・産業・工場夜景・思い出・未来など）を伝える、30秒程度のプロモーション動画を作ります。長さは1分以内が目安です。長くするほど生成回数が増え、コストと手間も増えるので、まずは短く作ってみましょう。</p>
+
+    <h2 data-ja="2. 3つのコース" data-en="2. Three Courses">2. 3つのコース</h2>
+    <p data-ja="自分の環境に合わせて選べます。まずはコース2がおすすめです。" data-en="Pick the course that fits your setup. We recommend starting with Course 2.">自分の環境に合わせて選べます。まずはコース2がおすすめです。</p>
+    <div class="tiers">
+      <div class="tier">
+        <span class="badge" data-ja="コース1" data-en="Course 1">コース1</span>
+        <h3 data-ja="完全無料" data-en="Fully Free">完全無料</h3>
+        <div class="cost">¥0</div>
+        <p class="chain" data-ja="ChatGPT / Gemini（台本）→ 画像生成 → LTX-Video で動画化 → 完成" data-en="ChatGPT / Gemini (script) → image generation → animate with LTX-Video → done">ChatGPT / Gemini（台本）→ 画像生成 → LTX-Video で動画化 → 完成</p>
+      </div>
+      <div class="tier rec">
+        <span class="badge" data-ja="コース2・おすすめ" data-en="Course 2 · Recommended">コース2・おすすめ</span>
+        <h3 data-ja="バランス型" data-en="Balanced">バランス型</h3>
+        <div class="cost" data-ja="無料ツール中心" data-en="Mostly free tools">無料ツール中心</div>
+        <p class="chain" data-ja="ChatGPT / Gemini（台本）→ 画像生成 → Wan 2.1 で Image-to-Video → 編集 → 完成" data-en="ChatGPT / Gemini (script) → image generation → Image-to-Video with Wan 2.1 → edit → done">ChatGPT / Gemini（台本）→ 画像生成 → Wan 2.1 で Image-to-Video → 編集 → 完成</p>
+      </div>
+      <div class="tier">
+        <span class="badge" data-ja="コース3" data-en="Course 3">コース3</span>
+        <h3 data-ja="上級者向け" data-en="Advanced">上級者向け</h3>
+        <div class="cost" data-ja="クラウド利用は別途費用" data-en="Cloud use may cost extra">クラウド利用は別途費用</div>
+        <p class="chain" data-ja="複数画像を生成 → Wan 2.1 で複数カット動画化 → DaVinci Resolve で本格編集 → 完成" data-en="Generate multiple images → produce several cuts with Wan 2.1 → full edit in DaVinci Resolve → done">複数画像を生成 → Wan 2.1 で複数カット動画化 → DaVinci Resolve で本格編集 → 完成</p>
+      </div>
+    </div>
+    <div class="note warm">
+      <p data-ja="Wan 2.1 や LTX-Video はローカル（自分のPC）で動かせば無料です。軽量な構成なら、比較的控えめなGPU環境でも動かせるとされています（必要スペックは各ツールの情報をご確認ください）。クラウド上で動かす場合は、その分の利用料がかかります。" data-en="Wan 2.1 and LTX-Video are free if you run them locally on your own PC. Lightweight configurations are reported to run even on relatively modest GPUs (check each tool's own requirements). Running them in the cloud incurs usage fees instead.">Wan 2.1 や LTX-Video はローカル（自分のPC）で動かせば無料です。軽量な構成なら、比較的控えめなGPU環境でも動かせるとされています（必要スペックは各ツールの情報をご確認ください）。クラウド上で動かす場合は、その分の利用料がかかります。</p>
+    </div>
+
+    <h2 data-ja="3. おすすめツール" data-en="3. Recommended Tools">3. おすすめツール</h2>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th data-ja="用途" data-en="Purpose">用途</th>
+          <th data-ja="ツール例" data-en="Example tools">ツール例</th>
+          <th data-ja="費用" data-en="Cost">費用</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-ja="台本・企画" data-en="Script & planning">台本・企画</td>
+          <td>ChatGPT / Gemini</td>
+          <td class="free" data-ja="無料枠あり" data-en="Free tier">無料枠あり</td>
+        </tr>
+        <tr>
+          <td data-ja="画像生成" data-en="Image generation">画像生成</td>
+          <td data-ja="各種画像生成AI" data-en="Various image-generation AIs">各種画像生成AI</td>
+          <td class="free" data-ja="無料〜" data-en="Free and up">無料〜</td>
+        </tr>
+        <tr>
+          <td data-ja="動画化（軽量・最速）" data-en="Animate (lightest, fastest)">動画化（軽量・最速）</td>
+          <td>LTX-Video</td>
+          <td class="free" data-ja="無料（ローカル）" data-en="Free (local)">無料（ローカル）</td>
+        </tr>
+        <tr>
+          <td data-ja="動画化（バランス）" data-en="Animate (balanced)">動画化（バランス）</td>
+          <td>Wan 2.1 (1.3B / 14B)</td>
+          <td class="free" data-ja="無料（ローカル）" data-en="Free (local)">無料（ローカル）</td>
+        </tr>
+        <tr>
+          <td data-ja="編集" data-en="Editing">編集</td>
+          <td>CapCut / DaVinci Resolve</td>
+          <td class="free" data-ja="無料" data-en="Free">無料</td>
+        </tr>
+        <tr>
+          <td data-ja="商用クラウド（任意）" data-en="Commercial cloud (optional)">商用クラウド（任意）</td>
+          <td>Kling / Veo / Runway</td>
+          <td class="opt" data-ja="有料・任意" data-en="Paid · optional">有料・任意</td>
+        </tr>
+      </tbody>
+    </table>
+    <p data-ja="商用クラウドは高品質ですが必須ではありません。無料ツールだけでも十分に応募・受賞を狙えます。" data-en="Commercial cloud services produce high quality but are not required. Free tools alone are more than enough to enter and to win.">商用クラウドは高品質ですが必須ではありません。無料ツールだけでも十分に応募・受賞を狙えます。</p>
+
+    <h2 data-ja="4. 作り方（かんたん4ステップ）" data-en="4. How to Make It (4 Easy Steps)">4. 作り方（かんたん4ステップ）</h2>
+    <ol class="steps">
+      <li data-ja="台本を作る — ChatGPT や Gemini に「北九州を舞台にした未来の観光案内」のように依頼し、30秒の構成（オープニング・見せ場・締め）を作ってもらいます。" data-en="Write the script — ask ChatGPT or Gemini for something like &quot;a futuristic tourism intro set in Kitakyushu,&quot; and have it draft a 30-second structure (opening, highlight, closing).">台本を作る — ChatGPT や Gemini に「北九州を舞台にした未来の観光案内」のように依頼し、30秒の構成（オープニング・見せ場・締め）を作ってもらいます。</li>
+      <li data-ja="画像を4枚だけ作る — オープニング／メイン1／メイン2／エンディングの4枚を生成します。まずは4枚で十分です。" data-en="Generate just 4 images — one each for opening, main 1, main 2, and ending. Four is plenty to start.">画像を4枚だけ作る — オープニング／メイン1／メイン2／エンディングの4枚を生成します。まずは4枚で十分です。</li>
+      <li data-ja="各画像を5秒ずつ動画化 — Wan 2.1 の Image-to-Video などで、1枚を約5秒の動画にします。4枚 × 5秒 = 約20秒。" data-en="Animate each image for ~5 seconds — turn each still into about a 5-second clip using Image-to-Video (e.g., Wan 2.1). 4 images × 5s ≈ 20 seconds.">各画像を5秒ずつ動画化 — Wan 2.1 の Image-to-Video などで、1枚を約5秒の動画にします。4枚 × 5秒 = 約20秒。</li>
+      <li data-ja="無料ソフトで結合 — CapCut や DaVinci Resolve でクリップをつなぎ、音楽やテロップを足して完成です。" data-en="Combine with free software — join the clips in CapCut or DaVinci Resolve, add music and captions, and you're done.">無料ソフトで結合 — CapCut や DaVinci Resolve でクリップをつなぎ、音楽やテロップを足して完成です。</li>
+    </ol>
+
+    <h2 data-ja="5. ワークフロー例" data-en="5. Example Workflow">5. ワークフロー例</h2>
+    <div class="flow">
+      <span class="node" data-ja="企画" data-en="Plan">企画</span><span class="arw">→</span>
+      <span class="node" data-ja="画像生成" data-en="Images">画像生成</span><span class="arw">→</span>
+      <span class="node" data-ja="動画化" data-en="Animate">動画化</span><span class="arw">→</span>
+      <span class="node" data-ja="編集" data-en="Edit">編集</span><span class="arw">→</span>
+      <span class="node" data-ja="提出" data-en="Submit">提出</span>
+    </div>
+    <p data-ja="この流れをそのまま「ワークフロー説明」として提出フォームに書けば、再現性のある応募になります。" data-en="Writing this same flow into the &quot;workflow description&quot; on the entry form makes your submission reproducible.">この流れをそのまま「ワークフロー説明」として提出フォームに書けば、再現性のある応募になります。</p>
+
+    <h2 data-ja="6. プロンプト例" data-en="6. Example Prompts">6. プロンプト例</h2>
+    <p data-ja="そのままコピーして、地名やテーマを差し替えて使えます。" data-en="Copy these and swap in your own places and themes.">そのままコピーして、地名やテーマを差し替えて使えます。</p>
+    <div class="code" data-ja="# 台本（ChatGPT / Gemini へ）
+北九州の魅力を紹介する30秒のプロモーション動画の構成を作ってください。
+オープニング・見せ場2つ・締め、の4カット。各カットのナレーションも。
+
+# 画像（画像生成AIへ）
+北九州の工場夜景、水面に映る光、シネマティック、広角、夕暮れ、高精細
+
+# 動画化（Image-to-Video へ）
+ゆっくりカメラが前進、光がまたたく、5秒、なめらかな動き" data-en="# Script (to ChatGPT / Gemini)
+Create the structure for a 30-second promo video introducing Kitakyushu.
+Four cuts: opening, two highlights, closing. Include narration for each cut.
+
+# Image (to an image-generation AI)
+Kitakyushu factory nightscape, light reflecting on water, cinematic, wide angle, dusk, high detail
+
+# Animate (to Image-to-Video)
+slow camera push-in, shimmering lights, 5 seconds, smooth motion"># 台本（ChatGPT / Gemini へ）
+北九州の魅力を紹介する30秒のプロモーション動画の構成を作ってください。
+オープニング・見せ場2つ・締め、の4カット。各カットのナレーションも。
+
+# 画像（画像生成AIへ）
+北九州の工場夜景、水面に映る光、シネマティック、広角、夕暮れ、高精細
+
+# 動画化（Image-to-Video へ）
+ゆっくりカメラが前進、光がまたたく、5秒、なめらかな動き</div>
+
+    <h2 data-ja="7. コスト削減のコツ" data-en="7. Cost-Saving Tips">7. コスト削減のコツ</h2>
+    <div class="tips">
+      <div class="tip bad">
+        <span class="lbl" data-ja="✗ 悪い例" data-en="✗ Don't">✗ 悪い例</span>
+        <span data-ja="いきなり30秒動画を丸ごと生成 → 失敗 → また丸ごと再生成 → お金と時間が消える。" data-en="Generate a whole 30-second video at once → it fails → regenerate the whole thing → money and time gone.">いきなり30秒動画を丸ごと生成 → 失敗 → また丸ごと再生成 → お金と時間が消える。</span>
+      </div>
+      <div class="tip good">
+        <span class="lbl" data-ja="✓ 良い例" data-en="✓ Do">✓ 良い例</span>
+        <span data-ja="まず画像1枚を確認 → 良ければ動画化 → 失敗した箇所だけ作り直す。ムダな生成を防げます。" data-en="Check one image first → animate it only if it's good → redo only the parts that failed. Avoids wasted generations.">まず画像1枚を確認 → 良ければ動画化 → 失敗した箇所だけ作り直す。ムダな生成を防げます。</span>
+      </div>
+    </div>
+
+    <h2 data-ja="8. 著作権・ライセンス" data-en="8. Copyright & Licensing">8. 著作権・ライセンス</h2>
+    <p data-ja="使用するAIモデル・画像・音楽・素材のライセンスは、応募者の責任で確認してください。特に受賞作品は観光PRに使われる可能性があるため、商用利用の可否が重要です。詳細は AI利用ガイドラインをご確認ください。" data-en="You are responsible for checking the licenses of the AI models, images, music, and materials you use. Commercial-use permission matters especially, since award-winning works may be used for tourism PR. See the AI Usage Guidelines for details.">使用するAIモデル・画像・音楽・素材のライセンスは、応募者の責任で確認してください。特に受賞作品は観光PRに使われる可能性があるため、商用利用の可否が重要です。詳細は AI利用ガイドラインをご確認ください。</p>
+    <p><a class="back" href="/ai-guidelines/" data-ja="AI利用ガイドラインを読む →" data-en="Read the AI Usage Guidelines →">AI利用ガイドラインを読む →</a></p>
+
+    <h2 data-ja="9. 提出前チェックリスト" data-en="9. Submission Checklist">9. 提出前チェックリスト</h2>
+    <ul class="check">
+      <li data-ja="動画は1分以内になっている" data-en="The video is one minute or less">動画は1分以内になっている</li>
+      <li data-ja="使用したAIサービス・モデルをメモした" data-en="You noted the AI services and models you used">使用したAIサービス・モデルをメモした</li>
+      <li data-ja="プロンプトとワークフロー（企画→画像→動画→編集）を書き出した" data-en="You wrote out your prompts and workflow (plan → images → animate → edit)">プロンプトとワークフロー（企画→画像→動画→編集）を書き出した</li>
+      <li data-ja="使用素材のライセンス（商用可／非商用のみ／不明）を確認した" data-en="You checked the license of your materials (commercial OK / non-commercial only / unknown)">使用素材のライセンス（商用可／非商用のみ／不明）を確認した</li>
+      <li data-ja="クレジット表記が必要な素材があれば記載した" data-en="You credited any materials that require attribution">クレジット表記が必要な素材があれば記載した</li>
+    </ul>
+
+    <p style="margin-top:36px"><a class="back" href="/submit/" data-ja="→ 応募フォームへ進む" data-en="→ Go to the entry form">→ 応募フォームへ進む</a></p>
+  </div></main>
+
+  <footer><strong>AGEWEC 2026</strong><br/>Agentic Work Execution Challenge</footer>
+  <script src="/script.js"></script>
+</body>
+</html>

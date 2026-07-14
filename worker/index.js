@@ -79,6 +79,7 @@ async function sendConfirmationEmail(env, s, id, lang) {
   const fields = [
     ["title",          "作品タイトル",         "Title"],
     ["author",         "応募者名",             "Name"],
+    ["nickname",       "ニックネーム",         "Nickname"],
     ["email",          "メールアドレス",       "Email"],
     ["affiliation",    "所属",                 "Affiliation"],
     ["country",        "国・地域",             "Country"],
@@ -181,7 +182,7 @@ async function handleSubmit(db, env, request) {
 
   const pick = (...keys) => { for (const k of keys) if (data[k] != null && data[k] !== "") return data[k]; return ""; };
   const s = {
-    title: pick("title"), author: pick("author"), email: pick("email"),
+    title: pick("title"), author: pick("author"), nickname: pick("nickname"), email: pick("email"),
     affiliation: pick("affiliation"), country: pick("country"),
     video_url: pick("videoUrl", "video_url"), ai_tools: pick("aiTools", "ai_tools"),
     assets: pick("assets"), workflow: pick("workflow"),
@@ -200,13 +201,13 @@ async function handleSubmit(db, env, request) {
 
   await db.prepare(
     `INSERT INTO submissions
-      (id, created_at, title, author, email, affiliation, country,
+      (id, created_at, title, author, nickname, email, affiliation, country,
        video_url, ai_tools, assets, workflow, screenshot_url, license_category,
        description, repo_url, sns, local_env,
        c_rules, c_rights, c_url, c_license, c_thirdparty, c_privacy, c_pr, c_guardian,
        form_version, rules_version, privacy_version, attend, status)
      VALUES
-      (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,
+      (?1,?2,?3,?4,?30,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,
        ?18,?19,?20,?21,?22,?23,?24,?25,?26,?27,?28,?29,'received')`
   ).bind(
     id, now, s.title, s.author, s.email, s.affiliation, s.country,
@@ -214,7 +215,8 @@ async function handleSubmit(db, env, request) {
     s.description, s.repo_url, s.sns, s.local_env,
     b(data.c_rules), b(data.c_rights), b(data.c_url), b(data.c_license), b(data.c_thirdparty),
     b(data.c_privacy), b(data.c_pr), b(data.c_guardian),
-    FORM_VERSION, RULES_VERSION, PRIVACY_VERSION, s.attend
+    FORM_VERSION, RULES_VERSION, PRIVACY_VERSION, s.attend,
+    s.nickname
   ).run();
 
   const lang = (data.lang === "en") ? "en" : "ja";
@@ -224,7 +226,7 @@ async function handleSubmit(db, env, request) {
 
 async function handleEntries(db) {
   const { results } = await db.prepare(
-    `SELECT title, author, affiliation, description, video_url, ai_tools, award
+    `SELECT title, COALESCE(NULLIF(nickname, ''), author) AS author, affiliation, description, video_url, ai_tools, award
        FROM submissions WHERE is_public = 1 AND disqualified = 0
       ORDER BY (award <> '') DESC, created_at ASC`
   ).all();
@@ -312,7 +314,7 @@ async function handleAdminExport(db) {
   const scores = (await db.prepare("SELECT * FROM scores").all()).results || [];
   const grouped = {};
   for (const s of scores) (grouped[s.submission_id] = grouped[s.submission_id] || []).push(s);
-  const cols = ["id","created_at","title","author","email","affiliation","country","video_url","ai_tools",
+  const cols = ["id","created_at","title","author","nickname","email","affiliation","country","video_url","ai_tools",
     "license_category","workflow","screenshot_url","attend","c_rules","c_rights","c_url","c_license","c_thirdparty",
     "c_privacy","c_pr","c_guardian","status","is_public","finalist","award","incomplete","disqualified","judge_count","avg_total"];
   const lines = [cols.join(",")];

@@ -29,7 +29,26 @@
     .rowmsg { font-size:11px; font-weight:800; }
     .rowmsg.ok{color:#1f8a55;} .rowmsg.err{color:#c2306a;}
     .scorecell b { color:var(--ink); }
-    @media (max-width:1100px){ table{ display:block; overflow-x:auto; white-space:nowrap; } }
+    .muted { color:var(--ink-muted); font-weight:600; }
+    .btn-link { cursor:pointer; border:0; background:none; padding:0; font:inherit; font-size:11px; font-weight:900; color:#327dba; }
+    .aitools { white-space:pre-wrap; word-break:break-word; max-width:280px; font-size:12px; line-height:1.5; margin-top:3px; }
+    .kv { display:block; font-size:11px; color:var(--ink-muted); margin-top:2px; }
+    .kv b { color:var(--ink); font-weight:800; }
+    tr.detail-row.hidden { display:none; }
+    tr.detail-row > td { background:#eef3fc; padding:14px 16px; }
+    .detail { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:10px 26px; }
+    .detail .item { border-bottom:1px dashed rgba(31,48,71,.16); padding-bottom:7px; }
+    .detail .lbl { font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-muted); font-weight:900; }
+    .detail .val { font-size:12.5px; line-height:1.6; white-space:pre-wrap; word-break:break-word; }
+    .detail .item.wide { grid-column:1 / -1; }
+    .detail-scores { margin-top:12px; font-size:12px; }
+    .detail-scores table { border:0; border-radius:0; background:transparent; }
+    .detail-scores th, .detail-scores td { padding:4px 8px; border-bottom:1px solid rgba(31,48,71,.12); }
+    @media (max-width:1100px){
+      table{ display:block; overflow-x:auto; white-space:nowrap; }
+      .aitools, .detail, .detail .val { white-space:pre-wrap; }
+      .detail { grid-template-columns:1fr; }
+    }
   </style>
 </head>
 <body>
@@ -47,13 +66,14 @@
           <span id="openPill" class="pill closed">―</span>
           <button class="btn-sm" id="lockBtn">受付ロック切替</button>
           <a class="btn-sm primary" id="csvLink" href="#">CSV出力</a>
+          <button class="btn-sm" id="expandBtn">詳細をすべて展開</button>
           <button class="btn-sm" onclick="load()">再読込</button>
         </div>
       </div>
       <div id="status" class="small"></div>
       <div style="margin-top:12px;">
         <table id="tbl"><thead><tr>
-          <th>ID / 投稿日時</th><th>作品 / 投稿者</th><th>連絡先</th><th>動画 / AI</th>
+          <th>ID / 投稿日時</th><th>作品 / 投稿者（本名・公開名）</th><th>連絡先</th><th>動画 / AI利用</th>
           <th>同意</th><th>採点(平均)</th><th>状態</th><th>区分</th><th>保存</th>
         </tr></thead><tbody id="tb"></tbody></table>
       </div>
@@ -66,7 +86,20 @@
   <script>
     document.getElementById('csvLink').href = ay('/api/admin/export.csv');
     let subs = [];
-    const esc=(s)=>String(s==null?'':s).replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    const esc=(s)=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const DASH='<span class="muted">―</span>';
+    const LICENSE_LABEL={commercial_ok:'商用利用可',non_commercial:'非商用のみ',unknown:'不明'};
+    const ATTEND_LABEL={onsite:'現地希望',online:'オンライン希望'};
+    const AFFIL_LABEL={university:'大学',company:'企業',individual:'個人',other:'その他'};
+    const CRIT=['観光魅力','情緒的訴求','物語一貫性','AI自律性','WF設計','技術創造性'];
+
+    // 値が空なら「―」。改行はそのまま表示。
+    const val=(v)=>{ const t=String(v==null?'':v).trim(); return t? esc(t) : DASH; };
+    const label=(map,v)=>{ const t=String(v==null?'':v).trim(); return t? (map[t]||esc(t)) : DASH; };
+    const link=(url,text)=>{ const u=String(url==null?'':url).trim();
+      return u? '<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(text||u)+'</a>' : DASH; };
+    const nickOf=(s)=>{ const n=String(s.nickname==null?'':s.nickname).trim();
+      return n? esc(n) : '<span class="muted">未設定（本名を公開表示）</span>'; };
 
     async function load(){
       const st=document.getElementById('status');
@@ -90,6 +123,47 @@
       return '<span class="small">必須:'+(allReq?'✓':'✗')+' PR:'+(s.c_pr?'✓':'-')+' 保護者:'+(s.c_guardian?'✓':'-')+'</span>';
     }
 
+    function item(lbl, html, wide){
+      return '<div class="item'+(wide?' wide':'')+'"><div class="lbl">'+lbl+'</div><div class="val">'+html+'</div></div>';
+    }
+
+    // 審査員ごとの採点内訳（あれば）
+    function scoreTable(s){
+      const sc = s.scores||[];
+      if(!sc.length) return '';
+      const head='<tr><th>審査員</th>'+CRIT.map(c=>'<th>'+c+'</th>').join('')+'<th>計</th><th>コメント</th></tr>';
+      const body=sc.map(x=>{
+        const t=(x.c||[]).reduce((a,v)=>a+(v||0),0);
+        return '<tr><td>'+esc(x.judge_email)+'</td>'+(x.c||[]).map(v=>'<td>'+(v==null?'-':v)+'</td>').join('')+
+               '<td><b>'+t+'</b></td><td>'+val(x.comment)+'</td></tr>';
+      }).join('');
+      return '<div class="detail-scores"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
+    }
+
+    function detailHtml(s){
+      return '<div class="detail">'+
+        item('使用AIツール・モデル', val(s.ai_tools), true)+
+        item('ワークフロー説明', val(s.workflow), true)+
+        item('素材（画像生成モデル / 音声 / 音楽）', val(s.assets))+
+        item('ライセンス区分', label(LICENSE_LABEL, s.license_category))+
+        item('ローカル実行環境', val(s.local_env))+
+        item('スクリーンショットURL', link(s.screenshot_url))+
+        item('動画URL', link(s.video_url))+
+        item('GitHub / 作品ページ', link(s.repo_url))+
+        item('SNS', val(s.sns))+
+        item('作品説明', val(s.description), true)+
+        item('投稿者名（本名）', val(s.author))+
+        item('ニックネーム（公開表示名）', nickOf(s))+
+        item('メールアドレス', val(s.email))+
+        item('所属', label(AFFIL_LABEL, s.affiliation))+
+        item('国・地域', val(s.country))+
+        item('現地参加希望', label(ATTEND_LABEL, s.attend))+
+        item('同意（必須6項目）', ['c_rules','c_rights','c_url','c_license','c_thirdparty','c_privacy'].map(k=>k.slice(2)+':'+(s[k]?'✓':'✗')).join(' / '))+
+        item('同意（任意）', 'PR利用:'+(s.c_pr?'✓':'-')+' / 保護者:'+(s.c_guardian?'✓':'-'))+
+        item('版数', 'form '+val(s.form_version)+' ／ rules '+val(s.rules_version)+' ／ privacy '+val(s.privacy_version))+
+      '</div>'+scoreTable(s);
+    }
+
     function render(){
       const tb=document.getElementById('tb'); tb.innerHTML='';
       subs.forEach((s,i)=>{
@@ -97,9 +171,19 @@
         const sc = s.judge_count? ('<span class="scorecell"><b>'+(s.avg_total!=null?s.avg_total.toFixed(1):'-')+'</b>/18 <span class="small">('+s.judge_count+'名)</span></span>') : '<span class="small">未</span>';
         tr.innerHTML =
           '<td><div class="small">'+esc(s.id)+'</div>'+esc((s.created_at||'').slice(0,16).replace('T',' '))+'</td>'+
-          '<td><b>'+esc(s.title)+'</b><div class="small">'+esc(s.author)+(s.affiliation?(' / '+esc(s.affiliation)):'')+' · '+esc(s.country)+'</div></td>'+
-          '<td class="small">'+esc(s.email)+(s.attend?('<div class="small">'+(s.attend==='onsite'?'現地希望':s.attend==='online'?'オンライン希望':esc(s.attend))+'</div>'):'')+'</td>'+
-          '<td><a href="'+esc(s.video_url)+'" target="_blank" rel="noopener">動画</a><div class="small">'+esc(s.license_category||'')+'</div><div class="small">'+esc((s.ai_tools||'').slice(0,40))+'</div></td>'+
+          '<td><b>'+esc(s.title)+'</b>'+
+            '<span class="kv">本名 <b>'+val(s.author)+'</b></span>'+
+            '<span class="kv">公開名 <b>'+nickOf(s)+'</b></span>'+
+            '<span class="kv">'+label(AFFIL_LABEL,s.affiliation)+' · '+val(s.country)+'</span></td>'+
+          '<td class="small">'+val(s.email)+'<span class="kv">'+label(ATTEND_LABEL,s.attend)+'</span></td>'+
+          '<td>'+link(s.video_url,'動画')+' <button class="btn-link" data-toggle="'+i+'">詳細 ▼</button>'+
+            '<span class="kv">ライセンス <b>'+label(LICENSE_LABEL,s.license_category)+'</b></span>'+
+            '<span class="kv">AIツール</span><div class="aitools">'+val(s.ai_tools)+'</div>'+
+            (String(s.assets||'').trim()?('<span class="kv">素材 '+val(s.assets)+'</span>'):'')+
+            '<span class="kv">WF '+val(s.workflow)+'</span>'+
+            (String(s.local_env||'').trim()?('<span class="kv">環境 '+val(s.local_env)+'</span>'):'')+
+            (String(s.screenshot_url||'').trim()?('<span class="kv">'+link(s.screenshot_url,'スクショ')+'</span>'):'')+
+          '</td>'+
           '<td>'+consentBadges(s)+'</td>'+
           '<td>'+sc+'</td>'+
           '<td><select data-k="status">'+['received','screening','judging','finalist','done'].map(v=>'<option value="'+v+'"'+(s.status===v?' selected':'')+'>'+v+'</option>').join('')+'</select></td>'+
@@ -112,6 +196,14 @@
           '</div></td>'+
           '<td><button class="btn-sm primary" data-save="'+i+'">保存</button><div class="rowmsg" data-msg="'+i+'"></div></td>';
         tb.appendChild(tr);
+
+        const dr=document.createElement('tr');
+        dr.className='detail-row hidden';
+        dr.innerHTML='<td colspan="9">'+detailHtml(s)+'</td>';
+        tb.appendChild(dr);
+
+        const btn=tr.querySelector('[data-toggle]');
+        btn.onclick=()=>{ const h=dr.classList.toggle('hidden'); btn.textContent = h?'詳細 ▼':'詳細 ▲'; };
         tr.querySelector('[data-save]').onclick=()=>saveRow(i,tr);
       });
     }
@@ -140,6 +232,14 @@
         const r=await fetch(ay('/api/admin/lock'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({open})});
         if(r.ok) load();
       }catch{}
+    };
+
+    document.getElementById('expandBtn').onclick=(e)=>{
+      const rows=[...document.querySelectorAll('tr.detail-row')];
+      const open = rows.some(r=>r.classList.contains('hidden'));
+      rows.forEach(r=>r.classList.toggle('hidden', !open));
+      document.querySelectorAll('[data-toggle]').forEach(b=>{ b.textContent = open?'詳細 ▲':'詳細 ▼'; });
+      e.target.textContent = open?'詳細をすべて折りたたむ':'詳細をすべて展開';
     };
 
     load();

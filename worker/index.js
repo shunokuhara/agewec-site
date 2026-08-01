@@ -315,7 +315,8 @@ async function handleAdminExport(db) {
   const grouped = {};
   for (const s of scores) (grouped[s.submission_id] = grouped[s.submission_id] || []).push(s);
   const cols = ["id","created_at","title","author","nickname","email","affiliation","country","video_url","ai_tools",
-    "license_category","workflow","screenshot_url","attend","c_rules","c_rights","c_url","c_license","c_thirdparty",
+    "assets","license_category","workflow","screenshot_url","local_env","description","repo_url","sns",
+    "attend","c_rules","c_rights","c_url","c_license","c_thirdparty",
     "c_privacy","c_pr","c_guardian","status","is_public","finalist","award","incomplete","disqualified","judge_count","avg_total"];
   const lines = [cols.join(",")];
   for (const s of subs) {

@@ -1,10 +1,13 @@
 import { DatabaseSync } from 'node:sqlite';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import worker from './worker/index.js';
 
 // --- D1-compatible shim over node:sqlite ---
 const db = new DatabaseSync(':memory:');
-db.exec(readFileSync('./migrations/0001_init.sql', 'utf8'));
+// すべてのマイグレーションを番号順に適用（0001 だけだと nickname 等が欠ける）
+for (const f of readdirSync('./migrations').filter(f=>f.endsWith('.sql')).sort()) {
+  db.exec(readFileSync('./migrations/' + f, 'utf8'));
+}
 
 class Stmt {
   constructor(sql){ this.sql=sql; this.args=[]; }

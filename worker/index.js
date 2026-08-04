@@ -22,11 +22,11 @@ const FORM_VERSION = "v0.2";
 const RULES_VERSION = "v0.1";
 const PRIVACY_VERSION = "v0.1";
 // 評価フォームは2系統。judges.rubric_type で評価者ごとに振り分ける。
-//   expert   … 専門審査ルーブリック（6観点 × 0-3点 = 18点満点）
-//   audience … 一般視聴者アンケート（6設問 × 1-5点 = 30点満点）
+// どちらも 6項目 × 0-3点 = 18点満点。段階ごとに記述を持つルーブリック形式で、
+// 設問の中身だけが異なる（専門は制作過程を含む、一般は視聴体験のみ）。
 const RUBRIC_TYPES = {
   expert:   { version: "v0.2",   min: 0, max: 3, full: 18 },
-  audience: { version: "a-v0.1", min: 1, max: 5, full: 30 },
+  audience: { version: "a-v0.2", min: 0, max: 3, full: 18 },
 };
 const DEFAULT_RUBRIC_TYPE = "expert";
 const normType = (v) => (RUBRIC_TYPES[String(v || "")] ? String(v) : DEFAULT_RUBRIC_TYPE);
@@ -270,7 +270,7 @@ async function handleJudgeAssignments(db, user) {
     return o;
   };
   // 評価者のフォームを後から切り替えた場合、以前のフォームで入力された点数は
-  // 尺度が違うので引き継がない（1-5の画面に0-3の値が選択済みとして出るのを防ぐ）。
+  // 設問内容が違うので引き継がない（専門の点数が一般の画面に出るのを防ぐ）。
   const entries = (rows || []).map((r) => {
     const prev = byId[r.id];
     const mine = prev && normType(prev.rubric_type) === user.rubric_type ? prev : null;
@@ -400,7 +400,7 @@ async function handleAdminExport(db) {
     "assets","license_category","workflow","screenshot_url","local_env","description","repo_url","sns",
     "attend","c_rules","c_rights","c_url","c_license","c_thirdparty",
     "c_privacy","c_pr","c_guardian","status","is_public","finalist","award","incomplete","disqualified",
-    "expert_count","expert_avg_18","audience_count","audience_avg_30"];
+    "expert_count","expert_avg_18","audience_count","audience_avg_18"];
   const sumOf = (x) => x.c1 + x.c2 + x.c3 + x.c4 + x.c5 + x.c6;
   const avg = (arr) => (arr.length ? (arr.reduce((a, x) => a + sumOf(x), 0) / arr.length).toFixed(2) : "");
   const lines = [cols.join(",")];
@@ -409,7 +409,7 @@ async function handleAdminExport(db) {
     const ex = sc.filter((x) => normType(x.rubric_type) === "expert");
     const au = sc.filter((x) => normType(x.rubric_type) === "audience");
     const extra = { expert_count: ex.length, expert_avg_18: avg(ex),
-                    audience_count: au.length, audience_avg_30: avg(au) };
+                    audience_count: au.length, audience_avg_18: avg(au) };
     lines.push(cols.map((c) => (c in extra ? extra[c] : csvCell(s[c]))).join(","));
   }
   return text("\uFEFF" + lines.join("\n"), 200, {

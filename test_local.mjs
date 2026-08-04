@@ -95,6 +95,77 @@ r = await call('POST','/2026/api/admin/lock',{email:'admin@x.com',body:{open:fal
 r = await call('POST','/2026/api/submit',{body:sub});
 check('submit blocked when closed -> 403', r.status===403);
 
+console.log('\n== 評価フォーム2系統（expert / audience）==');
+r = await call('POST','/2026/api/admin/lock',{email:'admin@x.com',body:{open:true}});
+r = await call('GET','/2026/api/admin/judges',{email:'admin@x.com'});
+check('judges一覧が取れる', r.status===200 && r.data.judges.length===2, JSON.stringify(r.data));
+check('既定は expert', r.data.judges.every(j=>j.rubric_type==='expert'));
+
+// 一般アンケート用の評価者を追加
+r = await call('POST','/2026/api/admin/judge',{email:'admin@x.com',
+  body:{email:'Viewer@x.com', name:'一般視聴者', role:'judge', rubric_type:'audience', active:1}});
+check('audience評価者を追加', r.status===200 && r.data.rubric_type==='audience', JSON.stringify(r.data));
+
+r = await call('GET','/2026/api/judge/me',{email:'viewer@x.com'});
+check('me が audience を返す', r.status===200 && r.data.rubric_type==='audience', JSON.stringify(r.data));
+
+r = await call('GET','/2026/api/judge/assignments',{email:'viewer@x.com'});
+const ent = r.data.entries[0];
+check('assignments が audience を返す', r.data.rubric_type==='audience');
+check('audience には制作情報を出さない', ent && !('ai_tools' in ent) && !('workflow' in ent), JSON.stringify(Object.keys(ent||{})));
+check('audience にも動画URLは出す', !!(ent && ent.video_url));
+
+// 点数レンジは評価者のフォームで決まる
+r = await call('POST','/2026/api/judge/score',{email:'viewer@x.com',body:{submission_id:id,c1:0,c2:3,c3:3,c4:3,c5:3,c6:3}});
+check('audience で 0 は範囲外 -> 400', r.status===400);
+r = await call('POST','/2026/api/judge/score',{email:'viewer@x.com',body:{submission_id:id,c1:5,c2:4,c3:4,c4:5,c5:4,c6:5,comment:'また行きたい'}});
+check('audience 1-5 で保存できる', r.status===200 && r.data.ok, JSON.stringify(r.data));
+r = await call('POST','/2026/api/judge/score',{email:'judge@x.com',body:{submission_id:id,c1:5,c2:1,c3:1,c4:1,c5:1,c6:1}});
+check('expert で 5 は範囲外 -> 400', r.status===400);
+
+r = await call('GET','/2026/api/admin/submissions',{email:'admin@x.com'});
+const s0 = r.data.submissions[0];
+check('expert平均は 14/18 のまま', Math.round(s0.expert_avg)===14 && s0.expert_count===1, JSON.stringify([s0.expert_avg,s0.expert_count]));
+check('audience平均は 27/30 で別集計', Math.round(s0.audience_avg)===27 && s0.audience_count===1, JSON.stringify([s0.audience_avg,s0.audience_count]));
+check('2系統を混ぜていない', s0.avg_total===s0.expert_avg);
+check('採点行に rubric_type が付く', s0.scores.some(x=>x.rubric_type==='audience') && s0.scores.some(x=>x.rubric_type==='expert'));
+
+r = await call('GET','/2026/api/admin/export.csv',{email:'admin@x.com'});
+check('CSVに2系統の列がある', r.data.includes('expert_count,expert_avg_18,audience_count,audience_avg_30'));
+
+// 振り分けの変更が即座に効く
+r = await call('POST','/2026/api/admin/judge',{email:'admin@x.com',body:{email:'viewer@x.com', name:'一般視聴者', role:'judge', rubric_type:'expert', active:1}});
+r = await call('GET','/2026/api/judge/me',{email:'viewer@x.com'});
+check('フォーム変更が反映される', r.data.rubric_type==='expert');
+r = await call('POST','/2026/api/admin/judge',{email:'admin@x.com',body:{email:'judge@x.com', role:'judge', rubric_type:'audience', active:0}});
+r = await call('GET','/2026/api/judge/me',{email:'judge@x.com'});
+check('無効化した評価者は 401', r.status===401);
+r = await call('POST','/2026/api/admin/judge',{email:'admin@x.com',body:{email:'bad-email', rubric_type:'audience'}});
+check('不正メールは 400', r.status===400);
+
+console.log('\n== 切り替え時の取り扱い / 保存の副作用 ==');
+// judge@x.com は expert で 14点入力済み。audience に切り替えると旧点数は引き継がない
+r = await call('POST','/2026/api/admin/judge',{email:'admin@x.com',body:{email:'judge@x.com', rubric_type:'audience', active:1}});
+check('active:1 に戻せる', r.status===200);
+r = await call('GET','/2026/api/judge/assignments',{email:'judge@x.com'});
+check('尺度違いの旧点数は引き継がない', r.data.entries[0].myScore===null && r.data.entries[0].scored===false,
+  JSON.stringify(r.data.entries[0].myScore));
+// 部分更新で name が消えないこと
+r = await call('GET','/2026/api/admin/judges',{email:'admin@x.com'});
+const jrow = r.data.judges.find(j=>j.email==='judge@x.com');
+check('省略した name は維持される', jrow.name==='審査員', JSON.stringify(jrow));
+// 元に戻すと旧点数が復活する（scores行は消えていない）
+r = await call('POST','/2026/api/admin/judge',{email:'admin@x.com',body:{email:'judge@x.com', rubric_type:'expert'}});
+r = await call('GET','/2026/api/judge/assignments',{email:'judge@x.com'});
+check('戻せば旧点数が見える（行は消えない）', r.data.entries[0].myScore && r.data.entries[0].myScore.c1===3);
+// 自分の権限は外せない
+r = await call('POST','/2026/api/admin/judge',{email:'admin@x.com',body:{email:'admin@x.com', role:'judge'}});
+check('自分をjudgeに降格 -> 400', r.status===400 && r.data.error==='self_lockout', JSON.stringify(r.data));
+r = await call('POST','/2026/api/admin/judge',{email:'admin@x.com',body:{email:'admin@x.com', active:0}});
+check('自分を無効化 -> 400', r.status===400);
+r = await call('GET','/2026/api/admin/submissions',{email:'admin@x.com'});
+check('adminは管理画面に入れたまま', r.status===200);
+
 console.log('\n----------------------------------------');
 console.log(`RESULT: ${pass} passed, ${fail} failed`);
 process.exit(fail?1:0);

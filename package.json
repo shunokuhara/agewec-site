@@ -9,7 +9,8 @@
     "check": "node --check worker/index.js",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "migrate": "wrangler d1 migrations apply agewec --remote"
+    "migrate": "wrangler d1 migrations apply agewec_2026 --remote",
+    "migrate:local": "wrangler d1 migrations apply agewec_2026"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

@@ -91,8 +91,8 @@
         <div id="judgesBody" class="hidden">
           <p class="small">
             <b>専門審査（0–3点 × 6観点 / 18点満点）</b>… 従来のルーブリック。AI利用・ワークフローの詳細も表示されます。<br>
-            <b>一般アンケート（1–5点 × 6設問 / 30点満点）</b>… 視聴者向け。動画・タイトル・作品説明のみ表示し、制作情報は出しません。<br>
-            集計は2系統を分けて表示・出力します（満点が異なるため混ぜません）。
+            <b>一般アンケート（0–3点 × 6項目 / 18点満点）</b>… 視聴者向け。動画・タイトル・作品説明のみ表示し、制作情報は出しません。<br>
+            満点は同じ18点ですが、設問の中身が違うため集計は2系統に分けて表示・出力します。
           </p>
           <table id="jtbl"><thead><tr>
             <th>メール（Cloudflare Access のID）</th><th>表示名</th><th>権限</th><th>評価フォーム</th>
@@ -102,7 +102,7 @@
             <input type="text" id="jEmail" placeholder="メールアドレス" style="width:240px">
             <input type="text" id="jName" placeholder="表示名">
             <select id="jRole"><option value="judge">judge</option><option value="admin">admin</option></select>
-            <select id="jRubric"><option value="expert">専門審査（0-3/18点）</option><option value="audience">一般アンケート（1-5/30点）</option></select>
+            <select id="jRubric"><option value="expert">専門審査（0-3/18点）</option><option value="audience">一般アンケート（0-3/18点）</option></select>
             <button class="btn-sm primary" id="jAdd">評価者を追加</button>
             <span class="rowmsg" id="jAddMsg"></span>
           </div>
@@ -132,7 +132,7 @@
     // 評価フォーム2系統（満点が違うので集計は必ず分ける）
     const RUBRIC_META={
       expert:  {label:'専門審査', full:18, crit:['観光魅力','情緒的訴求','物語一貫性','AI自律性','WF設計','技術創造性']},
-      audience:{label:'一般アンケート', full:30, crit:['訪問意欲','印象','分かりやすさ','SNS共有','AI活用の興味','総合評価']},
+      audience:{label:'一般アンケート', full:18, crit:['訪問意欲','印象','分かりやすさ','共有意向','AI受け止め','総合評価']},
     };
     const rmeta=(t)=>RUBRIC_META[t]||RUBRIC_META.expert;
 
@@ -304,7 +304,7 @@
           '<td><select data-j="role">'+opt('judge',j.role,'judge')+opt('admin',j.role,'admin')+'</select></td>'+
           '<td><select data-j="rubric_type">'+
             opt('expert',j.rubric_type,'専門審査（0-3/18点）')+
-            opt('audience',j.rubric_type,'一般アンケート（1-5/30点）')+
+            opt('audience',j.rubric_type,'一般アンケート（0-3/18点）')+
           '</select><span class="kv"><span class="badge '+esc(j.rubric_type)+'">'+rmeta(j.rubric_type).label+'</span></span></td>'+
           '<td class="small">'+(j.assigned? j.assigned+'件' : '<span class="muted">全件</span>')+'</td>'+
           '<td class="small">'+(j.scored||0)+'</td>'+

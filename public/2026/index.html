@@ -36,31 +36,69 @@
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="/theme-2026.css" />
   <style>
-    /* 北九州賞（地域特別賞）の追加募集まわり */
-    .local-banner {
-      margin: 26px auto 0; max-width: 620px; text-align: left;
-      border: 1px solid rgba(255,255,255,.28); border-radius: 18px;
-      background: rgba(255,255,255,.10); backdrop-filter: blur(6px);
-      padding: 18px 22px;
+    /* 北九州賞（地域特別賞）の追加募集 —— Hero右カラムのお知らせ */
+    .hero-content.has-notice {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
+      gap: 44px;
+      align-items: start;
+      padding-top: 10vh;
+      padding-bottom: 140px;   /* 下部のメタ帯に重ならないよう確保 */
     }
-    .local-banner .lb-tag {
-      display: inline-block; font-weight: 900; font-size: 12.5px; letter-spacing: .04em;
-      padding: 4px 12px; border-radius: 999px; background: #ffd75e; color: #3a2a00;
+    .hero-content.has-notice .hero-main { min-width: 0; }
+    .hero-content.has-notice h1 { font-size: clamp(44px, 5.6vw, 82px); }
+    .hero-content.has-notice .headline { font-size: clamp(26px, 3.2vw, 46px); }
+
+    .hero-notice {
+      border: 1px solid rgba(160,190,255,.42);
+      border-radius: 18px;
+      background: rgba(16,25,43,.72);
+      backdrop-filter: blur(10px);
+      padding: 22px 24px;
+      box-shadow: 0 26px 70px rgba(0,0,0,.32);
     }
-    .local-banner .lb-date { margin-top: 10px; font-weight: 800; font-size: 15px; }
-    .local-banner .lb-sub { margin-top: 4px; font-size: 12.5px; font-weight: 700; opacity: .8; }
-    .local-banner .lb-text { margin: 8px 0 0; font-size: 13.5px; line-height: 1.8; opacity: .9; }
-    .local-banner .lb-cta {
-      display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
-      font-weight: 900; font-size: 14px; text-decoration: none; color: inherit;
-      border-bottom: 2px solid currentColor; padding-bottom: 2px;
+    .hn-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .hn-new {
+      font-size: 11px; font-weight: 900; letter-spacing: .08em;
+      padding: 4px 11px; border-radius: 999px;
+      background: linear-gradient(135deg, #62a8ff, #ee8adf); color: #0d1526;
     }
-    .local-banner .lb-cta:hover { opacity: .75; }
-    .card.highlight { border-color: #f0b429; box-shadow: 0 18px 50px rgba(240,180,41,.18); }
-    .card.highlight h3::before { content: "★ "; color: #f0b429; }
+    .hn-title { font-weight: 900; font-size: 16px; color: #d9c2ff; }
+    .hn-lead { margin: 12px 0 0; font-size: 13px; line-height: 1.85; opacity: .92; }
+
+    .hn-deadline { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.14); }
+    .hn-label { font-size: 11.5px; font-weight: 800; letter-spacing: .06em; opacity: .72; }
+    .hn-date { margin-top: 4px; font-size: 24px; font-weight: 950; letter-spacing: -.01em; color: #c9b4ff; }
+    .hn-tz { font-size: 12px; opacity: .72; margin-top: 2px; }
+
+    .hn-grid {
+      margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.14);
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .hn-grid p { margin: 4px 0 0; font-size: 12px; line-height: 1.7; opacity: .9; }
+    .hn-grid .hn-note { font-size: 11px; opacity: .62; margin-top: 6px; }
+
+    .hn-cta {
+      display: inline-flex; align-items: center; gap: 7px; margin-top: 18px;
+      padding: 11px 20px; border-radius: 10px;
+      background: linear-gradient(135deg, #62a8ff, #ee8adf); color: #0d1526;
+      font-weight: 900; font-size: 14px; text-decoration: none;
+      box-shadow: 0 12px 34px rgba(105,132,255,.3);
+    }
+    .hn-cta:hover { opacity: .88; }
+
+    .card.highlight { border-color: #a58bff; box-shadow: 0 18px 50px rgba(140,120,255,.2); }
+    .card.highlight h3::before { content: "★ "; color: #a58bff; }
+
+    @media (max-width: 1100px) {
+      .hero-content.has-notice { grid-template-columns: 1fr; gap: 30px; padding-bottom: 120px; }
+      .hero-notice { max-width: 620px; }
+    }
     @media (max-width: 700px) {
-      .local-banner { padding: 16px 18px; }
-      .local-banner .lb-date { font-size: 14px; }
+      .hero-content.has-notice { padding-bottom: 40px; }
+      .hero-notice { padding: 18px 18px; }
+      .hn-grid { grid-template-columns: 1fr; gap: 12px; }
+      .hn-date { font-size: 20px; }
     }
   </style>
 </head>
@@ -91,7 +129,8 @@
       </div>
     </nav>
 
-    <div class="hero-content">
+    <div class="hero-content has-notice">
+      <div class="hero-main">
       <h1>AGEWEC 2026</h1>
       <p class="subtitle"><span>Agentic Work Execution</span> Challenge</p>
       <p class="eyebrow">The Age of Agentic Work Execution</p>
@@ -107,14 +146,41 @@
         <a class="btn primary" href="/submit/"><span data-ja="参加登録" data-en="Register Interest">参加登録</span> <span>→</span></a>
         <a class="btn secondary" href="#sponsors"><span data-ja="スポンサー募集" data-en="Become a Sponsor">スポンサー募集</span> <span>→</span></a>
       </div>
-
-      <div class="local-banner">
-        <div class="lb-tag" data-ja="北九州賞 追加募集" data-en="Kitakyushu Award · Additional Call">北九州賞 追加募集</div>
-        <div class="lb-date" data-ja="応募締切：2026年8月23日（日）20:59（日本時間）" data-en="Deadline: Sunday, August 23, 2026 · 20:59 JST">応募締切：2026年8月23日（日）20:59（日本時間）</div>
-        <div class="lb-sub" data-ja="結果通知：2026年8月27日（木）　授賞式：2026年9月2日（水）" data-en="Notification: Thursday, August 27, 2026 · Award Ceremony: Wednesday, September 2, 2026">結果通知：2026年8月27日（木）　授賞式：2026年9月2日（水）</div>
-        <p class="lb-text" data-ja="地域からの参加促進のため、北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方を対象に、地域特別賞「北九州賞」の応募を受付中です。" data-en="To encourage participation from the region, we are accepting entries for the Kitakyushu Award, a regional special award open to residents of Kitakyushu City and those affiliated with schools, companies, or organizations connected to Kitakyushu.">地域からの参加促進のため、北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方を対象に、地域特別賞「北九州賞」の応募を受付中です。</p>
-        <a class="lb-cta" href="/submit/"><span data-ja="応募はこちら" data-en="Enter here">応募はこちら</span> <span>→</span></a>
       </div>
+
+      <aside class="hero-notice">
+        <div class="hn-head">
+          <span class="hn-new">NEW</span>
+          <span class="hn-title" data-ja="北九州枠 追加募集のお知らせ" data-en="Additional Call: Kitakyushu Award">北九州枠 追加募集のお知らせ</span>
+        </div>
+        <p class="hn-lead" data-ja="地域からの参加促進のため、北九州市在住の方、または北九州市に関連する学校・企業・団体に所属している方を対象に、「北九州賞（地域特別賞）」の追加募集を実施中です。" data-en="To encourage participation from the region, we are running an additional call for the Kitakyushu Award (Regional Special Award), open to residents of Kitakyushu City and those affiliated with schools, companies, or organizations connected to Kitakyushu.">地域からの参加促進のため、北九州市在住の方、または北九州市に関連する学校・企業・団体に所属している方を対象に、「北九州賞（地域特別賞）」の追加募集を実施中です。</p>
+
+        <div class="hn-deadline">
+          <div class="hn-label" data-ja="応募締切" data-en="Deadline">応募締切</div>
+          <div class="hn-date" data-ja="2026年8月23日（日）20:59" data-en="Sunday, August 23, 2026 · 20:59">2026年8月23日（日）20:59</div>
+          <div class="hn-tz" data-ja="（日本時間）" data-en="(JST)">（日本時間）</div>
+        </div>
+
+        <div class="hn-grid">
+          <div>
+            <div class="hn-label" data-ja="対象" data-en="Eligibility">対象</div>
+            <p data-ja="北九州市在住の方、または北九州市に関連する学校・企業・団体に所属している方" data-en="Residents of Kitakyushu City, or those affiliated with schools, companies, or organizations connected to Kitakyushu">北九州市在住の方、または北九州市に関連する学校・企業・団体に所属している方</p>
+          </div>
+          <div>
+            <div class="hn-label" data-ja="賞" data-en="Award">賞</div>
+            <p data-ja="北九州賞（地域特別賞）" data-en="Kitakyushu Award (Regional Special Award)">北九州賞（地域特別賞）</p>
+            <p class="hn-note" data-ja="※ 応募状況によっては受賞者なしとなる場合があります" data-en="* May not be presented depending on entries">※ 応募状況によっては受賞者なしとなる場合があります</p>
+          </div>
+          <div>
+            <div class="hn-label" data-ja="結果通知" data-en="Notification">結果通知</div>
+            <p data-ja="2026年8月27日（木）" data-en="Thursday, August 27, 2026">2026年8月27日（木）</p>
+            <div class="hn-label" style="margin-top:10px" data-ja="授賞式" data-en="Award Ceremony">授賞式</div>
+            <p data-ja="2026年9月2日（水）" data-en="Wednesday, September 2, 2026">2026年9月2日（水）</p>
+          </div>
+        </div>
+
+        <a class="hn-cta" href="/submit/"><span data-ja="応募はこちら" data-en="Enter here">応募はこちら</span> <span>→</span></a>
+      </aside>
     </div>
 
     <div class="meta">

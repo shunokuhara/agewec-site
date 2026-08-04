@@ -21,7 +21,15 @@ const CURRENT_YEAR = "2026";
 const FORM_VERSION = "v0.2";
 const RULES_VERSION = "v0.1";
 const PRIVACY_VERSION = "v0.1";
-const RUBRIC_VERSION = "v0.2";
+// 評価フォームは2系統。judges.rubric_type で評価者ごとに振り分ける。
+//   expert   … 専門審査ルーブリック（6観点 × 0-3点 = 18点満点）
+//   audience … 一般視聴者アンケート（6設問 × 1-5点 = 30点満点）
+const RUBRIC_TYPES = {
+  expert:   { version: "v0.2",   min: 0, max: 3, full: 18 },
+  audience: { version: "a-v0.1", min: 1, max: 5, full: 30 },
+};
+const DEFAULT_RUBRIC_TYPE = "expert";
+const normType = (v) => (RUBRIC_TYPES[String(v || "")] ? String(v) : DEFAULT_RUBRIC_TYPE);
 
 const REQUIRED_TEXT = ["title", "author", "email", "video_url", "ai_tools", "workflow", "description"];
 const REQUIRED_CONSENT = ["c_rules", "c_rights", "c_url", "c_license", "c_thirdparty", "c_privacy"];
@@ -38,9 +46,10 @@ function rid(prefix) {
 async function getUser(db, request) {
   const email = request.headers.get("Cf-Access-Authenticated-User-Email");
   if (!email) return null;
-  const row = await db.prepare("SELECT email, name, role, active FROM judges WHERE email = ?1")
+  const row = await db.prepare("SELECT email, name, role, active, rubric_type FROM judges WHERE email = ?1")
     .bind(email.toLowerCase()).first();
   if (!row || !row.active) return null;
+  row.rubric_type = normType(row.rubric_type);
   return row;
 }
 
@@ -250,23 +259,43 @@ async function handleJudgeAssignments(db, user) {
   const myScores = (await db.prepare("SELECT * FROM scores WHERE judge_email = ?1").bind(user.email).all()).results || [];
   const byId = {};
   for (const sc of myScores) byId[sc.submission_id] = sc;
-  const entries = (rows || []).map((r) => ({ ...r, myScore: byId[r.id] || null, scored: !!byId[r.id] }));
-  return json({ judge: user.name || user.email, entries });
+  // 一般視聴者アンケートでは、作品情報のうち動画の視聴に必要な項目だけを返す
+  // （制作ワークフローや使用AIの詳細は専門審査用のため出さない）。
+  const AUDIENCE_FIELDS = ["id", "title", "nickname", "author", "video_url", "description", "created_at"];
+  const trim = (r) => {
+    if (user.rubric_type !== "audience") return { ...r };
+    const o = {};
+    for (const k of AUDIENCE_FIELDS) o[k] = r[k];
+    o.author = r.nickname && String(r.nickname).trim() ? r.nickname : r.author; // 公開名を優先
+    return o;
+  };
+  // 評価者のフォームを後から切り替えた場合、以前のフォームで入力された点数は
+  // 尺度が違うので引き継がない（1-5の画面に0-3の値が選択済みとして出るのを防ぐ）。
+  const entries = (rows || []).map((r) => {
+    const prev = byId[r.id];
+    const mine = prev && normType(prev.rubric_type) === user.rubric_type ? prev : null;
+    return { ...trim(r), myScore: mine, scored: !!mine };
+  });
+  return json({ judge: user.name || user.email, rubric_type: user.rubric_type, entries });
 }
 
 async function handleJudgeScore(db, user, request) {
   let d;
   try { d = await request.json(); } catch { return json({ error: "bad_json" }, 400); }
   if (!d.submission_id) return json({ error: "missing:submission_id" }, 400);
-  const clamp = (v) => { const n = Number(v); return Number.isInteger(n) && n >= 0 && n <= 3 ? n : null; };
+  // 点数の許容範囲は「評価者に割り当てられたフォーム」で決まる（クライアント申告は採用しない）
+  const rt = user.rubric_type;
+  const spec = RUBRIC_TYPES[rt];
+  const clamp = (v) => { const n = Number(v); return Number.isInteger(n) && n >= spec.min && n <= spec.max ? n : null; };
   const c = [d.c1, d.c2, d.c3, d.c4, d.c5, d.c6].map(clamp);
   if (c.some((x) => x === null)) return json({ error: "score_range" }, 400);
   await db.prepare(
-    `INSERT INTO scores (submission_id, judge_email, c1,c2,c3,c4,c5,c6, comment, rubric_version, updated_at)
-     VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11)
+    `INSERT INTO scores (submission_id, judge_email, c1,c2,c3,c4,c5,c6, comment, rubric_version, rubric_type, updated_at)
+     VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12)
      ON CONFLICT(submission_id, judge_email) DO UPDATE SET
-       c1=?3,c2=?4,c3=?5,c4=?6,c5=?7,c6=?8, comment=?9, rubric_version=?10, updated_at=?11`
-  ).bind(d.submission_id, user.email, c[0], c[1], c[2], c[3], c[4], c[5], d.comment || "", RUBRIC_VERSION, new Date().toISOString()).run();
+       c1=?3,c2=?4,c3=?5,c4=?6,c5=?7,c6=?8, comment=?9, rubric_version=?10, rubric_type=?11, updated_at=?12`
+  ).bind(d.submission_id, user.email, c[0], c[1], c[2], c[3], c[4], c[5], d.comment || "",
+         spec.version, rt, new Date().toISOString()).run();
   return json({ ok: true });
 }
 
@@ -275,11 +304,19 @@ async function handleAdminSubmissions(db) {
   const scores = (await db.prepare("SELECT * FROM scores").all()).results || [];
   const grouped = {};
   for (const s of scores) (grouped[s.submission_id] = grouped[s.submission_id] || []).push(s);
+  const sumOf = (x) => x.c1 + x.c2 + x.c3 + x.c4 + x.c5 + x.c6;
+  const avg = (arr) => (arr.length ? arr.reduce((a, x) => a + sumOf(x), 0) / arr.length : null);
   const out = subs.map((s) => {
     const sc = grouped[s.id] || [];
-    const total = sc.length ? sc.reduce((a, x) => a + (x.c1 + x.c2 + x.c3 + x.c4 + x.c5 + x.c6), 0) / sc.length : null;
-    return { ...s, judge_count: sc.length, avg_total: total,
-      scores: sc.map((x) => ({ judge_email: x.judge_email, c: [x.c1, x.c2, x.c3, x.c4, x.c5, x.c6], comment: x.comment })) };
+    // 2系統は満点が違うので、絶対に混ぜて平均しない
+    const ex = sc.filter((x) => normType(x.rubric_type) === "expert");
+    const au = sc.filter((x) => normType(x.rubric_type) === "audience");
+    return { ...s,
+      judge_count: ex.length, avg_total: avg(ex),              // 既存キー（専門審査）は後方互換で維持
+      expert_count: ex.length, expert_avg: avg(ex),
+      audience_count: au.length, audience_avg: avg(au),
+      scores: sc.map((x) => ({ judge_email: x.judge_email, rubric_type: normType(x.rubric_type),
+        c: [x.c1, x.c2, x.c3, x.c4, x.c5, x.c6], comment: x.comment })) };
   });
   const open = (await getSetting(db, "submissions_open")) === "1";
   return json({ submissions: out, submissions_open: open });
@@ -297,6 +334,51 @@ async function handleAdminUpdate(db, request) {
   vals.push(d.id);
   await db.prepare(`UPDATE submissions SET ${sets.join(", ")} WHERE id = ?${i}`).bind(...vals).run();
   return json({ ok: true });
+}
+
+// ---- 評価者管理（誰にどちらのフォームを出すか） ----
+
+async function handleAdminJudges(db) {
+  const rows = (await db.prepare(
+    `SELECT j.email, j.name, j.role, j.active, j.rubric_type,
+            (SELECT COUNT(*) FROM assignments a WHERE a.judge_email = j.email) AS assigned,
+            (SELECT COUNT(*) FROM scores sc WHERE sc.judge_email = j.email)    AS scored
+       FROM judges j ORDER BY j.role DESC, j.email ASC`
+  ).all()).results || [];
+  for (const r of rows) r.rubric_type = normType(r.rubric_type);
+  return json({ judges: rows, rubric_types: Object.keys(RUBRIC_TYPES) });
+}
+
+async function handleAdminJudgeSave(db, user, request) {
+  let d;
+  try { d = await request.json(); } catch { return json({ error: "bad_json" }, 400); }
+  const email = String(d.email || "").trim().toLowerCase();
+  if (!email || !email.includes("@")) return json({ error: "missing:email" }, 400);
+
+  // 送られてきた項目だけを更新する（省略した項目は現状維持。名前が消えるのを防ぐ）
+  const name = "name" in d ? String(d.name || "") : null;
+  const role = "role" in d ? (d.role === "admin" ? "admin" : "judge") : null;
+  const rt = "rubric_type" in d ? normType(d.rubric_type) : null;
+  const active = "active" in d ? (d.active === 0 || d.active === false ? 0 : 1) : null;
+
+  // 自分自身のadmin権限を落とす／自分を無効化すると管理画面に入れなくなるので防ぐ
+  if (email === user.email && (role === "judge" || active === 0)) {
+    return json({ error: "self_lockout" }, 400);
+  }
+
+  await db.prepare(
+    `INSERT INTO judges (email, name, role, active, rubric_type)
+     VALUES (?1, COALESCE(?2,''), COALESCE(?3,'judge'), COALESCE(?4,1), COALESCE(?5,'${DEFAULT_RUBRIC_TYPE}'))
+     ON CONFLICT(email) DO UPDATE SET
+       name        = COALESCE(?2, name),
+       role        = COALESCE(?3, role),
+       active      = COALESCE(?4, active),
+       rubric_type = COALESCE(?5, rubric_type)`
+  ).bind(email, name, role, active, rt).run();
+
+  const row = await db.prepare("SELECT email, name, role, active, rubric_type FROM judges WHERE email = ?1")
+    .bind(email).first();
+  return json({ ok: true, judge: { ...row, rubric_type: normType(row.rubric_type) }, rubric_type: normType(row.rubric_type) });
 }
 
 async function handleAdminLock(db, request) {
@@ -317,12 +399,18 @@ async function handleAdminExport(db) {
   const cols = ["id","created_at","title","author","nickname","email","affiliation","country","video_url","ai_tools",
     "assets","license_category","workflow","screenshot_url","local_env","description","repo_url","sns",
     "attend","c_rules","c_rights","c_url","c_license","c_thirdparty",
-    "c_privacy","c_pr","c_guardian","status","is_public","finalist","award","incomplete","disqualified","judge_count","avg_total"];
+    "c_privacy","c_pr","c_guardian","status","is_public","finalist","award","incomplete","disqualified",
+    "expert_count","expert_avg_18","audience_count","audience_avg_30"];
+  const sumOf = (x) => x.c1 + x.c2 + x.c3 + x.c4 + x.c5 + x.c6;
+  const avg = (arr) => (arr.length ? (arr.reduce((a, x) => a + sumOf(x), 0) / arr.length).toFixed(2) : "");
   const lines = [cols.join(",")];
   for (const s of subs) {
     const sc = grouped[s.id] || [];
-    const total = sc.length ? (sc.reduce((a, x) => a + (x.c1+x.c2+x.c3+x.c4+x.c5+x.c6), 0) / sc.length).toFixed(2) : "";
-    lines.push(cols.map((c) => c === "judge_count" ? sc.length : c === "avg_total" ? total : csvCell(s[c])).join(","));
+    const ex = sc.filter((x) => normType(x.rubric_type) === "expert");
+    const au = sc.filter((x) => normType(x.rubric_type) === "audience");
+    const extra = { expert_count: ex.length, expert_avg_18: avg(ex),
+                    audience_count: au.length, audience_avg_30: avg(au) };
+    lines.push(cols.map((c) => (c in extra ? extra[c] : csvCell(s[c]))).join(","));
   }
   return text("\uFEFF" + lines.join("\n"), 200, {
     "content-type": "text/csv; charset=utf-8",
@@ -340,7 +428,8 @@ async function handleApi(apiPath, request, env, db, year) {
     const user = await getUser(db, request);
     if (!user) return json({ error: "unauthorized" }, 401);
 
-    if (apiPath === "/api/judge/me" && method === "GET") return json({ email: user.email, name: user.name, role: user.role });
+    if (apiPath === "/api/judge/me" && method === "GET")
+      return json({ email: user.email, name: user.name, role: user.role, rubric_type: user.rubric_type });
     if (apiPath === "/api/judge/assignments" && method === "GET") return await handleJudgeAssignments(db, user);
     if (apiPath === "/api/judge/score" && method === "POST") return await handleJudgeScore(db, user, request);
 
@@ -348,6 +437,8 @@ async function handleApi(apiPath, request, env, db, year) {
       if (user.role !== "admin") return json({ error: "forbidden" }, 403);
       if (apiPath === "/api/admin/submissions" && method === "GET") return await handleAdminSubmissions(db);
       if (apiPath === "/api/admin/update" && method === "POST") return await handleAdminUpdate(db, request);
+      if (apiPath === "/api/admin/judges" && method === "GET") return await handleAdminJudges(db);
+      if (apiPath === "/api/admin/judge" && method === "POST") return await handleAdminJudgeSave(db, user, request);
       if (apiPath === "/api/admin/lock" && method === "POST") return await handleAdminLock(db, request);
       if (apiPath === "/api/admin/export.csv" && method === "GET") return await handleAdminExport(db);
     }

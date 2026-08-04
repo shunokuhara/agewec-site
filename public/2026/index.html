@@ -35,6 +35,34 @@
 
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="/theme-2026.css" />
+  <style>
+    /* 北九州賞（地域特別賞）の追加募集まわり */
+    .local-banner {
+      margin: 26px auto 0; max-width: 620px; text-align: left;
+      border: 1px solid rgba(255,255,255,.28); border-radius: 18px;
+      background: rgba(255,255,255,.10); backdrop-filter: blur(6px);
+      padding: 18px 22px;
+    }
+    .local-banner .lb-tag {
+      display: inline-block; font-weight: 900; font-size: 12.5px; letter-spacing: .04em;
+      padding: 4px 12px; border-radius: 999px; background: #ffd75e; color: #3a2a00;
+    }
+    .local-banner .lb-date { margin-top: 10px; font-weight: 800; font-size: 15px; }
+    .local-banner .lb-sub { margin-top: 4px; font-size: 12.5px; font-weight: 700; opacity: .8; }
+    .local-banner .lb-text { margin: 8px 0 0; font-size: 13.5px; line-height: 1.8; opacity: .9; }
+    .local-banner .lb-cta {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+      font-weight: 900; font-size: 14px; text-decoration: none; color: inherit;
+      border-bottom: 2px solid currentColor; padding-bottom: 2px;
+    }
+    .local-banner .lb-cta:hover { opacity: .75; }
+    .card.highlight { border-color: #f0b429; box-shadow: 0 18px 50px rgba(240,180,41,.18); }
+    .card.highlight h3::before { content: "★ "; color: #f0b429; }
+    @media (max-width: 700px) {
+      .local-banner { padding: 16px 18px; }
+      .local-banner .lb-date { font-size: 14px; }
+    }
+  </style>
 </head>
 <body>
   <header class="hero" id="home">
@@ -78,6 +106,14 @@
       <div class="buttons">
         <a class="btn primary" href="/submit/"><span data-ja="参加登録" data-en="Register Interest">参加登録</span> <span>→</span></a>
         <a class="btn secondary" href="#sponsors"><span data-ja="スポンサー募集" data-en="Become a Sponsor">スポンサー募集</span> <span>→</span></a>
+      </div>
+
+      <div class="local-banner">
+        <div class="lb-tag" data-ja="北九州賞 追加募集" data-en="Kitakyushu Award · Additional Call">北九州賞 追加募集</div>
+        <div class="lb-date" data-ja="応募締切：2026年8月23日（日）20:59（日本時間）" data-en="Deadline: Sunday, August 23, 2026 · 20:59 JST">応募締切：2026年8月23日（日）20:59（日本時間）</div>
+        <div class="lb-sub" data-ja="結果通知：2026年8月27日（木）　授賞式：2026年9月2日（水）" data-en="Notification: Thursday, August 27, 2026 · Award Ceremony: Wednesday, September 2, 2026">結果通知：2026年8月27日（木）　授賞式：2026年9月2日（水）</div>
+        <p class="lb-text" data-ja="地域からの参加促進のため、北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方を対象に、地域特別賞「北九州賞」の応募を受付中です。" data-en="To encourage participation from the region, we are accepting entries for the Kitakyushu Award, a regional special award open to residents of Kitakyushu City and those affiliated with schools, companies, or organizations connected to Kitakyushu.">地域からの参加促進のため、北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方を対象に、地域特別賞「北九州賞」の応募を受付中です。</p>
+        <a class="lb-cta" href="/submit/"><span data-ja="応募はこちら" data-en="Enter here">応募はこちら</span> <span>→</span></a>
       </div>
     </div>
 
@@ -133,9 +169,17 @@
           <p data-ja="2026年7月31日 20:59（日本時間）" data-en="July 30, 2026 · 23:59 (AoE)">2026年7月31日 20:59（日本時間）</p>
           <p style="opacity:.7;font-size:.85em;margin-top:4px" data-ja="（7月30日 23:59 AoE）" data-en="(= July 31, 2026 · 20:59 JST)">（7月30日 23:59 AoE）</p>
         </article>
+        <article class="card highlight">
+          <h3 data-ja="北九州賞 追加募集" data-en="Kitakyushu Award · Additional Call">北九州賞 追加募集</h3>
+          <p data-ja="2026年8月23日（日）20:59（日本時間）" data-en="Sunday, August 23, 2026 · 20:59 (JST)">2026年8月23日（日）20:59（日本時間）</p>
+          <p style="opacity:.7;font-size:.85em;margin-top:4px" data-ja="対象：北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方" data-en="Open to: residents of Kitakyushu City, or those affiliated with schools, companies, or organizations connected to Kitakyushu.">対象：北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方</p>
+          <p style="opacity:.7;font-size:.85em;margin-top:4px" data-ja="結果通知：2026年8月27日（木）" data-en="Notification: Thursday, August 27, 2026">結果通知：2026年8月27日（木）</p>
+          <p style="opacity:.55;font-size:.8em;margin-top:8px" data-ja="※ 地域からの参加促進を目的とした特別募集です。" data-en="* A special call aimed at encouraging participation from the region.">※ 地域からの参加促進を目的とした特別募集です。</p>
+        </article>
         <article class="card">
           <h3 data-ja="結果通知" data-en="Notification">結果通知</h3>
           <p data-ja="2026年8月14日" data-en="August 14, 2026">2026年8月14日</p>
+          <p style="opacity:.7;font-size:.85em;margin-top:4px" data-ja="※ 北九州賞（地域特別賞）の結果通知は2026年8月27日（木）です。" data-en="* Results for the Kitakyushu Award (Regional Special Award) will be announced on Thursday, August 27, 2026.">※ 北九州賞（地域特別賞）の結果通知は2026年8月27日（木）です。</p>
         </article>
         <article class="card">
           <h3 data-ja="授賞式" data-en="Award Ceremony">授賞式</h3>
@@ -163,7 +207,7 @@
 
     <section id="awards" class="section compact">
       <p class="section-kicker">Awards</p>
-      <h2 data-ja="4つの賞で、都市の多彩な魅力を称えます。" data-en="Four awards celebrating the city's many facets.">4つの賞で、都市の多彩な魅力を称えます。</h2>
+      <h2 data-ja="5つの賞で、都市の多彩な魅力を称えます。" data-en="Five awards celebrating the city's many facets.">5つの賞で、都市の多彩な魅力を称えます。</h2>
       <p data-ja="優れた作品には、北九州市および関係団体より各賞を授与する予定です。受賞作品には副賞として、北九州市マスコットキャラクター「ていたん」グッズを贈呈します。" data-en="Outstanding works are planned to receive awards from Kitakyushu City and partner organizations. Award-winning entries also receive merchandise of the Kitakyushu city mascot, Teitan.">優れた作品には、北九州市および関係団体より各賞を授与する予定です。受賞作品には副賞として、北九州市マスコットキャラクター「ていたん」グッズを贈呈します。</p>
       <div class="cards">
         <article class="card">
@@ -186,6 +230,11 @@
           <h3 data-ja="観光賞" data-en="Tourism Award">観光賞</h3>
           <p data-ja="「行ってみたい」と思わせる観光訴求力に、最も優れた作品に贈られます。" data-en="Awarded to the work with the strongest tourism appeal that makes people want to visit.">「行ってみたい」と思わせる観光訴求力に、最も優れた作品に贈られます。</p>
           <p style="opacity:.7;font-size:.85em;margin-top:8px" data-ja="北九州観光コンベンション協会" data-en="Kitakyushu Convention & Visitors Association">北九州観光コンベンション協会</p>
+        </article>
+        <article class="card highlight">
+          <h3 data-ja="北九州賞（地域特別賞）" data-en="Kitakyushu Award (Regional Special Award)">北九州賞（地域特別賞）</h3>
+          <p data-ja="北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方を対象とした特別賞です。地域ならではの視点で北九州の魅力を発信した優れた作品を表彰します。" data-en="A special award for residents of Kitakyushu City and those affiliated with schools, companies, or organizations connected to Kitakyushu. It recognizes outstanding works that convey the appeal of Kitakyushu from a distinctly local perspective.">北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方を対象とした特別賞です。地域ならではの視点で北九州の魅力を発信した優れた作品を表彰します。</p>
+          <p style="opacity:.7;font-size:.85em;margin-top:8px" data-ja="※ 応募状況によっては該当作品なしとなる場合があります。" data-en="* Depending on the entries received, this award may not be presented.">※ 応募状況によっては該当作品なしとなる場合があります。</p>
         </article>
       </div>
     </section>

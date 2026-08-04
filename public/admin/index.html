@@ -35,6 +35,16 @@
     .kv { display:block; font-size:11px; color:var(--ink-muted); margin-top:2px; }
     .kv b { color:var(--ink); font-weight:800; }
     tr.detail-row.hidden { display:none; }
+    .judges { margin-top:16px; border:1px solid var(--paper-line); border-radius:14px; background:#fff; padding:14px 16px; }
+    .judges .sec-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .judges h2 { margin:0; font-size:15px; color:var(--ink); }
+    .judges .small { line-height:1.7; margin:10px 0 12px; }
+    .judges table { margin-top:4px; }
+    .judges .hidden { display:none; }
+    .jadd { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:12px; padding-top:12px; border-top:1px dashed var(--paper-line); }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:10.5px; font-weight:900; }
+    .badge.expert { background:#eaf3fd; color:#1f4e88; }
+    .badge.audience { background:#fdf1e6; color:#a35a12; }
     tr.detail-row > td { background:#eef3fc; padding:14px 16px; }
     .detail { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:10px 26px; }
     .detail .item { border-bottom:1px dashed rgba(31,48,71,.16); padding-bottom:7px; }
@@ -71,10 +81,38 @@
         </div>
       </div>
       <div id="status" class="small"></div>
+
+      <!-- 評価者管理：誰にどちらのフォームを出すかをここで振り分ける -->
+      <section class="judges">
+        <div class="sec-head">
+          <h2>評価者とフォーム振り分け</h2>
+          <button class="btn-link" id="judgesToggle">開く ▼</button>
+        </div>
+        <div id="judgesBody" class="hidden">
+          <p class="small">
+            <b>専門審査（0–3点 × 6観点 / 18点満点）</b>… 従来のルーブリック。AI利用・ワークフローの詳細も表示されます。<br>
+            <b>一般アンケート（1–5点 × 6設問 / 30点満点）</b>… 視聴者向け。動画・タイトル・作品説明のみ表示し、制作情報は出しません。<br>
+            集計は2系統を分けて表示・出力します（満点が異なるため混ぜません）。
+          </p>
+          <table id="jtbl"><thead><tr>
+            <th>メール（Cloudflare Access のID）</th><th>表示名</th><th>権限</th><th>評価フォーム</th>
+            <th>担当作品</th><th>回答数</th><th>有効</th><th>保存</th>
+          </tr></thead><tbody id="jtb"></tbody></table>
+          <div class="jadd">
+            <input type="text" id="jEmail" placeholder="メールアドレス" style="width:240px">
+            <input type="text" id="jName" placeholder="表示名">
+            <select id="jRole"><option value="judge">judge</option><option value="admin">admin</option></select>
+            <select id="jRubric"><option value="expert">専門審査（0-3/18点）</option><option value="audience">一般アンケート（1-5/30点）</option></select>
+            <button class="btn-sm primary" id="jAdd">評価者を追加</button>
+            <span class="rowmsg" id="jAddMsg"></span>
+          </div>
+        </div>
+      </section>
+
       <div style="margin-top:12px;">
         <table id="tbl"><thead><tr>
           <th>ID / 投稿日時</th><th>作品 / 投稿者（本名・公開名）</th><th>連絡先</th><th>動画 / AI利用</th>
-          <th>同意</th><th>採点(平均)</th><th>状態</th><th>区分</th><th>保存</th>
+          <th>同意</th><th>評価（専門 / 一般）</th><th>状態</th><th>区分</th><th>保存</th>
         </tr></thead><tbody id="tb"></tbody></table>
       </div>
     </div>
@@ -91,7 +129,12 @@
     const LICENSE_LABEL={commercial_ok:'商用利用可',non_commercial:'非商用のみ',unknown:'不明'};
     const ATTEND_LABEL={onsite:'現地希望',online:'オンライン希望'};
     const AFFIL_LABEL={university:'大学',company:'企業',individual:'個人',other:'その他'};
-    const CRIT=['観光魅力','情緒的訴求','物語一貫性','AI自律性','WF設計','技術創造性'];
+    // 評価フォーム2系統（満点が違うので集計は必ず分ける）
+    const RUBRIC_META={
+      expert:  {label:'専門審査', full:18, crit:['観光魅力','情緒的訴求','物語一貫性','AI自律性','WF設計','技術創造性']},
+      audience:{label:'一般アンケート', full:30, crit:['訪問意欲','印象','分かりやすさ','SNS共有','AI活用の興味','総合評価']},
+    };
+    const rmeta=(t)=>RUBRIC_META[t]||RUBRIC_META.expert;
 
     // 値が空なら「―」。改行はそのまま表示。
     const val=(v)=>{ const t=String(v==null?'':v).trim(); return t? esc(t) : DASH; };
@@ -131,13 +174,21 @@
     function scoreTable(s){
       const sc = s.scores||[];
       if(!sc.length) return '';
-      const head='<tr><th>審査員</th>'+CRIT.map(c=>'<th>'+c+'</th>').join('')+'<th>計</th><th>コメント</th></tr>';
-      const body=sc.map(x=>{
-        const t=(x.c||[]).reduce((a,v)=>a+(v||0),0);
-        return '<tr><td>'+esc(x.judge_email)+'</td>'+(x.c||[]).map(v=>'<td>'+(v==null?'-':v)+'</td>').join('')+
-               '<td><b>'+t+'</b></td><td>'+val(x.comment)+'</td></tr>';
-      }).join('');
-      return '<div class="detail-scores"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
+      let out='';
+      ['expert','audience'].forEach(type=>{
+        const rows=sc.filter(x=>(x.rubric_type||'expert')===type);
+        if(!rows.length) return;
+        const m=rmeta(type);
+        const head='<tr><th>'+(type==='expert'?'審査員':'回答者')+'</th>'+m.crit.map(c=>'<th>'+c+'</th>').join('')+'<th>計</th><th>コメント</th></tr>';
+        const body=rows.map(x=>{
+          const t=(x.c||[]).reduce((a,v)=>a+(v||0),0);
+          return '<tr><td>'+esc(x.judge_email)+'</td>'+(x.c||[]).map(v=>'<td>'+(v==null?'-':v)+'</td>').join('')+
+                 '<td><b>'+t+'</b>/'+m.full+'</td><td>'+val(x.comment)+'</td></tr>';
+        }).join('');
+        out+='<div class="detail-scores"><div class="lbl"><span class="badge '+type+'">'+m.label+'</span></div>'+
+             '<table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
+      });
+      return out;
     }
 
     function detailHtml(s){
@@ -168,7 +219,11 @@
       const tb=document.getElementById('tb'); tb.innerHTML='';
       subs.forEach((s,i)=>{
         const tr=document.createElement('tr');
-        const sc = s.judge_count? ('<span class="scorecell"><b>'+(s.avg_total!=null?s.avg_total.toFixed(1):'-')+'</b>/18 <span class="small">('+s.judge_count+'名)</span></span>') : '<span class="small">未</span>';
+        const cell=(type,avg,n)=> n
+          ? '<span class="scorecell"><span class="badge '+type+'">'+rmeta(type).label+'</span> <b>'+(avg!=null?avg.toFixed(1):'-')+'</b>/'+rmeta(type).full+' <span class="small">('+n+'名)</span></span>'
+          : '<span class="small"><span class="badge '+type+'">'+rmeta(type).label+'</span> 未</span>';
+        const sc = cell('expert', s.expert_avg!=null?s.expert_avg:s.avg_total, s.expert_count!=null?s.expert_count:s.judge_count)+
+                   '<br>'+cell('audience', s.audience_avg, s.audience_count||0);
         tr.innerHTML =
           '<td><div class="small">'+esc(s.id)+'</div>'+esc((s.created_at||'').slice(0,16).replace('T',' '))+'</td>'+
           '<td><b>'+esc(s.title)+'</b>'+
@@ -225,6 +280,88 @@
       }catch{ m.className='rowmsg err'; m.textContent='接続不可'; }
     }
 
+    // ---------- 評価者とフォーム振り分け ----------
+    let judges=[];
+
+    async function loadJudges(){
+      try{
+        const r=await fetch(ay('/api/admin/judges'));
+        if(!r.ok) return;
+        const data=await r.json();
+        judges=data.judges||[];
+        renderJudges();
+      }catch(e){}
+    }
+
+    function renderJudges(){
+      const tb=document.getElementById('jtb'); tb.innerHTML='';
+      judges.forEach((j,i)=>{
+        const tr=document.createElement('tr');
+        const opt=(v,cur,txt)=>'<option value="'+v+'"'+(cur===v?' selected':'')+'>'+txt+'</option>';
+        tr.innerHTML=
+          '<td class="small">'+esc(j.email)+'</td>'+
+          '<td><input type="text" data-j="name" value="'+esc(j.name||'')+'" style="width:120px"></td>'+
+          '<td><select data-j="role">'+opt('judge',j.role,'judge')+opt('admin',j.role,'admin')+'</select></td>'+
+          '<td><select data-j="rubric_type">'+
+            opt('expert',j.rubric_type,'専門審査（0-3/18点）')+
+            opt('audience',j.rubric_type,'一般アンケート（1-5/30点）')+
+          '</select><span class="kv"><span class="badge '+esc(j.rubric_type)+'">'+rmeta(j.rubric_type).label+'</span></span></td>'+
+          '<td class="small">'+(j.assigned? j.assigned+'件' : '<span class="muted">全件</span>')+'</td>'+
+          '<td class="small">'+(j.scored||0)+'</td>'+
+          '<td><input type="checkbox" data-j="active" '+(j.active?'checked':'')+'></td>'+
+          '<td><button class="btn-sm primary" data-jsave="'+i+'">保存</button><div class="rowmsg" data-jmsg="'+i+'"></div></td>';
+        tb.appendChild(tr);
+        tr.querySelector('[data-jsave]').onclick=()=>saveJudge(i,tr);
+      });
+    }
+
+    async function saveJudge(i,tr){
+      const j=judges[i];
+      const payload={email:j.email};
+      tr.querySelectorAll('[data-j]').forEach(el=>{
+        const k=el.dataset.j;
+        payload[k]= el.type==='checkbox' ? (el.checked?1:0) : el.value;
+      });
+      const m=tr.querySelector('[data-jmsg="'+i+'"]');
+      m.className='rowmsg'; m.textContent='保存中…';
+      try{
+        const r=await fetch(ay('/api/admin/judge'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+        if(r.ok){ Object.assign(j,payload); m.className='rowmsg ok'; m.textContent='保存✓'; renderJudges(); }
+        else {
+          const e=await r.json().catch(()=>({}));
+          m.className='rowmsg err';
+          m.textContent = e.error==='self_lockout' ? '自分の権限は外せません'
+                        : r.status===403 ? '権限なし' : '失敗';
+        }
+      }catch{ m.className='rowmsg err'; m.textContent='接続不可'; }
+    }
+
+    document.getElementById('jAdd').onclick=async()=>{
+      const m=document.getElementById('jAddMsg');
+      const payload={
+        email:document.getElementById('jEmail').value.trim(),
+        name:document.getElementById('jName').value.trim(),
+        role:document.getElementById('jRole').value,
+        rubric_type:document.getElementById('jRubric').value,
+        active:1,
+      };
+      if(!payload.email.includes('@')){ m.className='rowmsg err'; m.textContent='メールアドレスを入力'; return; }
+      m.className='rowmsg'; m.textContent='追加中…';
+      try{
+        const r=await fetch(ay('/api/admin/judge'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+        if(r.ok){ m.className='rowmsg ok'; m.textContent='追加✓';
+          document.getElementById('jEmail').value=''; document.getElementById('jName').value=''; loadJudges(); }
+        else { m.className='rowmsg err'; m.textContent='失敗'; }
+      }catch{ m.className='rowmsg err'; m.textContent='接続不可'; }
+    };
+
+    document.getElementById('judgesToggle').onclick=(e)=>{
+      const body=document.getElementById('judgesBody');
+      const open=body.classList.toggle('hidden')===false;
+      e.target.textContent = open?'閉じる ▲':'開く ▼';
+      if(open && !judges.length) loadJudges();
+    };
+
     document.getElementById('lockBtn').onclick=async()=>{
       const pill=document.getElementById('openPill');
       const open = pill.dataset.open!=='1'; // toggle
@@ -243,6 +380,7 @@
     };
 
     load();
+    loadJudges();
   </script>
 </body>
 </html>

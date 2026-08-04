@@ -28,7 +28,12 @@
     .meta-grid a { color:#327dba; font-weight:800; text-decoration:underline; word-break:break-all; }
     .crit { border-top:1px solid var(--paper-line); padding:16px 0; }
     .crit h3 { margin:0 0 4px; font-size:15px; color:var(--ink); }
+    .rubric-note { font-size:13.5px; font-weight:700; color:var(--ink-muted); padding:0 0 14px; }
     .levels { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:8px; }
+    .levels.n5 { grid-template-columns:repeat(5,1fr); }
+    .levels.n5 .lvl { text-align:center; }
+    .levels.n5 .lvl .n { display:block; font-size:16px; margin-bottom:3px; }
+    .levels.n5 .lvl input { margin:0 0 4px; }
     .lvl { border:1px solid var(--paper-line); border-radius:10px; padding:10px; cursor:pointer; font-size:12px; line-height:1.5; color:var(--ink-muted); background:var(--paper-soft); }
     .lvl:hover { border-color:#9cc6f0; }
     .lvl input { margin-right:6px; }
@@ -41,7 +46,7 @@
     .msg { font-weight:800; font-size:14px; }
     .msg.ok { color:#1f8a55; } .msg.err { color:#c2306a; }
     .empty { color:var(--ink-muted); padding:40px; text-align:center; }
-    @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .wrap{ width:calc(100% - 36px);} .levels{ grid-template-columns:1fr 1fr; } }
+    @media (max-width:900px){ .layout{ grid-template-columns:1fr; } .wrap{ width:calc(100% - 36px);} .levels{ grid-template-columns:1fr 1fr; } .levels.n5{ grid-template-columns:1fr; } .levels.n5 .lvl{ text-align:left; } .levels.n5 .lvl .n{ display:inline; font-size:12px; } }
   </style>
 </head>
 <body>
@@ -57,9 +62,10 @@
   <main class="judge">
     <div class="wrap">
       <div class="judge-head">
-        <h1 data-ja="作品審査" data-en="Judging">作品審査</h1>
+        <h1 id="pageTitle" data-ja="作品審査" data-en="Judging">作品審査</h1>
         <div class="judge-who" id="who"></div>
       </div>
+      <div class="rubric-note" id="rubricNote" data-ja="" data-en=""></div>
       <div class="layout">
         <div class="list" id="list"></div>
         <div class="detail" id="detail"><div class="empty" data-ja="左の一覧から作品を選んでください。" data-en="Select an entry from the list.">左の一覧から作品を選んでください。</div></div>
@@ -71,42 +77,89 @@
 
   <script src="/script.js"></script>
   <script>
-    const RUBRIC = [
-      {key:'c1', ja:'観光訴求力', en:'Tourism Appeal', L:[
-        {ja:'行きたいと思わせる要素が乏しい', en:'Little that makes viewers want to visit'},
-        {ja:'魅力が一定程度伝わる（標準）', en:'Conveys some appeal (standard)'},
-        {ja:'明確な訪問動機を喚起する', en:'Evokes a clear motivation to visit'},
-        {ja:'強く記憶に残り訪問意欲を喚起', en:'Strong, memorable pull to visit'}]},
-      {key:'c2', ja:'感情的インパクト', en:'Emotional Impact', L:[
-        {ja:'感情的反応をほぼ起こさない', en:'Almost no emotional response'},
-        {ja:'印象は残るが弱い（標準）', en:'Some impression, but weak (standard)'},
-        {ja:'明確な感情を喚起し記憶に残る', en:'Clearly evokes emotion, memorable'},
-        {ja:'強い没入と余韻、共有を促す', en:'Strong immersion that prompts sharing'}]},
-      {key:'c3', ja:'物語の一貫性', en:'Narrative Coherence', L:[
-        {ja:'断片的で意図が不明瞭', en:'Fragmented; intent unclear'},
-        {ja:'大筋は通るが粗がある（標準）', en:'Thread holds but rough (standard)'},
-        {ja:'明確な構成と一貫したメッセージ', en:'Clear structure, consistent message'},
-        {ja:'緻密に設計され一つの物語に', en:'Tightly designed single story'}]},
-      {key:'c4', ja:'AI自律性', en:'AI Autonomy', L:[
-        {ja:'AIはほぼ未使用／部分補助のみ', en:'AI barely used / partial only'},
-        {ja:'AI使用も各工程は人が接続（標準）', en:'AI used, human connects steps (standard)'},
-        {ja:'複数AIが連携し大部分を自律実行', en:'Multiple AIs autonomously run most'},
-        {ja:'計画〜編集まで一貫自律、介入最小', en:'End-to-end autonomous, minimal human'}]},
-      {key:'c5', ja:'ワークフロー設計・再現性', en:'Workflow Design & Reproducibility', L:[
-        {ja:'説明が乏しく追えない／再現不可', en:'Thin; not traceable/reproducible'},
-        {ja:'ツールと手順が一通り示される（標準）', en:'Tools and steps shown (standard)'},
-        {ja:'工程・連携・プロンプトが明確で再現可', en:'Clear and largely reproducible'},
-        {ja:'体系的設計・誤り処理・反復まで', en:'Systematic with error handling/iteration'}]},
-      {key:'c6', ja:'技術的独創性', en:'Technical Creativity & Originality', L:[
-        {ja:'既存手法の単純踏襲で新しさなし', en:'Plain reuse; nothing new'},
-        {ja:'標準的なツール活用にとどまる（標準）', en:'Standard tool usage (standard)'},
-        {ja:'組み合わせ・表現に明確な工夫', en:'Clear ingenuity in use/expression'},
-        {ja:'独自で予想を超え技術・創造で際立つ', en:'Original, standout technically/creatively'}]},
-    ];
+    // ============================================================
+    // 評価フォームは2系統。どちらを表示するかはサーバが
+    // judges.rubric_type から決めて /api/judge/me で返す。
+    //   expert   … 専門審査ルーブリック（6観点 × 0-3点 = 18点満点）
+    //   audience … 一般視聴者アンケート（6設問 × 1-5点 = 30点満点）
+    // ============================================================
 
+    // 開催地。年度が変わったらここだけ差し替える（2027は伊勢志摩など）。
+    const HOST_CITY = { ja: '北九州市', en: 'Kitakyushu' };
+
+    const RUBRICS = {
+      expert: {
+        min: 0, max: 3, full: 18,
+        title: { ja: '作品審査', en: 'Judging' },
+        note: { ja: '各観点を0〜3点で評価してください。', en: 'Rate each criterion from 0 to 3.' },
+        showDetails: true,          // AIツール・ワークフロー等の制作情報を表示
+        anchors: null,
+        items: [
+          {key:'c1', ja:'観光訴求力', en:'Tourism Appeal', L:[
+            {ja:'行きたいと思わせる要素が乏しい', en:'Little that makes viewers want to visit'},
+            {ja:'魅力が一定程度伝わる（標準）', en:'Conveys some appeal (standard)'},
+            {ja:'明確な訪問動機を喚起する', en:'Evokes a clear motivation to visit'},
+            {ja:'強く記憶に残り訪問意欲を喚起', en:'Strong, memorable pull to visit'}]},
+          {key:'c2', ja:'感情的インパクト', en:'Emotional Impact', L:[
+            {ja:'感情的反応をほぼ起こさない', en:'Almost no emotional response'},
+            {ja:'印象は残るが弱い（標準）', en:'Some impression, but weak (standard)'},
+            {ja:'明確な感情を喚起し記憶に残る', en:'Clearly evokes emotion, memorable'},
+            {ja:'強い没入と余韻、共有を促す', en:'Strong immersion that prompts sharing'}]},
+          {key:'c3', ja:'物語の一貫性', en:'Narrative Coherence', L:[
+            {ja:'断片的で意図が不明瞭', en:'Fragmented; intent unclear'},
+            {ja:'大筋は通るが粗がある（標準）', en:'Thread holds but rough (standard)'},
+            {ja:'明確な構成と一貫したメッセージ', en:'Clear structure, consistent message'},
+            {ja:'緻密に設計され一つの物語に', en:'Tightly designed single story'}]},
+          {key:'c4', ja:'AI自律性', en:'AI Autonomy', L:[
+            {ja:'AIはほぼ未使用／部分補助のみ', en:'AI barely used / partial only'},
+            {ja:'AI使用も各工程は人が接続（標準）', en:'AI used, human connects steps (standard)'},
+            {ja:'複数AIが連携し大部分を自律実行', en:'Multiple AIs autonomously run most'},
+            {ja:'計画〜編集まで一貫自律、介入最小', en:'End-to-end autonomous, minimal human'}]},
+          {key:'c5', ja:'ワークフロー設計・再現性', en:'Workflow Design & Reproducibility', L:[
+            {ja:'説明が乏しく追えない／再現不可', en:'Thin; not traceable/reproducible'},
+            {ja:'ツールと手順が一通り示される（標準）', en:'Tools and steps shown (standard)'},
+            {ja:'工程・連携・プロンプトが明確で再現可', en:'Clear and largely reproducible'},
+            {ja:'体系的設計・誤り処理・反復まで', en:'Systematic with error handling/iteration'}]},
+          {key:'c6', ja:'技術的独創性', en:'Technical Creativity & Originality', L:[
+            {ja:'既存手法の単純踏襲で新しさなし', en:'Plain reuse; nothing new'},
+            {ja:'標準的なツール活用にとどまる（標準）', en:'Standard tool usage (standard)'},
+            {ja:'組み合わせ・表現に明確な工夫', en:'Clear ingenuity in use/expression'},
+            {ja:'独自で予想を超え技術・創造で際立つ', en:'Original, standout technically/creatively'}]},
+        ],
+      },
+
+      audience: {
+        min: 1, max: 5, full: 30,
+        title: { ja: '作品アンケート', en: 'Viewer Survey' },
+        note: {
+          ja: '各項目について、1（全くそう思わない）〜5（非常にそう思う）でお答えください。',
+          en: 'Rate each item from 1 (strongly disagree) to 5 (strongly agree).',
+        },
+        showDetails: false,         // 動画とタイトル・説明のみ。制作情報は出さない
+        anchors: {
+          1: { ja: '全くそう思わない', en: 'Strongly disagree' },
+          2: { ja: 'あまりそう思わない', en: 'Disagree' },
+          3: { ja: 'どちらともいえない', en: 'Neutral' },
+          4: { ja: 'ややそう思う', en: 'Agree' },
+          5: { ja: '非常にそう思う', en: 'Strongly agree' },
+        },
+        items: [
+          {key:'c1', ja:HOST_CITY.ja+'を訪れてみたいと思いましたか。', en:'Did it make you want to visit '+HOST_CITY.en+'?'},
+          {key:'c2', ja:'動画の内容は印象に残りましたか。', en:'Was the video memorable?'},
+          {key:'c3', ja:'動画のストーリーや構成は分かりやすかったですか。', en:'Were the story and structure easy to follow?'},
+          {key:'c4', ja:'SNSで共有したいと思いましたか。', en:'Would you want to share it on social media?'},
+          {key:'c5', ja:'AIを活用した作品として興味深いと思いましたか。', en:'Was it interesting as an AI-assisted work?'},
+          {key:'c6', ja:'この作品を総合的に高く評価しますか。', en:'Overall, do you rate this work highly?'},
+        ],
+      },
+    };
+
+    let rubricType = 'expert';
     let entries = [];
     let current = null;
 
+    function spec(){ return RUBRICS[rubricType] || RUBRICS.expert; }
+    function items(){ return spec().items; }
     function lang(){ return (document.documentElement.lang||'ja')==='en' ? 'en':'ja'; }
     function t(o){ return o[lang()]; }
     // re-apply language to dynamically inserted [data-ja][data-en] nodes
@@ -115,15 +168,27 @@
       document.querySelectorAll('[data-ja][data-en]').forEach(el=>{ el.textContent = el.dataset[l]; });
     }
 
+    function applyRubricChrome(){
+      const s = spec();
+      const h = document.getElementById('pageTitle');
+      h.dataset.ja = s.title.ja; h.dataset.en = s.title.en; h.textContent = t(s.title);
+      const n = document.getElementById('rubricNote');
+      n.dataset.ja = s.note.ja; n.dataset.en = s.note.en; n.textContent = t(s.note);
+      document.body.dataset.rubric = rubricType;
+    }
+
     async function load(){
       try{
         const me = await (await fetch(ay('/api/judge/me'))).json();
         document.getElementById('who').textContent = me.name || me.email || '';
+        if(me.rubric_type && RUBRICS[me.rubric_type]) rubricType = me.rubric_type;
       }catch{}
+      applyRubricChrome();
       try{
         const r = await fetch(ay('/api/judge/assignments'));
         if(!r.ok){ document.getElementById('list').innerHTML='<div class="empty">'+(r.status===401?'認証が必要です':'読み込みに失敗しました')+'</div>'; return; }
         const data = await r.json();
+        if(data.rubric_type && RUBRICS[data.rubric_type]){ rubricType = data.rubric_type; applyRubricChrome(); }
         entries = data.entries||[];
         renderList();
       }catch(e){ document.getElementById('list').innerHTML='<div class="empty">APIに接続できません</div>'; }
@@ -138,19 +203,30 @@
         d.className='list-item'+(current===i?' active':'');
         d.innerHTML='<div class="t"></div><div class="s '+(e.scored?'done':'todo')+'"></div>';
         d.querySelector('.t').textContent=e.title;
-        const st=d.querySelector('.s'); st.dataset.ja=e.scored?'採点済み':'未採点'; st.dataset.en=e.scored?'Scored':'Not scored'; st.textContent=t({ja:st.dataset.ja,en:st.dataset.en});
+        const st=d.querySelector('.s');
+        st.dataset.ja=e.scored?'回答済み':'未回答'; st.dataset.en=e.scored?'Answered':'Not answered';
+        st.textContent=t({ja:st.dataset.ja,en:st.dataset.en});
         d.onclick=()=>{ current=i; renderList(); renderDetail(); };
         el.appendChild(d);
       });
     }
 
-    function levelBox(crit, idx, ci, val){
-      const sel = val===idx;
+    // 0-3 でも 1-5 でも同じ関数で1マスを作る
+    function levelBox(crit, value, ci, cur){
+      const s = spec();
+      const sel = cur===value;
       const box=document.createElement('label');
       box.className='lvl'+(sel?' sel':'');
-      const desc=crit.L[idx];
-      box.innerHTML='<span class="n">'+idx+'</span> <input type="radio" name="'+crit.key+'" value="'+idx+'"'+(sel?' checked':'')+'><span data-ja="'+desc.ja.replace(/"/g,'&quot;')+'" data-en="'+desc.en.replace(/"/g,'&quot;')+'">'+desc[lang()]+'</span>';
-      box.querySelector('input').onchange=()=>{ setScore(ci, idx); };
+      let descJa='', descEn='';
+      if(s.anchors){
+        const a=s.anchors[value]; descJa=a?a.ja:''; descEn=a?a.en:'';
+      }else{
+        const d=crit.L[value - s.min]; descJa=d.ja; descEn=d.en;
+      }
+      const q=(x)=>String(x).replace(/"/g,'&quot;');
+      box.innerHTML='<span class="n">'+value+'</span> <input type="radio" name="'+crit.key+'" value="'+value+'"'+(sel?' checked':'')+'>'+
+                    '<span data-ja="'+q(descJa)+'" data-en="'+q(descEn)+'">'+(lang()==='en'?descEn:descJa)+'</span>';
+      box.querySelector('input').onchange=()=>{ setScore(ci, value); };
       return box;
     }
 
@@ -161,10 +237,11 @@
       const e = entries[current];
       const box = document.getElementById('detail');
       if(!e){ return; }
+      const s = spec();
       if(!keepDraftOnly){
         draft = {};
         const ms = e.myScore;
-        RUBRIC.forEach((c,ci)=>{ draft[c.key] = ms ? ms['c'+(ci+1)] : null; });
+        items().forEach((c,ci)=>{ draft[c.key] = ms ? ms['c'+(ci+1)] : null; });
         draft.comment = e.myScore ? (e.myScore.comment||'') : '';
       }
       box.innerHTML='';
@@ -174,24 +251,26 @@
         const r=document.createElement('div'); r.className='row';
         r.innerHTML='<b data-ja="'+jaLabel+'" data-en="'+enLabel+'">'+(lang()==='en'?enLabel:jaLabel)+'</b> '+valHtml; return r;
       };
-      const esc=(s)=>String(s==null?'':s).replace(/</g,'&lt;');
+      const esc=(x)=>String(x==null?'':x).replace(/</g,'&lt;');
       meta.appendChild(rowEl('タイトル','Title', esc(e.title)));
       meta.appendChild(rowEl('投稿者','Author', esc(e.author)+(e.affiliation?(' / '+esc(e.affiliation)):'')));
       meta.appendChild(rowEl('動画','Video', '<a href="'+esc(e.video_url)+'" target="_blank" rel="noopener">'+esc(e.video_url)+'</a>'));
       meta.appendChild(rowEl('作品説明','Description', esc(e.description)));
-      meta.appendChild(rowEl('使用AI','AI tools', esc(e.ai_tools)));
-      meta.appendChild(rowEl('ワークフロー','Workflow', esc(e.workflow)));
-      if(e.screenshot_url) meta.appendChild(rowEl('スクショ','Screenshot', '<a href="'+esc(e.screenshot_url)+'" target="_blank" rel="noopener">'+esc(e.screenshot_url)+'</a>'));
-      meta.appendChild(rowEl('ライセンス区分','License', esc(e.license_category)));
+      if(s.showDetails){
+        meta.appendChild(rowEl('使用AI','AI tools', esc(e.ai_tools)));
+        meta.appendChild(rowEl('ワークフロー','Workflow', esc(e.workflow)));
+        if(e.screenshot_url) meta.appendChild(rowEl('スクショ','Screenshot', '<a href="'+esc(e.screenshot_url)+'" target="_blank" rel="noopener">'+esc(e.screenshot_url)+'</a>'));
+        meta.appendChild(rowEl('ライセンス区分','License', esc(e.license_category)));
+      }
       box.appendChild(meta);
 
-      RUBRIC.forEach((c,ci)=>{
+      items().forEach((c,ci)=>{
         const wrap=document.createElement('div'); wrap.className='crit';
         const h=document.createElement('h3');
         h.dataset.ja=(ci+1)+'. '+c.ja; h.dataset.en=(ci+1)+'. '+c.en; h.textContent=lang()==='en'?h.dataset.en:h.dataset.ja;
         wrap.appendChild(h);
-        const lv=document.createElement('div'); lv.className='levels';
-        for(let k=0;k<4;k++) lv.appendChild(levelBox(c,k,ci, draft[c.key]));
+        const lv=document.createElement('div'); lv.className='levels n'+(s.max-s.min+1);
+        for(let v=s.min; v<=s.max; v++) lv.appendChild(levelBox(c, v, ci, draft[c.key]));
         wrap.appendChild(lv);
         box.appendChild(wrap);
       });
@@ -203,11 +282,13 @@
       ta.oninput=()=>{ draft.comment=ta.value; };
       box.appendChild(ta);
 
-      const filled = RUBRIC.every(c=> Number.isInteger(draft[c.key]));
-      const total = filled ? RUBRIC.reduce((a,c)=>a+draft[c.key],0) : '-';
+      const filled = items().every(c=> Number.isInteger(draft[c.key]));
+      const total = filled ? items().reduce((a,c)=>a+draft[c.key],0) : '-';
       const bar=document.createElement('div'); bar.className='savebar';
-      bar.innerHTML='<button class="btn primary" id="saveBtn"><span data-ja="採点を保存" data-en="Save score">採点を保存</span></button>'+
-                    '<span class="total" data-ja="合計: '+total+' / 18" data-en="Total: '+total+' / 18">合計: '+total+' / 18</span>'+
+      const btnJa = rubricType==='audience' ? '回答を保存' : '採点を保存';
+      const btnEn = rubricType==='audience' ? 'Save answers' : 'Save score';
+      bar.innerHTML='<button class="btn primary" id="saveBtn"><span data-ja="'+btnJa+'" data-en="'+btnEn+'">'+(lang()==='en'?btnEn:btnJa)+'</span></button>'+
+                    '<span class="total" data-ja="合計: '+total+' / '+s.full+'" data-en="Total: '+total+' / '+s.full+'">'+(lang()==='en'?'Total':'合計')+': '+total+' / '+s.full+'</span>'+
                     '<span class="msg" id="smsg"></span>';
       box.appendChild(bar);
       document.getElementById('saveBtn').onclick=save;
@@ -215,10 +296,14 @@
 
     async function save(){
       const m=document.getElementById('smsg');
-      if(!RUBRIC.every(c=>Number.isInteger(draft[c.key]))){ m.className='msg err'; m.textContent=lang()==='en'?'Score all 6 criteria.':'6観点すべてを採点してください。'; return; }
+      if(!items().every(c=>Number.isInteger(draft[c.key]))){
+        m.className='msg err';
+        m.textContent=lang()==='en'?'Please answer all 6 items.':'6項目すべてに回答してください。';
+        return;
+      }
       const e=entries[current];
       const payload={submission_id:e.id, comment:draft.comment||''};
-      RUBRIC.forEach(c=> payload[c.key]=draft[c.key]);
+      items().forEach(c=> payload[c.key]=draft[c.key]);
       m.className='msg'; m.textContent=lang()==='en'?'Saving…':'保存中…';
       try{
         const r=await fetch(ay('/api/judge/score'),{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});

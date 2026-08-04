@@ -81,7 +81,7 @@
     // 評価フォームは2系統。どちらを表示するかはサーバが
     // judges.rubric_type から決めて /api/judge/me で返す。
     //   expert   … 専門審査ルーブリック（6観点 × 0-3点 = 18点満点）
-    //   audience … 一般視聴者アンケート（6設問 × 1-5点 = 30点満点）
+    //   audience … 一般視聴者アンケート（6項目 × 0-3点 = 18点満点）
     // ============================================================
 
     // 開催地。年度が変わったらここだけ差し替える（2027は伊勢志摩など）。
@@ -129,27 +129,45 @@
       },
 
       audience: {
-        min: 1, max: 5, full: 30,
+        min: 0, max: 3, full: 18,
         title: { ja: '作品アンケート', en: 'Viewer Survey' },
         note: {
-          ja: '各項目について、1（全くそう思わない）〜5（非常にそう思う）でお答えください。',
-          en: 'Rate each item from 1 (strongly disagree) to 5 (strongly agree).',
+          ja: '各項目について、ご自身に最も近いものを1つ選んでください。',
+          en: 'For each item, pick the one closest to your own experience.',
         },
         showDetails: false,         // 動画とタイトル・説明のみ。制作情報は出さない
-        anchors: {
-          1: { ja: '全くそう思わない', en: 'Strongly disagree' },
-          2: { ja: 'あまりそう思わない', en: 'Disagree' },
-          3: { ja: 'どちらともいえない', en: 'Neutral' },
-          4: { ja: 'ややそう思う', en: 'Agree' },
-          5: { ja: '非常にそう思う', en: 'Strongly agree' },
-        },
+        anchors: null,              // 段階ごとに記述を持つのでアンカーは使わない
         items: [
-          {key:'c1', ja:HOST_CITY.ja+'を訪れてみたいと思いましたか。', en:'Did it make you want to visit '+HOST_CITY.en+'?'},
-          {key:'c2', ja:'動画の内容は印象に残りましたか。', en:'Was the video memorable?'},
-          {key:'c3', ja:'動画のストーリーや構成は分かりやすかったですか。', en:'Were the story and structure easy to follow?'},
-          {key:'c4', ja:'SNSで共有したいと思いましたか。', en:'Would you want to share it on social media?'},
-          {key:'c5', ja:'AIを活用した作品として興味深いと思いましたか。', en:'Was it interesting as an AI-assisted work?'},
-          {key:'c6', ja:'この作品を総合的に高く評価しますか。', en:'Overall, do you rate this work highly?'},
+          {key:'c1', ja:'訪問意欲（'+HOST_CITY.ja+'）', en:'Desire to Visit ('+HOST_CITY.en+')', L:[
+            {ja:'行きたいとは思わなかった', en:'Did not make me want to go'},
+            {ja:'少し気になったが、行動には結びつかない（標準）', en:'Mildly curious, but no further (standard)'},
+            {ja:'機会があれば行ってみたい', en:'Would go if the chance came up'},
+            {ja:'具体的に調べたり、予定を考えたくなった', en:'Made me want to look it up or plan a trip'}]},
+          {key:'c2', ja:'印象の残り方', en:'Memorability', L:[
+            {ja:'見終わってすぐ内容を思い出せない', en:'Cannot recall it right after watching'},
+            {ja:'断片的に覚えている（標準）', en:'Remember fragments (standard)'},
+            {ja:'特定の場面や映像がはっきり残っている', en:'A specific scene stayed with me'},
+            {ja:'人に話したくなるほど強く残った', en:'Strong enough that I want to tell someone'}]},
+          {key:'c3', ja:'分かりやすさ', en:'Clarity', L:[
+            {ja:'何を伝えたいのか分からなかった', en:'Could not tell what it was trying to say'},
+            {ja:'だいたい分かるが、迷う箇所があった（標準）', en:'Mostly clear, some confusing parts (standard)'},
+            {ja:'内容を無理なく理解できた', en:'Understood it without effort'},
+            {ja:'構成が明快で、最後まで引き込まれた', en:'Clear structure; held me to the end'}]},
+          {key:'c4', ja:'共有意向', en:'Willingness to Share', L:[
+            {ja:'人に見せようとは思わない', en:'Would not show it to anyone'},
+            {ja:'話題に出るなら触れるかもしれない（標準）', en:'Might mention it if it came up (standard)'},
+            {ja:'友人や家族には見せたい', en:'Would show friends or family'},
+            {ja:'自分のSNSに投稿したい', en:'Would post it on my own social media'}]},
+          {key:'c5', ja:'AI制作への受け止め', en:'Reaction to AI Production', L:[
+            {ja:'AIらしさが気になって作品に入り込めなかった', en:'AI-ness distracted me from the work'},
+            {ja:'特に意識しなかった（標準）', en:'Did not particularly notice (standard)'},
+            {ja:'AIで作れることに感心した', en:'Impressed that AI could make this'},
+            {ja:'AIでここまでできるのかと驚いた', en:'Surprised AI could go this far'}]},
+          {key:'c6', ja:'総合評価', en:'Overall', L:[
+            {ja:'評価できる点が見当たらない', en:'Nothing I can point to as good'},
+            {ja:'悪くはないが印象は薄い（標準）', en:'Not bad, but forgettable (standard)'},
+            {ja:'よくできた作品だと思う', en:'A well-made piece'},
+            {ja:'賞に値する作品だと思う', en:'Deserves an award'}]},
         ],
       },
     };
@@ -211,7 +229,7 @@
       });
     }
 
-    // 0-3 でも 1-5 でも同じ関数で1マスを作る
+    // 段階記述つき（anchors なし）でも、共通アンカーでも1マスを作れる
     function levelBox(crit, value, ci, cur){
       const s = spec();
       const sel = cur===value;

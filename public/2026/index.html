@@ -39,7 +39,8 @@
     /* ヒーローの縦方向レイアウト（下部の余白過多を解消） */
     .hero { display: flex; flex-direction: column; }
     @media (min-width: 641px) {
-      .hero { min-height: 100svh; }   /* モバイルの 110vh 指定は温存 */
+      /* 縦長モニタで余白が伸び続けないよう上限を設定（モバイルの 110vh は温存） */
+      .hero { min-height: clamp(680px, 100svh, 1040px); }
     }
 
     /* ナビをスクロール後も残す */

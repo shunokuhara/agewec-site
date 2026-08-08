@@ -36,13 +36,29 @@
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="/theme-2026.css" />
   <style>
-    /* 北九州賞（地域特別賞）の追加募集 —— Hero右カラムのお知らせ */
+    /* ヒーローの縦方向レイアウト（下部の余白過多を解消） */
+    .hero { display: flex; flex-direction: column; }
+    @media (min-width: 641px) {
+      .hero { min-height: 100svh; }   /* モバイルの 110vh 指定は温存 */
+    }
+
+    /* ナビをスクロール後も残す */
+    .nav { position: sticky; top: 0; }
+
+    /* 大画面でコンテンツが中央に埋没しないよう幅を拡張 */
+    @media (min-width: 1600px) {
+      .hero-content, .meta-inner { width: min(1440px, calc(100% - 120px)); }
+    }
+
+    /* 北九州賞（地域特別賞）の追加募集：Hero右カラムのお知らせ */
     .hero-content.has-notice {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
       gap: 44px;
       align-items: start;
-      padding-top: 10vh;
+      flex: 1;                 /* ヒーローの余った高さを引き受ける */
+      align-content: center;   /* 引き受けた高さの中で縦中央寄せ */
+      padding-top: 6vh;
       padding-bottom: 140px;   /* 下部のメタ帯に重ならないよう確保 */
     }
     .hero-content.has-notice .hero-main { min-width: 0; }

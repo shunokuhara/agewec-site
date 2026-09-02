@@ -3,205 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>受賞作品・ノミネート作品 | AGEWEC 2026</title>
-  <meta name="description" content="AGEWEC 2026（Agentic Work Execution Challenge）の審査結果。受賞作品とノミネート作品を紹介します。" />
+  <title>応募規約 | AGEWEC 2026</title>
   <link rel="stylesheet" href="/styles.css" />
   <style>
-    /* ---- ページ上部（entries と同じ紺パネル） ---- */
-    .panel-hero { background:#1f3047; color:#fff; padding-bottom:34px; }
-    .panel-hero .nav { background:rgba(31,48,71,.92); position:sticky; top:0; }
-    .rhead { width:min(1180px, calc(100% - 80px)); margin:0 auto; padding-top:56px; }
-    .rhead h1 { font-size:clamp(34px,5vw,58px); margin:6px 0 12px; letter-spacing:-.03em; line-height:1.15;
-                background:linear-gradient(120deg,#9d89ff,#dcecff 55%,#fff 85%); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .rhead p { color:rgba(255,255,255,.85); max-width:640px; line-height:1.9; margin:0; }
-    .rhead .ceremony { margin-top:18px; font-size:13.5px; color:rgba(255,255,255,.72); }
-
-    main.results { color:var(--ink); background:linear-gradient(180deg,#fff,#f8faff); min-height:60vh; padding:0 0 90px; }
-    .wrap { width:min(1180px, calc(100% - 80px)); margin:0 auto; }
-    .block { padding:72px 0 0; }
-    .block h2 { margin:0 0 10px; font-size:clamp(28px,3.4vw,42px); letter-spacing:-.035em; line-height:1.2; }
-    .block .lead { margin:0 0 34px; color:var(--ink-muted); font-size:16px; line-height:1.85; max-width:760px; }
-
-    /* ---- 受賞作品：賞ごとに1ブロック。動画を主役にした横長カード ---- */
-    .award-group { margin-bottom:46px; }
-    .award-name { display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin:0 0 14px; padding-bottom:10px; border-bottom:2px solid #1f3047; }
-    .award-name .ja { font-size:22px; font-weight:900; color:var(--ink); letter-spacing:-.01em; }
-    .award-name .en { font-size:13px; font-weight:800; color:#327dba; }
-    .winner { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:0; border:1px solid var(--paper-line); border-radius:22px; background:#fff; overflow:hidden; box-shadow:0 22px 70px rgba(17,24,39,.08); }
-    .winner + .winner { margin-top:16px; }
-    .winner .frame { aspect-ratio:16/9; background:#0c1320; }
-    .winner .frame iframe, .winner .frame video, .winner .frame a { width:100%; height:100%; display:block; border:0; }
-    .winner .frame a { display:flex; align-items:center; justify-content:center; color:#cfe6ff; font-weight:800; }
-    .winner .body { padding:26px 28px; display:flex; flex-direction:column; gap:10px; min-width:0; }
-    .winner h3 { margin:0; font-size:22px; line-height:1.35; color:var(--ink); letter-spacing:-.01em; }
-    .winner .by { font-size:13.5px; font-weight:800; color:var(--ink-muted); }
-    .winner .desc { font-size:14px; line-height:1.8; color:#333c4d; white-space:pre-line; }
-    .winner .ai { font-size:12px; color:#327dba; font-weight:800; word-break:break-word; margin-top:auto; padding-top:8px; }
-    .winner .ai span { color:var(--ink-muted); font-weight:700; }
-    .none { padding:18px 20px; border:1px dashed #c9d2e2; border-radius:14px; color:var(--ink-muted); font-size:14px; background:#fbfcfe; }
-
-    /* ---- ノミネート作品：3列グリッド ---- */
-    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
-    .ecard { border:1px solid var(--paper-line); border-radius:20px; background:#fff; overflow:hidden; box-shadow:0 18px 60px rgba(17,24,39,.07); display:flex; flex-direction:column; }
-    .ecard .frame { aspect-ratio:16/9; background:#0c1320; }
-    .ecard .frame iframe, .ecard .frame video, .ecard .frame a { width:100%; height:100%; display:block; border:0; }
-    .ecard .frame a { display:flex; align-items:center; justify-content:center; color:#cfe6ff; font-weight:800; }
-    .ecard .body { padding:18px 18px 20px; }
-    .ecard h3 { margin:0 0 4px; font-size:17px; color:var(--ink); line-height:1.4; }
-    .ecard .by { font-size:12.5px; color:var(--ink-muted); font-weight:800; margin-bottom:10px; }
-    .ecard .desc { font-size:13.5px; color:var(--ink-muted); line-height:1.7; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
-    .ecard .ai { margin-top:10px; font-size:11.5px; color:#327dba; font-weight:800; word-break:break-word; }
-
-    .more { margin-top:64px; padding-top:28px; border-top:1px solid var(--paper-line); display:flex; gap:18px; align-items:center; flex-wrap:wrap; color:var(--ink-muted); font-size:15px; }
-    .more a { font-weight:900; color:#1f3047; text-decoration:underline; text-underline-offset:4px; }
-    .status { padding:40px 0; color:var(--ink-muted); }
-
-    @media (max-width:1000px){ .grid{ grid-template-columns:1fr 1fr; } .winner{ grid-template-columns:1fr; } .winner .body{ padding:20px 22px; } }
-    @media (max-width:640px){ .wrap,.rhead{ width:calc(100% - 36px);} .grid{ grid-template-columns:1fr; } .block{ padding-top:54px; } }
+    .panel-hero { background:#1f3047; color:#fff; }
+    .panel-hero .nav { background:rgba(31,48,71,.92); }
+    main.doc { color:var(--ink); background:#fff; padding:48px 0 90px; }
+    .doc .wrap { width:min(820px, calc(100% - 64px)); margin:0 auto; }
+    .doc h1 { font-size:clamp(28px,4vw,40px); color:var(--ink); margin:0 0 6px; }
+    .doc .lead { color:var(--ink-muted); margin:0 0 30px; }
+    .doc h2 { font-size:18px; color:var(--ink); margin:30px 0 8px; border-left:4px solid #377dff; padding-left:10px; }
+    .doc p, .doc li { color:#33405a; font-size:15px; line-height:1.9; }
+    .doc ul { padding-left:22px; }
+    .back { color:#327dba; font-weight:800; }
   </style>
 </head>
 <body>
   <header class="panel-hero">
     <nav class="nav">
-      <a href="/" class="brand"><div class="brand-main">AGEWEC 2026</div><div class="brand-sub">Results</div></a>
-      <button class="menu-button" aria-label="Open menu" onclick="document.body.classList.toggle('menu-open')">☰</button>
-      <div class="navlinks">
-        <a href="/" data-ja="トップ" data-en="Home">トップ</a>
-        <a href="/#awards" data-ja="賞について" data-en="Awards">賞について</a>
-        <a href="/entries/" data-ja="公開作品一覧" data-en="All entries">公開作品一覧</a>
-        <button class="lang" onclick="toggleLang(); syncDynamic();">JA / EN</button>
-      </div>
+      <a href="/" class="brand"><div class="brand-main">AGEWEC 2026</div><div class="brand-sub" data-ja="応募規約" data-en="Entry Rules">応募規約</div></a>
+      <button class="lang" onclick="toggleLang()" aria-label="Toggle language">JA / EN</button>
     </nav>
-    <div class="rhead">
-      <p class="section-kicker" style="color:var(--cyan)">Results 2026</p>
-      <h1 data-ja="受賞作品・ノミネート作品" data-en="Award winners and finalists">受賞作品・ノミネート作品</h1>
-      <p data-ja="AGEWEC 2026 の審査結果です。各賞の受賞作品と、最終審査に進んだノミネート作品を紹介します。応募作品はすべて、AIエージェントが北九州の魅力を伝えるために制作した動画です。"
-         data-en="The results of AGEWEC 2026. Here are the winners of each award and the finalists that advanced to the final round. Every entry is a video made by AI agents to convey the appeal of Kitakyushu.">AGEWEC 2026 の審査結果です。各賞の受賞作品と、最終審査に進んだノミネート作品を紹介します。応募作品はすべて、AIエージェントが北九州の魅力を伝えるために制作した動画です。</p>
-      <p class="ceremony" data-ja="授賞式：2026年9月2日（水）北九州学術研究都市（FIT2026 特別イベント）"
-         data-en="Award ceremony: Wednesday, September 2, 2026, Kitakyushu Science and Research Park (FIT2026 special event)">授賞式：2026年9月2日（水）北九州学術研究都市（FIT2026 特別イベント）</p>
-    </div>
   </header>
+  <main class="doc"><div class="wrap">
+    <h1 data-ja="AGEWEC 2026 応募規約" data-en="AGEWEC 2026 Entry Rules">AGEWEC 2026 応募規約</h1>
+    <p class="lead" data-ja="Draft v0.1 ／ 主催: AGEWEC 実行委員会（FIT2026 特別イベントとして開催）" data-en="Draft v0.1 / Organizer: AGEWEC Organizing Committee (held as a FIT2026 special event)">Draft v0.1 ／ 主催: AGEWEC 実行委員会（FIT2026 特別イベントとして開催）</p>
 
-  <main class="results">
-    <div class="wrap">
-      <section class="block" id="winners">
-        <h2 data-ja="受賞作品" data-en="Award winners">受賞作品</h2>
-        <p class="lead" data-ja="北九州市および関係団体より授与された各賞の受賞作品です。" data-en="Winners of the awards presented by Kitakyushu City and partner organizations.">北九州市および関係団体より授与された各賞の受賞作品です。</p>
-        <div id="winners-list"></div>
-      </section>
+    <h2 data-ja="第1条（目的）" data-en="Article 1 (Purpose)">第1条（目的）</h2>
+    <p data-ja="AGEWEC 2026（Agentic Work Execution Challenge 2026）は、生成AIおよびAIエージェント技術を活用した創造的ワークフローの実践・共有・発信を目的として開催されるイベントです。応募者は、本規約に同意の上、作品を応募するものとします。" data-en="AGEWEC 2026 (Agentic Work Execution Challenge 2026) is an event held to practice, share, and broadcast creative workflows that make use of generative AI and AI agent technology. Applicants submit their work upon agreeing to these rules.">AGEWEC 2026（Agentic Work Execution Challenge 2026）は、生成AIおよびAIエージェント技術を活用した創造的ワークフローの実践・共有・発信を目的として開催されるイベントです。応募者は、本規約に同意の上、作品を応募するものとします。</p>
 
-      <section class="block" id="finalists">
-        <h2 data-ja="ノミネート作品" data-en="Finalists">ノミネート作品</h2>
-        <p class="lead" data-ja="最終審査に進んだ作品です（受賞作品を除く）。" data-en="Entries that advanced to the final round (excluding award winners).">最終審査に進んだ作品です（受賞作品を除く）。</p>
-        <div id="finalists-list" class="grid"></div>
-      </section>
+    <h2 data-ja="第2条（応募資格）" data-en="Article 2 (Eligibility)">第2条（応募資格）</h2>
+    <p data-ja="【北九州賞（地域特別賞）について】北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方は、北九州賞の対象となります。応募締切は2026年8月23日（日）20:59（日本時間）、結果通知は2026年8月27日（木）です（本募集分の結果通知は2026年8月14日で、北九州賞のみ通知日が異なります）。応募状況によっては該当作品なしとなる場合があります。" data-en="[Kitakyushu Award (Regional Special Award)] Residents of Kitakyushu City, and those affiliated with schools, companies, or organizations connected to Kitakyushu, are eligible for the Kitakyushu Award. The deadline is Sunday, August 23, 2026 at 20:59 (JST), and results will be announced on Thursday, August 27, 2026 (results for the main call are announced on August 14, 2026; only the Kitakyushu Award has a separate notification date). Depending on the entries received, this award may not be presented.">【北九州賞（地域特別賞）について】北九州市在住の方、または北九州市に関連する学校・企業・団体に所属する方は、北九州賞の対象となります。応募締切は2026年8月23日（日）20:59（日本時間）、結果通知は2026年8月27日（木）です（本募集分の結果通知は2026年8月14日で、北九州賞のみ通知日が異なります）。応募状況によっては該当作品なしとなる場合があります。</p>
+    <p data-ja="応募資格に特段の制限はありません。応募は個人単位とし、チームによる応募は受け付けません。未成年者（18歳未満）の応募については、保護者の同意を必要とします。運営委員・審査員およびその関係者は応募できません。" data-en="There are no particular restrictions on eligibility. Entries are accepted on an individual basis; team entries are not accepted. Minors (under 18) require the consent of a guardian to enter. Organizing committee members, judges, and their associates may not enter.">応募資格に特段の制限はありません。応募は個人単位とし、チームによる応募は受け付けません。未成年者（18歳未満）の応募については、保護者の同意を必要とします。運営委員・審査員およびその関係者は応募できません。</p>
 
-      <div id="status" class="status" style="display:none"></div>
+    <h2 data-ja="第3条（応募作品）" data-en="Article 3 (Submitted Work)">第3条（応募作品）</h2>
+    <p data-ja="応募作品は、応募者自身が制作した動画作品である必要があります。応募作品には、生成AI、AIエージェント、AI支援ツール等を利用できます。動画本編の言語は自由とします。ただし、作品説明およびワークフロー説明は、日本語または英語で記入するものとします。" data-en="The submitted work must be a video created by the applicant. Generative AI, AI agents, AI-assisted tools, and the like may be used in the work. The language of the video itself is free. However, the work description and the workflow description must be written in Japanese or English.">応募作品は、応募者自身が制作した動画作品である必要があります。応募作品には、生成AI、AIエージェント、AI支援ツール等を利用できます。動画本編の言語は自由とします。ただし、作品説明およびワークフロー説明は、日本語または英語で記入するものとします。</p>
 
-      <div class="more">
-        <span data-ja="公開が許可されたすべての応募作品は、作品一覧ページでご覧いただけます。" data-en="All entries whose authors permitted publication are on the entries page.">公開が許可されたすべての応募作品は、作品一覧ページでご覧いただけます。</span>
-        <a href="/entries/" data-ja="公開作品一覧を見る" data-en="See all entries">公開作品一覧を見る</a>
-      </div>
-    </div>
-  </main>
+    <h2 data-ja="第4条（提出形式）" data-en="Article 4 (Submission Format)">第4条（提出形式）</h2>
+    <p data-ja="応募者は、AGEWEC 2026 が指定する投稿フォームを通じて、動画共有URL、作品タイトル、制作者情報、使用AIツール・モデル、ワークフロー説明、その他運営が指定する情報を提出するものとします。運営は、原則として動画ファイル本体のアップロードを受け付けません。" data-en="Through the submission form designated by AGEWEC 2026, the applicant submits a video-sharing URL, the work title, creator information, the AI tools and models used, a workflow description, and any other information designated by the organizer. As a rule, the organizer does not accept uploads of the video file itself.">応募者は、AGEWEC 2026 が指定する投稿フォームを通じて、動画共有URL、作品タイトル、制作者情報、使用AIツール・モデル、ワークフロー説明、その他運営が指定する情報を提出するものとします。運営は、原則として動画ファイル本体のアップロードを受け付けません。</p>
 
+    <h2 data-ja="第5条（動画URL）" data-en="Article 5 (Video URL)">第5条（動画URL）</h2>
+    <p data-ja="応募者は、審査員が閲覧可能な設定で動画URLを提出し、審査および受賞期間中はアクセス可能な状態を維持するものとします。提出されたURLが閲覧不能である場合、審査対象外となる場合があります。" data-en="The applicant submits a video URL with settings that allow judges to view it, and keeps it accessible throughout the judging and award period. If a submitted URL cannot be viewed, the entry may be excluded from judging.">応募者は、審査員が閲覧可能な設定で動画URLを提出し、審査および受賞期間中はアクセス可能な状態を維持するものとします。提出されたURLが閲覧不能である場合、審査対象外となる場合があります。</p>
+
+    <h2 data-ja="第6条（使用AIツール・ライセンス）" data-en="Article 6 (AI Tools and Licenses)">第6条（使用AIツール・ライセンス）</h2>
+    <p data-ja="応募者は、使用したAIツール、モデル、音声ライブラリ、画像生成モデル、音楽素材等の利用規約およびライセンス条件を遵守するものとします。特に、商用利用、広報利用、クレジット表記等に制限が存在する場合、応募者自身の責任において必要条件を満たすものとします。運営は、第三者ライセンス違反について責任を負いません。" data-en="The applicant complies with the terms of use and license conditions of the AI tools, models, audio libraries, image-generation models, music materials, and the like that they use. In particular, where restrictions exist on commercial use, promotional use, or credit notation, the applicant is responsible for meeting the necessary conditions. The organizer bears no responsibility for any third-party license violations.">応募者は、使用したAIツール、モデル、音声ライブラリ、画像生成モデル、音楽素材等の利用規約およびライセンス条件を遵守するものとします。特に、商用利用、広報利用、クレジット表記等に制限が存在する場合、応募者自身の責任において必要条件を満たすものとします。運営は、第三者ライセンス違反について責任を負いません。</p>
+
+    <h2 data-ja="第7条（権利帰属および運営利用）" data-en="Article 7 (Rights and Use by the Organizer)">第7条（権利帰属および運営利用）</h2>
+    <p data-ja="応募作品の著作権は、原則として応募者に帰属します。応募者は、AGEWEC 2026 の運営、審査、記録、広報およびアーカイブを目的として、運営に対し、応募作品を無償かつ非独占的に利用することを許諾するものとします。運営は、以下の目的で応募作品を利用できます。" data-en="Copyright in the submitted work, as a rule, belongs to the applicant. The applicant grants the organizer a free, non-exclusive license to use the submitted work for the purposes of operating, judging, recording, promoting, and archiving AGEWEC 2026. The organizer may use the submitted work for the following purposes.">応募作品の著作権は、原則として応募者に帰属します。応募者は、AGEWEC 2026 の運営、審査、記録、広報およびアーカイブを目的として、運営に対し、応募作品を無償かつ非独占的に利用することを許諾するものとします。運営は、以下の目的で応募作品を利用できます。</p>
+    <ul>
+      <li data-ja="イベント会場での上映" data-en="Screening at the event venue">イベント会場での上映</li>
+      <li data-ja="審査" data-en="Judging">審査</li>
+      <li data-ja="AGEWEC公式Webサイトへの掲載" data-en="Posting on the official AGEWEC website">AGEWEC公式Webサイトへの掲載</li>
+      <li data-ja="AGEWEC公式SNSでの紹介" data-en="Featuring on official AGEWEC social media">AGEWEC公式SNSでの紹介</li>
+      <li data-ja="イベント記録・アーカイブ" data-en="Event records and archiving">イベント記録・アーカイブ</li>
+      <li data-ja="活動報告・広報資料への掲載" data-en="Inclusion in activity reports and promotional materials">活動報告・広報資料への掲載</li>
+    </ul>
+    <p data-ja="上記利用に必要な範囲において、運営はサムネイル生成、字幕追加、画面サイズ調整、一部切り抜き、ダイジェスト編集、エンコード変換、上映形式への変換を行うことがあります。応募者は、前項に定める利用の範囲において、著作者人格権を行使しないものとします。運営は、可能な範囲で応募者名を表示するよう努めます。" data-en="Within the scope necessary for the above use, the organizer may generate thumbnails, add subtitles, adjust screen size, crop portions, create digest edits, convert encoding, and convert to screening formats. The applicant agrees not to exercise moral rights of authorship within the scope of use set out in the preceding paragraph. The organizer will make efforts to display the applicant's name where possible.">上記利用に必要な範囲において、運営はサムネイル生成、字幕追加、画面サイズ調整、一部切り抜き、ダイジェスト編集、エンコード変換、上映形式への変換を行うことがあります。応募者は、前項に定める利用の範囲において、著作者人格権を行使しないものとします。運営は、可能な範囲で応募者名を表示するよう努めます。</p>
+
+    <h2 data-ja="第8条（観光PR・外部団体利用）" data-en="Article 8 (Tourism PR and Use by External Organizations)">第8条（観光PR・外部団体利用）</h2>
+    <p data-ja="応募者が別途同意した場合に限り、運営は、観光PR、地域広報、地域連携活動、スポンサー紹介、行政・観光団体による情報発信等の目的で、応募作品を第三者団体へ提供または利用許諾できるものとします。本条に基づく利用には、運営・連携団体・スポンサーが、YouTube・SNS 等での一般公開を含む形で応募作品を掲載・配信することが含まれます。応募者は、本条の同意を行う場合、応募作品および使用素材が当該の公開・広報・PR利用に支障のない権利状態にあること（第三者の著作権・商標権・肖像権・施設管理権、ならびに使用したAIモデル・画像・音楽・音声等のライセンスを含む）を確認し、これを表明・保証するものとします。本条に基づく利用は、前条のAGEWEC自身による運営・記録利用とは別の任意同意に基づきます。運営は、必要に応じて、受賞者または対象応募者に対し、公開前の権利確認、追加確認、または高画質版データの提出を求める場合があります。第三者団体による利用条件は、必要に応じて別途定めます。" data-en="Only where the applicant has separately consented, the organizer may provide or license the submitted work to third-party organizations for purposes such as tourism PR, regional promotion, regional cooperation activities, sponsor introductions, and information dissemination by government or tourism bodies. Use under this article includes the posting and distribution of the submitted work by the organizer, partner organizations, and sponsors, including general public release on platforms such as YouTube and social media. When giving consent under this article, the applicant confirms, represents, and warrants that the submitted work and the materials used in it are in a rights status that permits such public, promotional, and PR use (including third-party copyrights, trademark rights, portrait rights, and facility management rights, as well as the licenses of the AI models, images, music, and audio used). Use under this article is based on separate, optional consent, distinct from the operational and recording use by AGEWEC itself set out in the preceding article. As needed, the organizer may ask award winners or relevant applicants for rights confirmation before publication, for additional confirmation, or for submission of a high-resolution version. Conditions of use by third-party organizations will be set out separately as needed.">応募者が別途同意した場合に限り、運営は、観光PR、地域広報、地域連携活動、スポンサー紹介、行政・観光団体による情報発信等の目的で、応募作品を第三者団体へ提供または利用許諾できるものとします。本条に基づく利用には、運営・連携団体・スポンサーが、YouTube・SNS 等での一般公開を含む形で応募作品を掲載・配信することが含まれます。応募者は、本条の同意を行う場合、応募作品および使用素材が当該の公開・広報・PR利用に支障のない権利状態にあること（第三者の著作権・商標権・肖像権・施設管理権、ならびに使用したAIモデル・画像・音楽・音声等のライセンスを含む）を確認し、これを表明・保証するものとします。本条に基づく利用は、前条のAGEWEC自身による運営・記録利用とは別の任意同意に基づきます。運営は、必要に応じて、受賞者または対象応募者に対し、公開前の権利確認、追加確認、または高画質版データの提出を求める場合があります。第三者団体による利用条件は、必要に応じて別途定めます。</p>
+
+    <h2 data-ja="第9条（禁止事項）" data-en="Article 9 (Prohibited Items)">第9条（禁止事項）</h2>
+    <ul>
+      <li data-ja="第三者の権利を侵害する作品" data-en="Works that infringe the rights of third parties">第三者の権利を侵害する作品</li>
+      <li data-ja="法令または公序良俗に反する作品" data-en="Works that violate laws or public order and morals">法令または公序良俗に反する作品</li>
+      <li data-ja="不適切または差別的表現を含む作品" data-en="Works containing inappropriate or discriminatory expressions">不適切または差別的表現を含む作品</li>
+      <li data-ja="マルウェア等の危険なデータへの誘導を含むもの" data-en="Works that lead to dangerous data such as malware">マルウェア等の危険なデータへの誘導を含むもの</li>
+      <li data-ja="虚偽情報を含むもの" data-en="Works containing false information">虚偽情報を含むもの</li>
+      <li data-ja="その他運営が不適切と判断するもの" data-en="Anything else the organizer judges inappropriate">その他運営が不適切と判断するもの</li>
+    </ul>
+
+    <h2 data-ja="第10条（審査）" data-en="Article 10 (Judging)">第10条（審査）</h2>
+    <p data-ja="審査基準および審査方法は、運営が別途定めます。審査結果に関する個別問い合わせには原則として回答しません。" data-en="The judging criteria and methods are set out separately by the organizer. As a rule, individual inquiries regarding judging results will not be answered.">審査基準および審査方法は、運営が別途定めます。審査結果に関する個別問い合わせには原則として回答しません。</p>
+
+    <h2 data-ja="第11条（失格・受賞取消）" data-en="Article 11 (Disqualification and Revocation of Awards)">第11条（失格・受賞取消）</h2>
+    <p data-ja="規約違反、虚偽申告、URL無効化、権利侵害、その他運営が不適切と判断した場合、運営は応募を無効または失格とすることがあります。受賞後にこれらの事実が判明した場合、運営は受賞の取消および賞品の返還を求めることがあります。" data-en="In cases of rule violations, false statements, invalidation of a URL, rights infringement, or anything else the organizer judges inappropriate, the organizer may treat an entry as invalid or disqualified. If such facts come to light after an award, the organizer may revoke the award and request the return of the prize.">規約違反、虚偽申告、URL無効化、権利侵害、その他運営が不適切と判断した場合、運営は応募を無効または失格とすることがあります。受賞後にこれらの事実が判明した場合、運営は受賞の取消および賞品の返還を求めることがあります。</p>
+
+    <h2 data-ja="第12条（規約変更）" data-en="Article 12 (Changes to the Rules)">第12条（規約変更）</h2>
+    <p data-ja="運営は、必要に応じて本規約を変更できるものとします。変更後の内容は、本イベントWebサイト上での掲載をもって通知とします。" data-en="The organizer may change these rules as needed. Changed content is notified by being posted on this event's website.">運営は、必要に応じて本規約を変更できるものとします。変更後の内容は、本イベントWebサイト上での掲載をもって通知とします。</p>
+
+    <h2 data-ja="第13条（免責事項）" data-en="Article 13 (Disclaimer)">第13条（免責事項）</h2>
+    <p data-ja="運営は、応募者間または第三者との間で生じた紛争について責任を負いません。また、通信障害、外部サービス障害、動画URL消失等により発生した不利益について責任を負いません。" data-en="The organizer bears no responsibility for disputes arising between applicants or with third parties. The organizer also bears no responsibility for any disadvantage arising from communication failures, external service failures, loss of a video URL, or the like.">運営は、応募者間または第三者との間で生じた紛争について責任を負いません。また、通信障害、外部サービス障害、動画URL消失等により発生した不利益について責任を負いません。</p>
+
+    <h2 data-ja="第14条（準拠法・管轄）" data-en="Article 14 (Governing Law and Jurisdiction)">第14条（準拠法・管轄）</h2>
+    <p data-ja="本規約は日本法に準拠します。本規約に関して紛争が生じた場合、津地方裁判所を第一審の専属的合意管轄裁判所とします。" data-en="These rules are governed by the laws of Japan. In the event of a dispute concerning these rules, the Tsu District Court shall be the court of exclusive agreed jurisdiction for the first instance.">本規約は日本法に準拠します。本規約に関して紛争が生じた場合、津地方裁判所を第一審の専属的合意管轄裁判所とします。</p>
+
+    <p style="margin-top:36px"><a class="back" href="/submit/" data-ja="← 応募フォームに戻る" data-en="← Back to the entry form">← 応募フォームに戻る</a></p>
+  </div></main>
   <footer><strong>AGEWEC 2026</strong><br/>Agentic Work Execution Challenge</footer>
-
   <script src="/script.js"></script>
-  <script>
-    // ==== 設定 ====
-    // 賞の表示順と英語表記。admin の「賞」欄に入れた文字列を key で部分一致させる
-    // （賞状の正式名称をそのまま入れれば完全一致。一致しない賞名はそのまま末尾に表示）。
-    const AWARDS = [
-      { keys: ['DX'],                    ja: '北九州市 DX・AI推進賞',            en: 'Kitakyushu City DX & AI Promotion Award' },
-      { keys: ['コンベンション','観光'],   ja: '北九州観光コンベンション協会賞',      en: 'Kitakyushu Convention & Visitors Association Award' },
-      { keys: ['工場夜景','夜景'],        ja: '全国工場夜景都市協議会賞',          en: 'National Factory Nightscape Cities Council Award' },
-      { keys: ['環境'],                  ja: '北九州市 環境学習賞',               en: 'Kitakyushu City Environmental Learning Award' },
-      { keys: ['地域特別','北九州賞'],     ja: 'AGEWEC 2026 北九州賞（地域特別賞）', en: 'AGEWEC 2026 Kitakyushu Award (Regional Special Award)' },
-    ];
-    // 受賞作品のない賞を「該当作品なし」として表示するか
-    const SHOW_EMPTY_AWARDS = true;
-
-    // ==== 共通 ====
-    function lang(){ return (document.documentElement.lang||'ja')==='en'?'en':'ja'; }
-    function syncDynamic(){ const l=lang(); document.querySelectorAll('[data-ja][data-en]').forEach(el=>el.textContent=el.dataset[l]); }
-    const esc=(s)=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-
-    function embed(url, title){
-      const u=esc(url);
-      const ym=url && url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([\w-]{6,})/);
-      if(ym) return '<iframe src="https://www.youtube-nocookie.com/embed/'+esc(ym[1])+'" title="'+esc(title)+'" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
-      const gd=url && url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)([\w-]{20,})/);
-      if(gd) return '<iframe src="https://drive.google.com/file/d/'+esc(gd[1])+'/preview" title="'+esc(title)+'" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>';
-      const vm=url && url.match(/vimeo\.com\/(\d+)/);
-      if(vm) return '<iframe src="https://player.vimeo.com/video/'+esc(vm[1])+'" title="'+esc(title)+'" loading="lazy" allowfullscreen></iframe>';
-      if(url && /\.(mp4|webm)(\?|$)/i.test(url)) return '<video controls preload="metadata" playsinline src="'+u+'"></video>';
-      return '<a href="'+u+'" target="_blank" rel="noopener">▶ '+(lang()==='en'?'Watch the video':'動画を見る')+'</a>';
-    }
-    const by=(e)=>esc(e.author)+(e.affiliation?(' / '+esc(e.affiliation)):'');
-    const aiLine=(e)=>e.ai_tools?('<div class="ai"><span>AI: </span>'+esc(e.ai_tools)+'</div>'):'';
-
-    function matchAward(name){
-      const n=String(name||'').replace(/\s+/g,'');
-      return AWARDS.find(a=>n===a.ja.replace(/\s+/g,'')) || AWARDS.find(a=>a.keys.some(k=>n.toLowerCase().includes(k.toLowerCase())));
-    }
-
-    function winnerCard(e){
-      return '<article class="winner"><div class="frame">'+embed(e.video_url, e.title)+'</div><div class="body">'+
-        '<h3>'+esc(e.title)+'</h3><div class="by">'+by(e)+'</div>'+
-        '<div class="desc">'+esc(e.description)+'</div>'+aiLine(e)+'</div></article>';
-    }
-    function nomineeCard(e){
-      return '<article class="ecard"><div class="frame">'+embed(e.video_url, e.title)+'</div><div class="body">'+
-        '<h3>'+esc(e.title)+'</h3><div class="by">'+by(e)+'</div>'+
-        '<div class="desc">'+esc(e.description)+'</div>'+aiLine(e)+'</div></article>';
-    }
-
-    function renderWinners(winners){
-      const l=lang();
-      const groups=new Map(); // award label -> {ja,en,items}
-      AWARDS.forEach(a=>groups.set(a.ja,{ja:a.ja,en:a.en,items:[]}));
-      winners.forEach(e=>{
-        const a=matchAward(e.award);
-        const k=a?a.ja:String(e.award).trim();
-        if(!groups.has(k)) groups.set(k,{ja:k,en:k,items:[]});
-        groups.get(k).items.push(e);
-      });
-      let html='';
-      groups.forEach(g=>{
-        if(!g.items.length && !SHOW_EMPTY_AWARDS) return;
-        html+='<div class="award-group"><h3 class="award-name"><span class="ja" data-ja="'+esc(g.ja)+'" data-en="'+esc(g.en)+'">'+esc(l==='en'?g.en:g.ja)+'</span>'+
-              (g.ja!==g.en?'<span class="en" data-ja="'+esc(g.en)+'" data-en="'+esc(g.ja)+'">'+esc(l==='en'?g.ja:g.en)+'</span>':'')+'</h3>';
-        html+= g.items.length ? g.items.map(winnerCard).join('')
-             : '<div class="none" data-ja="該当作品なし" data-en="Not presented this year">'+(l==='en'?'Not presented this year':'該当作品なし')+'</div>';
-        html+='</div>';
-      });
-      return html;
-    }
-
-    async function load(){
-      const st=document.getElementById('status');
-      try{
-        const r=await fetch(ay('/api/entries')); const data=await r.json();
-        const list=data.entries||[];
-        const winners=list.filter(e=>e.award && String(e.award).trim()!=='');
-        const nominees=list.filter(e=>!(e.award && String(e.award).trim()!=='') && Number(e.finalist)===1);
-
-        if(!winners.length && !nominees.length){
-          document.getElementById('winners').style.display='none';
-          document.getElementById('finalists').style.display='none';
-          st.style.display='block'; st.dataset.ja='審査結果は近日公開します。'; st.dataset.en='Results will be published soon.'; st.textContent=st.dataset[lang()];
-          return;
-        }
-        document.getElementById('winners-list').innerHTML=renderWinners(winners);
-        const fl=document.getElementById('finalists-list');
-        if(nominees.length) fl.innerHTML=nominees.map(nomineeCard).join('');
-        else document.getElementById('finalists').style.display='none';
-      }catch(e){
-        st.style.display='block'; st.dataset.ja='結果を読み込めませんでした。時間をおいて再度お試しください。'; st.dataset.en='Could not load the results. Please try again later.'; st.textContent=st.dataset[lang()];
-      }
-    }
-    load();
-  </script>
 </body>
 </html>

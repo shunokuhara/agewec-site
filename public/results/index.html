@@ -141,10 +141,12 @@
       if(url && /\.(mp4|webm)(\?|$)/i.test(url)) return '<video controls preload="metadata" playsinline src="'+u+'"></video>';
       return '<a href="'+u+'" target="_blank" rel="noopener">▶ '+(lang()==='en'?'Watch the video':'動画を見る')+'</a>';
     }
-    // 所属のリンク（作品ID → URL）。affiliation が入っている作品だけ、その文字にリンクを付ける
-    const AFFIL_LINKS = {
-      'sub_49993d7bfdb27a2e': 'https://longvacabank.co.jp/',   // 遠藤直樹：ロンバカバンク株式会社
+    // 所属の表示名とリンク（作品ID → {ja, en, url}）。DBの affiliation（university/company/...）を上書きする
+    const AFFIL_OVERRIDE = {
+      'sub_49993d7bfdb27a2e': { ja: 'ロンバカバンク株式会社', en: 'Longvacabank Co., Ltd.', url: 'https://longvacabank.co.jp/' },   // 遠藤直樹
     };
+    // affiliation の区分値の表示名
+    const AFFIL_LABEL = { university:{ja:'大学',en:'University'}, company:{ja:'企業',en:'Company'}, individual:{ja:'個人',en:'Individual'}, other:{ja:'その他',en:'Other'} };
     // 公開時のクレジット表記（作品ID → 行の配列）。応募者が必須と申告した素材のみ
     const CREDITS = {
       'sub_92ca5655c4e82985': [   // 尾田一真「夜の扉、開く。」
@@ -157,10 +159,13 @@
       ],
     };
     const by=(e)=>{
-      if(!e.affiliation) return esc(e.author);
-      const u=AFFIL_LINKS[e.id];
-      const aff=u?('<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(e.affiliation)+'</a>'):esc(e.affiliation);
-      return esc(e.author)+' / '+aff;
+      const l=lang(), o=AFFIL_OVERRIDE[e.id];
+      let aff='', url='';
+      if(o){ aff=o[l]||o.ja; url=o.url||''; }
+      else if(e.affiliation){ const m=AFFIL_LABEL[String(e.affiliation).toLowerCase()]; aff=m?m[l]:e.affiliation; }
+      if(!aff) return esc(e.author);
+      const a=url?('<a href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(aff)+'</a>'):esc(aff);
+      return esc(e.author)+' / '+a;
     };
     const aiLine=(e)=>(e.ai_tools?('<div class="ai"><span>AI: </span>'+esc(e.ai_tools)+'</div>'):'')+creditLine(e);
     const creditLine=(e)=>{

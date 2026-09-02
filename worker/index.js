@@ -4,6 +4,7 @@
 //   /                  -> 302 redirect to /{CURRENT_YEAR}/
 //   /{year}/           -> event homepage (shared page, served from /public)
 //   /{year}/submit/    -> shared page
+//   /{year}/results/   -> shared page: award winners (award <> '') and finalists (finalist = 1)
 //   /{year}/api/...    -> API for that year, using that year's D1 (env["DB_"+year])
 //   /styles.css etc.   -> shared root assets (no year prefix)
 //
@@ -235,9 +236,10 @@ async function handleSubmit(db, env, request) {
 
 async function handleEntries(db) {
   const { results } = await db.prepare(
-    `SELECT title, COALESCE(NULLIF(nickname, ''), author) AS author, affiliation, description, video_url, ai_tools, award
+    `SELECT id, title, COALESCE(NULLIF(nickname, ''), author) AS author, affiliation, description, video_url, ai_tools,
+            award, finalist
        FROM submissions WHERE is_public = 1 AND disqualified = 0
-      ORDER BY (award <> '') DESC, created_at ASC`
+      ORDER BY (award <> '') DESC, finalist DESC, created_at ASC`
   ).all();
   return json({ entries: results || [] });
 }

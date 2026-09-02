@@ -113,11 +113,11 @@
     // 賞の表示順と英語表記。admin の「賞」欄に入れた文字列を key で部分一致させる
     // （賞状の正式名称をそのまま入れれば完全一致。一致しない賞名はそのまま末尾に表示）。
     const AWARDS = [
-      { key: 'DX',         ja: '北九州市 DX・AI推進賞',            en: 'Kitakyushu City DX & AI Promotion Award' },
-      { key: 'コンベンション', ja: '北九州観光コンベンション協会賞',      en: 'Kitakyushu Convention & Visitors Association Award' },
-      { key: '工場夜景',   ja: '全国工場夜景都市協議会賞',          en: 'National Factory Nightscape Cities Council Award' },
-      { key: '環境学習',   ja: '北九州市 環境学習賞',               en: 'Kitakyushu City Environmental Learning Award' },
-      { key: '地域特別',   ja: 'AGEWEC 2026 北九州賞（地域特別賞）', en: 'AGEWEC 2026 Kitakyushu Award (Regional Special Award)' },
+      { keys: ['DX'],                    ja: '北九州市 DX・AI推進賞',            en: 'Kitakyushu City DX & AI Promotion Award' },
+      { keys: ['コンベンション','観光'],   ja: '北九州観光コンベンション協会賞',      en: 'Kitakyushu Convention & Visitors Association Award' },
+      { keys: ['工場夜景','夜景'],        ja: '全国工場夜景都市協議会賞',          en: 'National Factory Nightscape Cities Council Award' },
+      { keys: ['環境'],                  ja: '北九州市 環境学習賞',               en: 'Kitakyushu City Environmental Learning Award' },
+      { keys: ['地域特別','北九州賞'],     ja: 'AGEWEC 2026 北九州賞（地域特別賞）', en: 'AGEWEC 2026 Kitakyushu Award (Regional Special Award)' },
     ];
     // 受賞作品のない賞を「該当作品なし」として表示するか
     const SHOW_EMPTY_AWARDS = true;
@@ -143,7 +143,7 @@
 
     function matchAward(name){
       const n=String(name||'').replace(/\s+/g,'');
-      return AWARDS.find(a=>n===a.ja.replace(/\s+/g,'')) || AWARDS.find(a=>n.toLowerCase().includes(a.key.toLowerCase()));
+      return AWARDS.find(a=>n===a.ja.replace(/\s+/g,'')) || AWARDS.find(a=>a.keys.some(k=>n.toLowerCase().includes(k.toLowerCase())));
     }
 
     function winnerCard(e){

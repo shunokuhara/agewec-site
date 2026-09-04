@@ -55,6 +55,13 @@
     .ecard .desc { font-size:13.5px; color:var(--ink-muted); line-height:1.7; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
     .ecard .ai { margin-top:10px; font-size:11.5px; color:#327dba; font-weight:800; word-break:break-word; }
 
+    /* ---- 自前ポスター（埋め込みプレイヤーのサムネ切れ対策）。クリックで本来のiframeに差し替える ---- */
+    .poster { position:relative; width:100%; height:100%; display:block; padding:0; border:0; background:#0c1320; cursor:pointer; }
+    .poster img { width:100%; height:100%; object-fit:contain; display:block; }
+    .poster::after { content:''; position:absolute; left:50%; top:50%; width:68px; height:48px; transform:translate(-50%,-50%);
+      border-radius:12px; background:rgba(0,0,0,.72) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M8 5v14l11-7z'/%3E%3C/svg%3E") center/26px no-repeat; }
+    .poster:hover::after { background-color:#2f7ddb; }
+
     .more { margin-top:64px; padding-top:28px; border-top:1px solid var(--paper-line); display:flex; gap:18px; align-items:center; flex-wrap:wrap; color:var(--ink-muted); font-size:15px; }
     .more a { font-weight:900; color:#1f3047; text-decoration:underline; text-underline-offset:4px; }
     .status { padding:40px 0; color:var(--ink-muted); }
@@ -135,12 +142,24 @@
       const ym=url && url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([\w-]{6,})/);
       if(ym) return '<iframe src="https://www.youtube-nocookie.com/embed/'+esc(ym[1])+'" title="'+esc(title)+'" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
       const gd=url && url.match(/(?:drive|docs)\.google\.com\/.*?(?:\/d\/|[?&]id=)([\w-]{20,})/);
-      if(gd) return '<iframe src="https://drive.google.com/file/d/'+esc(gd[1])+'/preview" title="'+esc(title)+'" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+      if(gd){
+        // Driveのpreviewプレイヤーは再生前のサムネを枠いっぱいに切り抜いて表示するため上下が欠ける。
+        // 自前でサムネを contain 表示し、クリック時に preview iframe へ差し替える
+        const id=esc(gd[1]);
+        return '<button type="button" class="poster" data-src="https://drive.google.com/file/d/'+id+'/preview" data-allow="autoplay; fullscreen" aria-label="'+esc(title)+'">'+
+          '<img src="https://drive.google.com/thumbnail?id='+id+'&sz=w1280" alt="" loading="lazy"></button>';
+      }
       const vm=url && url.match(/vimeo\.com\/(\d+)/);
       if(vm) return '<iframe src="https://player.vimeo.com/video/'+esc(vm[1])+'" title="'+esc(title)+'" loading="lazy" allowfullscreen></iframe>';
       if(url && /\.(mp4|webm)(\?|$)/i.test(url)) return '<video controls preload="metadata" playsinline src="'+u+'"></video>';
       return '<a href="'+u+'" target="_blank" rel="noopener">▶ '+(lang()==='en'?'Watch the video':'動画を見る')+'</a>';
     }
+    document.addEventListener('click', (ev)=>{
+      const b=ev.target.closest('.poster'); if(!b) return;
+      const f=document.createElement('iframe');
+      f.src=b.dataset.src; f.title=b.getAttribute('aria-label')||''; f.allow=b.dataset.allow||''; f.allowFullscreen=true;
+      b.replaceWith(f);
+    });
     // 所属の表示名とリンク（作品ID → {ja, en, url}）。DBの affiliation（university/company/...）を上書きする
     const AFFIL_OVERRIDE = {
       'sub_49993d7bfdb27a2e': { ja: 'ロンバカバンク株式会社', en: 'Longvacabank Co., Ltd.', url: 'https://longvacabank.co.jp/' },   // 遠藤直樹

@@ -132,6 +132,30 @@
       { keys: ['環境'],                  ja: '北九州市 環境学習賞',               en: 'Kitakyushu City Environmental Learning Award' },
       { keys: ['地域特別','北九州賞'],     ja: 'AGEWEC 2026 北九州賞（地域特別賞）', en: 'AGEWEC 2026 Kitakyushu Award (Regional Special Award)' },
     ];
+    // 動画URLの上書き（DBの video_url より優先）。受賞作品は賞名、ノミネート作品はタイトルに含まれる語で対応付ける
+    const VIDEO_OVERRIDE_BY_AWARD = {
+      '北九州市 DX・AI推進賞':            'https://youtu.be/8srUOzDXcdw',   // 宮本倖多「未来をつくる都市、北九州」
+      '北九州観光コンベンション協会賞':      'https://youtu.be/FP9cYBOubyo',   // 河原広志郎「100億ドルの夜景」
+      '全国工場夜景都市協議会賞':          'https://youtu.be/rU0MvLBYP4s',
+      '北九州市 環境学習賞':               'https://youtu.be/zwLwRHnsH5k',   // 二川恩行「空の澄む工業都市」
+      'AGEWEC 2026 北九州賞（地域特別賞）': 'https://youtu.be/6bkSpRfUox4',   // 遠藤直樹「未完の街 KITAKYUSHU 2045」
+    };
+    const VIDEO_OVERRIDE_BY_TITLE = [
+      { match: '北九州の魅力', url: 'https://youtu.be/uwKa95Jzddg' },   // 仁枝隼士
+      { match: '光と',        url: 'https://youtu.be/r15XJOtjmIQ' },   // 児玉瑛己
+      { match: 'YATI',        url: 'https://youtu.be/BHWTzYDQQF4', byAuthor: true },   // YATI LINN
+      { match: '夜の扉、開く',  url: 'https://youtube.com/shorts/UQgiDoj4eMs', portrait: true },   // さくま（ショート形式・縦動画）
+    ];
+    function applyVideoOverride(e){
+      if(e.award && String(e.award).trim()!==''){
+        const a=matchAward(e.award); if(a && VIDEO_OVERRIDE_BY_AWARD[a.ja]) e.video_url=VIDEO_OVERRIDE_BY_AWARD[a.ja];
+      }else{
+        const t=String(e.title||''), au=String(e.author||'');
+        const o=VIDEO_OVERRIDE_BY_TITLE.find(o=>o.byAuthor ? au.toUpperCase().includes(o.match) : t.includes(o.match));
+        if(o){ e.video_url=o.url; if(o.portrait) e._portrait=true; }
+      }
+      return e;
+    }
     // 受賞作品のない賞を「該当作品なし」として表示するか
     const SHOW_EMPTY_AWARDS = true;
 
@@ -211,7 +235,7 @@
         '<div class="desc">'+esc(e.description)+'</div>'+aiLine(e)+'</div></article>';
     }
     function nomineeCard(e){
-      return '<article class="ecard"><div class="frame">'+embed(e.video_url, e.title)+'</div><div class="body">'+
+      return '<article class="ecard"><div class="frame'+(e._portrait?' portrait':'')+'">'+embed(e.video_url, e.title)+'</div><div class="body">'+
         '<h3>'+esc(e.title)+'</h3><div class="by">'+by(e)+'</div>'+
         '<div class="desc">'+esc(e.description)+'</div>'+aiLine(e)+'</div></article>';
     }
@@ -242,7 +266,7 @@
       const st=document.getElementById('status');
       try{
         const r=await fetch(ay('/api/entries')); const data=await r.json();
-        const list=data.entries||[];
+        const list=(data.entries||[]).map(applyVideoOverride);
         const winners=list.filter(e=>e.award && String(e.award).trim()!=='');
         const nominees=list.filter(e=>!(e.award && String(e.award).trim()!=='') && Number(e.finalist)===1);
 

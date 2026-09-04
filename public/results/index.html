@@ -57,6 +57,8 @@
     .ecard .ai { margin-top:10px; font-size:11.5px; color:#327dba; font-weight:800; word-break:break-word; }
 
     /* ---- 自前ポスター（埋め込みプレイヤーのサムネ切れ対策）。クリックで本来のiframeに差し替える ---- */
+    /* 動画枠：横長は16:9、縦長（ショート形式）は9:16。向きはサムネ／動画のメタデータから自動判定 */
+    .frame.portrait { aspect-ratio:9/16; max-width:360px; margin:0 auto; }
     .poster { position:relative; width:100%; height:100%; display:block; padding:0; border:0; background:#0c1320; cursor:pointer; }
     .poster img { width:100%; height:100%; object-fit:contain; display:block; }
     .poster::after { content:''; position:absolute; left:50%; top:50%; width:68px; height:48px; transform:translate(-50%,-50%);
@@ -148,13 +150,15 @@
         // 自前でサムネを contain 表示し、クリック時に preview iframe へ差し替える
         const id=esc(gd[1]);
         return '<button type="button" class="poster" data-src="https://drive.google.com/file/d/'+id+'/preview" data-open="https://drive.google.com/file/d/'+id+'/view" data-allow="autoplay; fullscreen" aria-label="'+esc(title)+'">'+
-          '<img src="https://drive.google.com/thumbnail?id='+id+'&sz=w1280" alt="" loading="lazy"></button>';
+          '<img src="https://drive.google.com/thumbnail?id='+id+'&sz=w1280" alt="" loading="lazy" onload="markPortrait(this,this.naturalWidth,this.naturalHeight)"></button>';
       }
       const vm=url && url.match(/vimeo\.com\/(\d+)/);
       if(vm) return '<iframe src="https://player.vimeo.com/video/'+esc(vm[1])+'" title="'+esc(title)+'" loading="lazy" allowfullscreen></iframe>';
-      if(url && /\.(mp4|webm)(\?|$)/i.test(url)) return '<video controls preload="metadata" playsinline src="'+u+'"></video>';
+      if(url && /\.(mp4|webm)(\?|$)/i.test(url)) return '<video onloadedmetadata="markPortrait(this,this.videoWidth,this.videoHeight)" controls preload="metadata" playsinline src="'+u+'"></video>';
       return '<a href="'+u+'" target="_blank" rel="noopener">▶ '+(lang()==='en'?'Watch the video':'動画を見る')+'</a>';
     }
+    // 縦長なら枠を9:16に切り替える
+    window.markPortrait=function(el,w,h){ if(w&&h&&h>w){ const f=el.closest('.frame'); if(f) f.classList.add('portrait'); } };
     document.addEventListener('click', (ev)=>{
       const b=ev.target.closest('.poster'); if(!b) return;
       // iOS Safari はサードパーティCookieを遮断するため、Driveの埋め込みプレイヤーが再生できず黒くなる。
